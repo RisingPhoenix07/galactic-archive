@@ -10,7 +10,7 @@ NASA_API_URL = "https://images-api.nasa.gov/search"
 
 def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
     """
-    Searches NASA's public media library for historical telemetry images
+    Searches NASA's public media library using concise keywords / NASA IDs
     and downloads the primary asset to assets/nasa_data/.
     """
     params = {
@@ -18,7 +18,7 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
         "media_type": "image"
     }
     
-    print(f"[NASA API] Searching for query: '{query}'...")
+    print(f"[NASA API] Searching for: '{query}' (Target ID: {target_nasa_id})...")
     try:
         response = requests.get(NASA_API_URL, params=params, timeout=10)
         response.raise_for_status()
@@ -27,16 +27,21 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
         items = data.get("collection", {}).get("items", [])
         selected_url = None
         
-        # Check for specific NASA Asset ID or fallback to top search result
+        # Check for specific NASA Asset ID match
         for item in items:
             item_data = item.get("data", [{}])[0]
             nasa_id = item_data.get("nasa_id", "")
-            if target_nasa_id and target_nasa_id in nasa_id:
-                selected_url = item.get("links", [{}])[0].get("href")
+            if target_nasa_id and target_nasa_id.lower() in nasa_id.lower():
+                links = item.get("links", [])
+                if links:
+                    selected_url = links[0].get("href")
                 break
         
+        # Fallback to first search result if exact ID isn't matched
         if not selected_url and items:
-            selected_url = items[0].get("links", [{}])[0].get("href")
+            links = items[0].get("links", [])
+            if links:
+                selected_url = links[0].get("href")
             
         if selected_url:
             print(f"[DOWNLOADING] Saving asset to: {local_filename}")
@@ -54,30 +59,54 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
 if __name__ == "__main__":
     print("=== STARTING NASA REAL DATA ASSET FETCH ===\n")
 
-    # 1. Apollo 11 DSKY Telemetry & 1202 Alarm Data (DP1)
+    # --- MISSION 3 (APOLLO 8) ASSETS ---
+    # 1. Apollo 8 Mission Control Telemetry Log
     download_nasa_asset(
-        query="Apollo 11 DSKY Computer Display", 
+        query="Apollo 8 Mission Control", 
+        target_nasa_id="S68-56003", 
+        local_filename="apollo8_telemetry.jpg"
+    )
+
+    # 2. Apollo 8 Farside Target Area Mapping
+    download_nasa_asset(
+        query="AS08-12-2209", 
+        target_nasa_id="AS08-12-2209", 
+        local_filename="apollo8_los.jpg"
+    )
+
+    # 3. Apollo 8 Earthrise Historical Photo
+    download_nasa_asset(
+        query="AS08-14-2383", 
+        target_nasa_id="AS08-14-2383", 
+        local_filename="apollo8_earthrise.jpg"
+    )
+
+    # --- MISSION 4 (APOLLO 11) ASSETS ---
+    # 4. Apollo 11 DSKY Telemetry
+    download_nasa_asset(
+        query="S69-34875", 
         target_nasa_id="S69-34875", 
         local_filename="apollo_dsky_telemetry.jpg"
     )
 
-    # 2. West Crater Reconnaissance & Landing Footprint Map (DP2)
+    # 5. West Crater Reconnaissance & Landing Footprint Map
     download_nasa_asset(
-        query="Apollo 11 Landing Site West Crater Reconnaissance", 
+        query="AS11-40-5874", 
         target_nasa_id="AS11-40-5874", 
         local_filename="west_crater_recon.jpg"
     )
 
-    # 3. Tranquility Base Coordinates Photo (Path 1 Success)
+    # 6. Tranquility Base Coordinates Photo
     download_nasa_asset(
-        query="Apollo 11 Lunar Surface Tranquility Base", 
+        query="AS11-40-5875", 
         target_nasa_id="AS11-40-5875", 
         local_filename="tranquility_coordinates.jpg"
     )
 
-    # 4. Curiosity Rover Gale Crater Satellite Map (Level 2)
+    # --- LEVEL 2 (GALE CRATER) ASSETS ---
+    # 7. Curiosity Rover Gale Crater Satellite Map
     download_nasa_asset(
-        query="Gale Crater HiRISE Target Map", 
+        query="PIA16098", 
         target_nasa_id="PIA16098", 
         local_filename="hirise_gale_crater.jpg"
     )

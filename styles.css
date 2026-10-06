@@ -44,7 +44,28 @@ body {
     position: relative;
     transition: background-image 0.4s ease-in-out;
   }
-
+  .hud-home-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background: rgba(10, 25, 47, 0.85);
+    color: #64ffda;
+    border: 1px solid #64ffda;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .hud-home-btn:hover {
+    background: #64ffda;
+    color: #0a192f;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
+  }
 /* Comic Caption Box */
 .caption-box {
   position: absolute;
