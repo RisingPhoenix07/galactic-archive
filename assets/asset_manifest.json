@@ -1,0 +1,58 @@
+[
+    {
+      "panel_id": "intro_p1",
+      "level": "Level 0: The Galactic Archive Museum (Intro)",
+      "filename": "intro_1.jpg",
+      "relative_path": "assets/panels/intro_1.jpg",
+      "compiled_prompt": "a 20-year-old female Bangladeshi space enthusiast with short dark hair, wearing a dark pilot jacket with embroidered NASA mission patches walking through a grand futuristic museum hall filled with historic rocket exhibits and glowing blue hologram displays, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "intro_p2",
+      "level": "Level 0: The Galactic Archive Museum (Intro)",
+      "filename": "intro_2.jpg",
+      "relative_path": "assets/panels/intro_2.jpg",
+      "compiled_prompt": "a 20-year-old female Bangladeshi space enthusiast with short dark hair, wearing a dark pilot jacket with embroidered NASA mission patches leaning over a vintage retro-futuristic computer terminal, screen glowing in a dark museum alcove, wide eyes, curious expression, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_entry",
+      "level": "Mission 4: Lunar Descent & Executive Alarm",
+      "filename": "m4_p4_alarm.jpg",
+      "relative_path": "assets/panels/m4_p4_alarm.jpg",
+      "compiled_prompt": "Apollo 11 Lunar Module descending towards cratered moon surface, thrusters firing, retro mechanical interior switches flashing red 1202 alarm, dynamic camera tilt, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_success",
+      "level": "Mission 4: Path 1 - Tranquility Base",
+      "filename": "m4_p4_path1_tranquility.jpg",
+      "relative_path": "assets/panels/m4_p4_path1_tranquility.jpg",
+      "compiled_prompt": "Apollo 11 Lunar Module safely landed on the lunar surface at Tranquility Base, thrusters off, American flag planted in lunar dust, majestic moon horizon, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_abort",
+      "level": "Mission 4: Path 2 - Emergency Abort",
+      "filename": "m4_p5_path2_abort.jpg",
+      "relative_path": "assets/panels/m4_p5_path2_abort.jpg",
+      "compiled_prompt": "Ascent stage of Apollo Lunar Module separating from descent stage high above lunar cratered surface, emergency abort thrusters firing wildly, dramatic smoke exhaust, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_crash",
+      "level": "Mission 4: Path 3 - Structural Impact",
+      "filename": "m4_p6_path3_tipover.jpg",
+      "relative_path": "assets/panels/m4_p6_path3_tipover.jpg",
+      "compiled_prompt": "Lunar lander crashing onto jagged lunar boulders, explosion spark debris, metal tearing sound effect text CRASH, lunar dust cloud, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_engine_fault",
+      "level": "Mission 4: Path 4 - Engine Anomaly",
+      "filename": "m4_p7_path4_explosion.jpg",
+      "relative_path": "assets/panels/m4_p7_path4_explosion.jpg",
+      "compiled_prompt": "Close-up on glowing rocket engine nozzle spitting irregular plasma flame in space vacuum, warning gauges in red zone, danger atmosphere, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    },
+    {
+      "panel_id": "m4_glitch",
+      "level": "Mission 4: Path 5 - Computer RAM Wipe",
+      "filename": "m4_p8_path5_tumble.jpg",
+      "relative_path": "assets/panels/m4_p8_path5_tumble.jpg",
+      "compiled_prompt": "Retro CRT terminal screen displaying garbled matrix noise, zero data error, offline glitch static effect in dark spacecraft interior, comic book panel, vibrant retro-futuristic graphic novel style, clean bold line art, high contrast, dramatic shadows, crisp inks, cinematic lighting, highly detailed"
+    }
+  ]

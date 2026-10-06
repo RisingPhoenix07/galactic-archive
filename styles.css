@@ -1,0 +1,185 @@
+/* ==========================================
+   GALACTIC ARCHIVE - GLOBAL & LAYOUT
+   ========================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background-color: #050b14;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.game-container {
+  width: 960px;
+  height: 540px; /* 16:9 Aspect Ratio */
+  position: relative;
+  background-color: #000000;
+  border: 4px solid #000000;
+  box-shadow: 6px 6px 0px #000000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================
+   COMIC PANEL FRAME
+   ========================================== */
+
+   .panel-box {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('assets/panels/intro_1.jpg'); /* Default initial image */
+    position: relative;
+    transition: background-image 0.4s ease-in-out;
+  }
+
+/* Comic Caption Box */
+.caption-box {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: #ffffff;
+  border: 3px solid #000000;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  box-shadow: 4px 4px 0px #000000;
+  z-index: 10;
+}
+
+/* ==========================================
+   NASA REAL DATA OVERLAY (HUD)
+   ========================================== */
+
+.hud-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 320px;
+  background: rgba(10, 25, 47, 0.88);
+  border: 2px solid #00f0ff;
+  border-radius: 4px;
+  padding: 12px;
+  color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.hud-overlay.hidden {
+  display: none;
+}
+
+.hud-header {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 8px;
+  color: #00f0ff;
+}
+
+.hud-overlay img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #00f0ff;
+  margin-bottom: 6px;
+}
+
+.hud-overlay p {
+  font-size: 11px;
+  color: #e6f1ff;
+  line-height: 1.3;
+}
+
+/* Emergency Alert Variant for HUD */
+.hud-overlay.alert {
+  border: 2px solid #ff3333;
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+}
+
+.hud-overlay.alert .hud-header {
+  color: #ff3333;
+}
+
+/* ==========================================
+   CHOICE BUTTONS & CONTROLS
+   ========================================== */
+
+.choices-container {
+  height: 85px;
+  background-color: #0a192f;
+  border-top: 4px solid #000000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 10;
+}
+
+.choice-btn {
+  flex: 1;
+  padding: 12px;
+  background-color: #00f0ff;
+  color: #000000;
+  border: 3px solid #000000;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000000;
+  transition: transform 0.1s, background-color 0.2s, color 0.2s;
+  text-align: center;
+}
+
+.choice-btn:hover {
+  background-color: #ff0055;
+  color: #ffffff;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000000;
+}
+
+.choice-btn:active {
+  transform: translate(0px, 0px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* ==========================================
+   ANIMATIONS & CRITICAL EFFECTS
+   ========================================== */
+
+/* Screen Shake for Explosions & Structural Failures */
+.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+/* Red Screen Flash for Critical Alarms */
+.alarm-flash {
+  animation: flashRed 1s infinite alternate;
+}
+
+@keyframes flashRed {
+  0% { box-shadow: inset 0 0 0px rgba(255, 0, 0, 0); }
+  100% { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.8); }
+}
