@@ -110,5 +110,26 @@ if __name__ == "__main__":
         target_nasa_id="PIA16098", 
         local_filename="hirise_gale_crater.jpg"
     )
+    # --- MISSION 2 (GEMINI 4) ASSETS ---
+    # 1. Gemini 4 Spacewalk Ed White Telemetry Image
+    download_nasa_asset(
+        query="S65-30433", 
+        target_nasa_id="S65-30433", 
+        local_filename="gemini4_eva_telemetry.jpg"
+    )
+
+    # 2. Gemini 4 Metabolics
+    download_nasa_asset(
+        query="S65-30429", 
+        target_nasa_id="S65-30429", 
+        local_filename="gemini4_metabolics.jpg"
+    )
+
+    # 3. Gemini 4 Hatch Telemetry
+    download_nasa_asset(
+        query="S65-30431", 
+        target_nasa_id="S65-30431", 
+        local_filename="gemini4_hatch_telemetry.jpg"
+    )
 
     print("=== NASA REAL DATA FETCH COMPLETE ===")

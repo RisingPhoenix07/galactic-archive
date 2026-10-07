@@ -14,8 +14,104 @@ const storyTree = {
     caption: "You discover a glowing retro-futuristic terminal in a dark alcove. Prompts flicker across the screen.",
     hud: null,
     choices: [
+      { text: "Initiate Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" },
       { text: "Initiate Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" },
       { text: "Initiate Mission 4 (Apollo 11)", nextNode: "m4_entry" }
+    ]
+  },
+  // --- MISSION 2: GEMINI 4 (FIRST US SPACEWALK) ---
+  m2_p1_hhmu: {
+    bgImage: "assets/panels/m2_p1_hhmu.jpg",
+    caption: "MISSION 2 (1965): Ed White activates Hand-Held Maneuvering Unit (HHMU)! Controlled gas bursts adjust position ~160 miles above the Pacific.",
+    hud: {
+      image: "assets/nasa_data/gemini4_eva_telemetry.jpg",
+      caption: "REAL TELEMETRY: Altitude: 160 MI | Hand-Held Thruster Pressure: 4,000 PSI | Oxygen: Nominal"
+    },
+    choices: [
+      { text: "Control EVA Thrusters & Pull Tether", nextNode: "m2_p2_tether" },
+      { text: "Exceed Gas Bursts & Entangle Tether", nextNode: "m2_p5_tether_wrap" }
+    ]
+  },
+
+  m2_p2_tether: {
+    bgImage: "assets/panels/m2_p2_tether_pull.jpg",
+    caption: "DP1-C: Hand-Over-Hand Tether Pulling! Suit metabolics entering the red zone. Heart rate 168 BPM — must reach the pod!",
+    hud: {
+      image: "assets/nasa_data/gemini4_metabolics.jpg",
+      caption: "REAL TELEMETRY: HR: 168 BPM | O2: 72% | Metabolic Load: HIGH | Suit Fatigue Warning"
+    },
+    choices: [
+      { text: "Climb Into Cockpit & Seal Hatch", nextNode: "m2_p3_hatch" },
+      { text: "Over-Exert Physical Strain (Fog Visor)", nextNode: "m2_p7_fogged" }
+    ]
+  },
+
+  m2_p3_hatch: {
+    bgImage: "assets/panels/m2_p3_hatch_bind.jpg",
+    caption: "DP3: Hatch Mechanism Binds! Sun heat warped the titanium rim. If you don't ratchet it free now, the hatch seals permanently jammed open!",
+    hud: {
+      image: "assets/nasa_data/gemini4_hatch_telemetry.jpg",
+      caption: "REAL TELEMETRY: Thermal Expansion Delta: +1.2mm | Hatch Seal: UNLOCKED | Cabin Pressure: LOW"
+    },
+    choices: [
+      { text: "Force Ratchet Lock Mechanism", nextNode: "m2_p4_success" },
+      { text: "Force Lock & Bend Hatch Dogs", nextNode: "m2_p8_pressure_leak" },
+      { text: "Initiate Emergency Retrofire Unsealed", nextNode: "m2_p6_jammed_retro" }
+    ]
+  },
+
+  // MISSION 2 OUTCOMES & PATHS
+  m2_p4_success: {
+    bgImage: "assets/panels/m2_p4_true_ending.jpg",
+    caption: "PATH 1 HISTORICAL SUCCESS: Cabin sealed and re-pressurized! 'Re-pressurized — all systems nominal — we did it!'",
+    hud: null,
+    choices: [
+      { text: "Log Gemini 4 Pioneer Badge", nextNode: "m2_p9_victory" }
+    ]
+  },
+
+  m2_p5_tether_wrap: {
+    bgImage: "assets/panels/m2_p5_tether_wrap.jpg",
+    caption: "PATH 2 FAILURE: Tether Entanglement & Spin Failure! Critical oxygen exhaustion. Capsule spinning at 12 RPM.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 2", nextNode: "m2_p1_hhmu" }
+    ]
+  },
+
+  m2_p6_jammed_retro: {
+    bgImage: "assets/panels/m2_p6_jammed_retro.jpg",
+    caption: "PATH 3 FAILURE: Jammed Latch & Retrofire! Emergency de-orbit initiated while hatch seal remained unlatched.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 2", nextNode: "m2_p1_hhmu" }
+    ]
+  },
+
+  m2_p7_fogged: {
+    bgImage: "assets/panels/m2_p7_fogged_visor.jpg",
+    caption: "PATH 4 FAILURE: Metabolic Overheat & Visor Fogging! Suit temp reached 48.7°C. Cooling system offline.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 2", nextNode: "m2_p1_hhmu" }
+    ]
+  },
+
+  m2_p8_pressure_leak: {
+    bgImage: "assets/panels/m2_p8_pressure_leak.jpg",
+    caption: "PATH 5 CRITICAL FAILURE: Bent Hatch Dogs & Cabin Pressure Leak! Pressure falling past 3.2 PSI.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 2", nextNode: "m2_p1_hhmu" }
+    ]
+  },
+
+  m2_p9_victory: {
+    bgImage: "assets/panels/m2_p9_victory_log.jpg",
+    caption: "VICTORY: Gemini 4 Flight Log & Pioneer Badge Logged! Data synced to Galactic Archive Terminal.",
+    hud: null,
+    choices: [
+      { text: "Proceed to Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" }
     ]
   },
   // --- MISSION 3: APOLLO 8 (LUNAR ORBIT & EARTHRISE) ---
