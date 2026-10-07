@@ -14,9 +14,99 @@ const storyTree = {
     caption: "You discover a glowing retro-futuristic terminal in a dark alcove. Prompts flicker across the screen.",
     hud: null,
     choices: [
+      { text: "Initiate Mission 1 (Friendship 7)", nextNode: "m1_entry" },
       { text: "Initiate Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" },
       { text: "Initiate Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" },
       { text: "Initiate Mission 4 (Apollo 11)", nextNode: "m4_entry" }
+    ]
+  },
+  // --- MISSION 1: FRIENDSHIP 7 (EXACT IMAGE FILENAMES) ---
+  m1_entry: {
+    bgImage: "assets/panels/m1p1.jpg",
+    caption: "MISSION 1 (1962): John Glenn aboard Friendship 7! Systems initialized for Low Earth Orbit manual and fly-by-wire testing.",
+    hud: {
+      image: "assets/nasa_data/mercury_launch_telemetry.jpg",
+      caption: "REAL TELEMETRY: Atlas D Booster | Orbit: 160 KM | Velocity: 17,500 MPH"
+    },
+    choices: [
+      { text: "Monitor Orbital Drift & Systems", nextNode: "m1_p2_drift" },
+      { text: "Check Telemetry Warnings", nextNode: "m1_p3_warning" }
+    ]
+  },
+
+  m1_p2_drift: {
+    bgImage: "assets/panels/M1_P2 _ Drift.jpg",
+    caption: "PATH 4 FAILURE: Uncontrolled Orbital Drift! Cabin pressure loss detected, Seal 3B breach.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 1", nextNode: "m1_entry" }
+    ]
+  },
+
+  m1_p3_warning: {
+    bgImage: "assets/panels/M1_P3_ warning.jpg",
+    caption: "DP2: SENSOR SEGMENT 51 WARNING! Telemetry indicates Landing Bag Unlatched. Jettisoning retropack could lose the heat shield!",
+    hud: {
+      image: "assets/nasa_data/mercury_landingbag_telemetry.jpg",
+      caption: "REAL TELEMETRY: Sensor Seg 51: UNLATCHED | Retropack: LOCKED | Re-entry Approaching"
+    },
+    choices: [
+      { text: "Keep Retropack Strapped On for Re-entry", nextNode: "m1_p5_fireball" },
+      { text: "Jettison Retropack Prematurely", nextNode: "m1_p4_jettison" }
+    ]
+  },
+
+  m1_p4_jettison: {
+    bgImage: "assets/panels/M1_P4 _  Jettison.jpg",
+    caption: "PATH 2 FAILURE: Retropack jettisoned! Loose heat shield exposed without retropack straps holding it in place.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 1", nextNode: "m1_entry" }
+    ]
+  },
+
+  m1_p5_fireball: {
+    bgImage: "assets/panels/M1-P5 —Fireball .jpg",
+    caption: "PATH 1 HISTORICAL SUCCESS: Fireball re-entry with retropack straps consuming in flames! Heat shield held secure.",
+    hud: null,
+    choices: [
+      { text: "Deploy Main Parachute for Splashdown", nextNode: "m1_p6_ending" }
+    ]
+  },
+
+  m1_p6_ending: {
+    bgImage: "assets/panels/M1-P6 — true ending.jpg",
+    caption: "SPLASHDOWN VICTORY: Friendship 7 safely in Atlantic waters! Recovery helicopter on station.",
+    hud: null,
+    choices: [
+      { text: "Log Achievement at Terminal", nextNode: "m1_p9_victory" }
+    ]
+  },
+
+  m1_p7_tumble: {
+    bgImage: "assets/panels/M1-P7 — Tumble .jpg",
+    caption: "FAILURE: Gyroscopic tumble! Friendship 7 capsule spinning wildly in Low Earth Orbit.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 1", nextNode: "m1_entry" }
+    ]
+  },
+
+  m1_p8_autofail: {
+    bgImage: "assets/panels/M1-P8 — Auto failure.jpg",
+    caption: "PATH 5 CRITICAL FAILURE: Auto Control Lost / Gyro Failure! Retropack controls locked in spin.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 1", nextNode: "m1_entry" }
+    ]
+  },
+
+  m1_p9_victory: {
+    bgImage: "assets/panels/M1-P9 — Victory log.jpg",
+    caption: "VICTORY: Friendship 7 Traineeship Badge Unlocked! First US Manned Orbital Flight logged into Galactic Archive.",
+    hud: null,
+    choices: [
+      { text: "Proceed to Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" }
     ]
   },
   // --- MISSION 2: GEMINI 4 (FIRST US SPACEWALK) ---

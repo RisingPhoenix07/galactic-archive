@@ -1,7 +1,7 @@
 import os
 import requests
 
-# Set target directory for real NASA telemetry and image data
+# Target directory for real NASA telemetry and historical image assets
 OUTPUT_DIR = os.path.join("assets", "nasa_data")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -10,15 +10,15 @@ NASA_API_URL = "https://images-api.nasa.gov/search"
 
 def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
     """
-    Searches NASA's public media library using concise keywords / NASA IDs
-    and downloads the primary asset to assets/nasa_data/.
+    Searches NASA's public media library using exact NASA Asset IDs
+    and downloads the primary image asset into assets/nasa_data/.
     """
     params = {
         "q": query,
         "media_type": "image"
     }
     
-    print(f"[NASA API] Searching for: '{query}' (Target ID: {target_nasa_id})...")
+    print(f"[NASA API] Querying: '{query}' (Target ID: {target_nasa_id})...")
     try:
         response = requests.get(NASA_API_URL, params=params, timeout=10)
         response.raise_for_status()
@@ -27,7 +27,7 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
         items = data.get("collection", {}).get("items", [])
         selected_url = None
         
-        # Check for specific NASA Asset ID match
+        # Exact or partial match for target NASA Asset ID
         for item in items:
             item_data = item.get("data", [{}])[0]
             nasa_id = item_data.get("nasa_id", "")
@@ -37,7 +37,7 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
                     selected_url = links[0].get("href")
                 break
         
-        # Fallback to first search result if exact ID isn't matched
+        # Fallback to top search result if exact ID isn't directly tagged
         if not selected_url and items:
             links = items[0].get("links", [])
             if links:
@@ -51,7 +51,7 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
                 f.write(img_bytes)
             print(f"[SUCCESS] Saved to {file_path}\n")
         else:
-            print(f"[WARNING] No asset found for query: '{query}'\n")
+            print(f"[WARNING] No asset found for: '{query}'\n")
 
     except Exception as e:
         print(f"[ERROR] Failed to fetch data for {query}: {e}\n")
@@ -59,77 +59,59 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
 if __name__ == "__main__":
     print("=== STARTING NASA REAL DATA ASSET FETCH ===\n")
 
-    # --- MISSION 3 (APOLLO 8) ASSETS ---
-    # 1. Apollo 8 Mission Control Telemetry Log
+    # --- MISSION 1 (FRIENDSHIP 7 / MERCURY-ATLAS 6) ---
     download_nasa_asset(
-        query="Apollo 8 Mission Control", 
-        target_nasa_id="S68-56003", 
-        local_filename="apollo8_telemetry.jpg"
+        query="Mercury 6 John Glenn", 
+        target_nasa_id="6221571", 
+        local_filename="mercury_launch_telemetry.jpg"
+    )
+    download_nasa_asset(
+        query="Friendship 7 Orbit", 
+        target_nasa_id="6221568", 
+        local_filename="mercury_orbit_telemetry.jpg"
     )
 
-    # 2. Apollo 8 Farside Target Area Mapping
-    download_nasa_asset(
-        query="AS08-12-2209", 
-        target_nasa_id="AS08-12-2209", 
-        local_filename="apollo8_los.jpg"
-    )
-
-    # 3. Apollo 8 Earthrise Historical Photo
-    download_nasa_asset(
-        query="AS08-14-2383", 
-        target_nasa_id="AS08-14-2383", 
-        local_filename="apollo8_earthrise.jpg"
-    )
-
-    # --- MISSION 4 (APOLLO 11) ASSETS ---
-    # 4. Apollo 11 DSKY Telemetry
-    download_nasa_asset(
-        query="S69-34875", 
-        target_nasa_id="S69-34875", 
-        local_filename="apollo_dsky_telemetry.jpg"
-    )
-
-    # 5. West Crater Reconnaissance & Landing Footprint Map
-    download_nasa_asset(
-        query="AS11-40-5874", 
-        target_nasa_id="AS11-40-5874", 
-        local_filename="west_crater_recon.jpg"
-    )
-
-    # 6. Tranquility Base Coordinates Photo
-    download_nasa_asset(
-        query="AS11-40-5875", 
-        target_nasa_id="AS11-40-5875", 
-        local_filename="tranquility_coordinates.jpg"
-    )
-
-    # --- LEVEL 2 (GALE CRATER) ASSETS ---
-    # 7. Curiosity Rover Gale Crater Satellite Map
-    download_nasa_asset(
-        query="PIA16098", 
-        target_nasa_id="PIA16098", 
-        local_filename="hirise_gale_crater.jpg"
-    )
-    # --- MISSION 2 (GEMINI 4) ASSETS ---
-    # 1. Gemini 4 Spacewalk Ed White Telemetry Image
+    # --- MISSION 2 (GEMINI 4 EVA) ---
     download_nasa_asset(
         query="S65-30433", 
         target_nasa_id="S65-30433", 
         local_filename="gemini4_eva_telemetry.jpg"
     )
-
-    # 2. Gemini 4 Metabolics
     download_nasa_asset(
         query="S65-30429", 
         target_nasa_id="S65-30429", 
         local_filename="gemini4_metabolics.jpg"
     )
 
-    # 3. Gemini 4 Hatch Telemetry
+    # --- MISSION 3 (APOLLO 8) ---
     download_nasa_asset(
-        query="S65-30431", 
-        target_nasa_id="S65-30431", 
-        local_filename="gemini4_hatch_telemetry.jpg"
+        query="Apollo 8 Mission Control", 
+        target_nasa_id="S68-56003", 
+        local_filename="apollo8_telemetry.jpg"
+    )
+    download_nasa_asset(
+        query="AS08-14-2383", 
+        target_nasa_id="AS08-14-2383", 
+        local_filename="apollo8_earthrise.jpg"
+    )
+
+    # --- MISSION 4 (APOLLO 11) ---
+    download_nasa_asset(
+        query="S69-34875", 
+        target_nasa_id="S69-34875", 
+        local_filename="apollo_dsky_telemetry.jpg"
+    )
+    download_nasa_asset(
+        query="AS11-40-5875", 
+        target_nasa_id="AS11-40-5875", 
+        local_filename="tranquility_coordinates.jpg"
+    )
+
+    # --- LEVEL 2 (GALE CRATER) ---
+    download_nasa_asset(
+        query="PIA16098", 
+        target_nasa_id="PIA16098", 
+        local_filename="hirise_gale_crater.jpg"
     )
 
     print("=== NASA REAL DATA FETCH COMPLETE ===")
