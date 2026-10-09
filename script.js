@@ -782,22 +782,60 @@ function renderNode(nodeKey) {
     return;
   }
 
-  // Auto-save current progress
+  // Auto-save session
   saveCurrentSession(nodeKey);
 
-  // 1. Render Comic Panel Background Image
   const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
-  if (panelBox && node.bgImage) {
-    panelBox.style.backgroundImage = `url('${node.bgImage}')`;
+
+  // --- 1. VISUAL WARNING, SHAKE & GLOW DETECTOR ---
+  if (panelBox) {
+    // Reset all visual state classes
+    panelBox.classList.remove("shake", "alarm-flash", "success-glow");
+
+    // Detect Failure / Alarm Nodes
+    const isFailureOrDanger = node.shake || 
+      nodeKey.includes("fail") || 
+      nodeKey.includes("crash") || 
+      nodeKey.includes("alarm") || 
+      nodeKey.includes("warning") || 
+      nodeKey.includes("drift") || 
+      nodeKey.includes("storm") || 
+      nodeKey.includes("breach") ||
+      nodeKey.includes("freeze") ||
+      nodeKey.includes("blackout") ||
+      nodeKey.includes("tumble") ||
+      nodeKey.includes("skipout") ||
+      nodeKey.includes("impact") ||
+      (node.caption && (node.caption.includes("FAILURE") || node.caption.includes("CRITICAL")));
+
+    // Detect Historical Success / Victory Nodes
+    const isSuccessNode = 
+      nodeKey.includes("success") || 
+      nodeKey.includes("victory") || 
+      nodeKey.includes("ending") || 
+      nodeKey === "victory" ||
+      (node.caption && (node.caption.includes("SUCCESS") || node.caption.includes("VICTORY")));
+
+    if (isFailureOrDanger) {
+      void panelBox.offsetWidth; // Force DOM reflow
+      panelBox.classList.add("shake", "alarm-flash");
+    } else if (isSuccessNode) {
+      void panelBox.offsetWidth; // Force DOM reflow
+      panelBox.classList.add("success-glow");
+    }
+
+    if (node.bgImage) {
+      panelBox.style.backgroundImage = `url('${node.bgImage}')`;
+    }
   }
 
-  // 2. Render Caption
+  // --- 2. CAPTION RENDER ---
   const captionBox = document.getElementById("caption-box") || document.getElementById("caption-text");
   if (captionBox) {
     captionBox.textContent = node.caption || "";
   }
 
-  // 3. Render HUD Overlay
+  // --- 3. HUD OVERLAY ---
   const hudOverlay = document.getElementById("hud-overlay") || document.getElementById("nasa-hud");
   const hudImg = document.getElementById("hud-img") || document.getElementById("hud-image");
   const hudCaption = document.getElementById("hud-caption");
@@ -805,14 +843,22 @@ function renderNode(nodeKey) {
   if (hudOverlay) {
     if (node.hud) {
       hudOverlay.classList.remove("hidden");
+      
+      if (nodeKey.includes("fail") || nodeKey.includes("crash") || nodeKey.includes("alarm") || nodeKey.includes("breach")) {
+        hudOverlay.classList.add("alert");
+      } else {
+        hudOverlay.classList.remove("alert");
+      }
+
       if (hudImg) hudImg.src = node.hud.image || node.hud.img || "";
       if (hudCaption) hudCaption.textContent = node.hud.caption || "";
     } else {
       hudOverlay.classList.add("hidden");
+      hudOverlay.classList.remove("alert");
     }
   }
 
-  // 4. Render Action Buttons
+  // --- 4. ACTION BUTTONS ---
   const choicesContainer = document.getElementById("choices-container");
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
@@ -827,7 +873,7 @@ function renderNode(nodeKey) {
     }
   }
 
-  // 5. Automatic Badge Unlock Checker
+  // --- 5. BADGE UNLOCK CHECKER ---
   if (nodeKey === "m1_p9_victory" || nodeKey === "m1_victory") {
     unlockAchievement("m1_pioneer");
   } else if (nodeKey === "m2_p9_victory" || nodeKey === "m2_p4_success" || nodeKey === "m2_victory") {
@@ -842,10 +888,8 @@ function renderNode(nodeKey) {
     unlockAchievement("m6_pioneer");
   }
 
-  // 6. Refresh persistent badges in UI
   renderAchievementBadges();
 }
-
 // Initializing application state on load
 document.addEventListener("DOMContentLoaded", () => {
   renderAchievementBadges();
