@@ -10,62 +10,222 @@
 }
 
 body {
-  background-color: #050b14;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  color: #ffffff;
-  overflow: hidden;
+  background-color: #050b14; /* */
+  display: flex; /*[cite: 1] */
+  justify-content: center; /*[cite: 1] */
+  align-items: center; /*[cite: 1] */
+  min-height: 100vh; /*[cite: 1] */
+  color: #ffffff; /*[cite: 1] */
+  overflow: hidden; /*[cite: 1] */
+  padding: 16px;
 }
 
 .game-container {
-  width: 960px;
-  height: 540px; /* 16:9 Aspect Ratio */
+  /* Dynamic 16:9 scaling */
+  width: min(96vw, 1200px);
+  aspect-ratio: 16 / 9;
+  max-height: 92vh;
+  
+  position: relative; /*[cite: 1] */
+  background-color: #000000; /*[cite: 1] */
+  border: 4px solid #000000; /*[cite: 1] */
+  box-shadow: 6px 6px 0px #000000; /*[cite: 1] */
+  overflow: hidden; /*[cite: 1] */
+  display: flex; /*[cite: 1] */
+  flex-direction: column; /*[cite: 1] */
+}
+/* ==========================================
+   COMIC PANEL FRAME (Dynamic Image Fitting)
+   ========================================== */
+
+.panel-box {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  
+  /* Automatically scales & centers non-16:9 images without distortion */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
   position: relative;
-  background-color: #000000;
-  border: 4px solid #000000;
-  box-shadow: 6px 6px 0px #000000;
-  overflow: hidden;
+  transition: background-image 0.4s ease-in-out;
+}
+
+/* ==========================================
+   TITLE / LANDING SCREEN (START PAGE)
+   ========================================== */
+
+.title-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a192f 0%, #020c1b 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2000;
+}
+
+.title-content {
+  background: rgba(10, 25, 47, 0.9);
+  border: 2px solid #64ffda;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(100, 255, 218, 0.3);
+  max-width: 450px;
+  width: 90%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.game-cover-icon {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #64ffda;
+  margin-bottom: 16px;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+}
+
+.game-title {
+  font-family: 'Courier New', monospace;
+  font-size: 2.2rem;
+  color: #64ffda;
+  margin: 0 0 8px 0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.game-subtitle {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #8892b0;
+  margin-bottom: 24px;
+}
+
+/* Title Screen Menu Buttons Container */
+.title-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Start New Game Button */
+.start-btn {
+  background: #64ffda;
+  color: #0a192f;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+}
+
+.start-btn:hover {
+  background: #ffffff;
+  color: #0a192f;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+  transform: scale(1.03);
+}
+
+/* Restore Session Button */
+.start-btn.restore-btn {
+  background: transparent;
+  color: #00f0ff;
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.start-btn.restore-btn:hover {
+  background: #00f0ff;
+  color: #0a192f;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.7);
+}
+
+.start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Utility Helper Class to hide/reveal screens */
+.hidden {
+  display: none !important;
+}
+/* ==========================================
+   TOP HUD BAR & HOME BUTTON
+   ========================================== */
+
+#hud-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none; /* Allows clicks to pass through empty space */
+}
+
+#hud-bar * {
+  pointer-events: auto; /* Re-enable pointer events for buttons and badges */
+}
+
+.hud-home-btn {
+  background: rgba(10, 25, 47, 0.85);
+  color: #64ffda;
+  border: 1px solid #64ffda;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+}
+
+.hud-home-btn:hover {
+  background: #64ffda;
+  color: #0a192f;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
+}
+.hud-overlay img {
+  width: 100%;
+  height: 140px;          /* Fixed height for HUD image container */
+  object-fit: cover;      /* Crops uneven NASA image dimensions cleanly */
+  border: 1px solid #00f0ff;
+  margin-bottom: 6px;
+  display: block;
 }
 
 /* ==========================================
    COMIC PANEL FRAME
    ========================================== */
 
-   .panel-box {
-    flex: 1;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url('assets/panels/intro_1.jpg'); /* Default initial image */
-    position: relative;
-    transition: background-image 0.4s ease-in-out;
-  }
-  .hud-home-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 1000;
-    background: rgba(10, 25, 47, 0.85);
-    color: #64ffda;
-    border: 1px solid #64ffda;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .hud-home-btn:hover {
-    background: #64ffda;
-    color: #0a192f;
-    box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
-  }
+.panel-box {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('assets/panels/intro_1.jpg'); /* Default initial image */
+  position: relative;
+  transition: background-image 0.4s ease-in-out;
+}
+
 /* Comic Caption Box */
 .caption-box {
   position: absolute;
@@ -88,7 +248,7 @@ body {
 
 .hud-overlay {
   position: absolute;
-  top: 16px;
+  top: 55px; /* Offset below HUD bar */
   right: 16px;
   width: 320px;
   background: rgba(10, 25, 47, 0.88);
@@ -99,10 +259,6 @@ body {
   box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
   z-index: 10;
   transition: all 0.3s ease;
-}
-
-.hud-overlay.hidden {
-  display: none;
 }
 
 .hud-header {
@@ -180,8 +336,85 @@ body {
 }
 
 /* ==========================================
-   ANIMATIONS & CRITICAL EFFECTS
+   ACHIEVEMENTS & BADGES
    ========================================== */
+
+.badge-container {
+  display: flex;
+  gap: 10px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+}
+
+.badge-item.unlocked {
+  border: 1px solid #64ffda;
+  color: #64ffda;
+  background: rgba(100, 255, 218, 0.1);
+}
+
+.badge-item.locked {
+  border: 1px dashed #48566e;
+  color: #48566e;
+  opacity: 0.6;
+}
+
+/* Achievement Toast Notification */
+.achievement-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(10, 25, 47, 0.95);
+  border: 2px solid #64ffda;
+  color: #64ffda;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+  z-index: 2000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.toast-title {
+  font-size: 0.8em;
+  color: #ffb703;
+  font-weight: bold;
+}
+
+.toast-name {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 4px 0;
+}
+
+.toast-desc {
+  font-size: 0.85em;
+  color: #8892b0;
+}
+
+/* ==========================================
+   ANIMATIONS & UTILITIES
+   ========================================== */
+
+/* Utility class to hide elements */
+.hidden {
+  display: none !important;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
 /* Screen Shake for Explosions & Structural Failures */
 .shake {

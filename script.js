@@ -405,7 +405,155 @@ function goToMainMenu() {
     renderNode("intro_p1"); // Or whatever your opening/main menu node ID is
   }
 }
+// ==========================================
+// 2. SESSION SAVING & RESTORATION
+// ==========================================
+
+function saveCurrentSession(nodeKey) {
+  localStorage.setItem("galactic_archive_saved_node", nodeKey);
+}
+
+function getSavedSession() {
+  return localStorage.getItem("galactic_archive_saved_node");
+}
+
+// Check saved state to enable/disable "RESET SESSION" button on title page
+function updateTitleMenuButtons() {
+  const resetBtn = document.getElementById("reset-btn") || document.getElementById("restore-btn");
+  const savedNode = getSavedSession();
+  
+  if (resetBtn) {
+    if (savedNode) {
+      resetBtn.disabled = false;
+      resetBtn.textContent = "RESET SESSION";
+    } else {
+      resetBtn.disabled = true;
+      resetBtn.textContent = "NO SAVED SESSION";
+    }
+  }
+}
+function startNewGame() {
+  const saved = getSavedSession();
+  if (saved && !confirm("Starting a new game will overwrite your previous session progress. Continue?")) {
+    return;
+  }
+  showGameInterface();
+  renderNode("intro_p1");
+}
+
+// Option 2: Reset Session (Purges achievements, clears session, and starts from the very beginning)
+function resetSession() {
+  if (!confirm("This will clear all unlocked achievements and restart your progress from the beginning. Continue?")) {
+    return;
+  }
+
+  // 1. Remove all unlocked achievements & save data from LocalStorage
+  localStorage.removeItem("galactic_archive_achievements");
+  localStorage.removeItem("galactic_archive_saved_node");
+
+  // 2. Re-render empty/locked badge panel
+  if (typeof renderAchievementBadges === "function") {
+    renderAchievementBadges();
+  }
+
+  // 3. Update title screen buttons state
+  updateTitleMenuButtons();
+
+  // 4. Switch view and start from the very beginning
+  showGameInterface();
+  renderNode("intro_p1");
+}
+
+function showGameInterface() {
+  const titleScreen = document.getElementById("title-screen");
+  const hudBar = document.getElementById("hud-bar");
+  const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
+  const choicesContainer = document.getElementById("choices-container");
+
+  if (titleScreen) titleScreen.classList.add("hidden");
+  if (hudBar) hudBar.classList.remove("hidden");
+  if (panelBox) panelBox.classList.remove("hidden");
+  if (choicesContainer) choicesContainer.classList.remove("hidden");
+}
+// ==========================================
+// 1. ACHIEVEMENTS DATA DEFINITION
+// ==========================================
+const ACHIEVEMENTS = {
+  m1_pioneer: { 
+    id: "m1_pioneer", 
+    title: "Friendship 7 Pioneer", 
+    desc: "Successfully completed Mercury-Atlas 6 flight." 
+  },
+  m2_pioneer: { 
+    id: "m2_pioneer", 
+    title: "Gemini 4 Spacewalker", 
+    desc: "Executed the first US EVA and sealed the hatch." 
+  },
+  m3_pioneer: { 
+    id: "m3_pioneer", 
+    title: "Apollo 8 Earthrise", 
+    desc: "Navigated lunar orbit and witnessed Earthrise." 
+  },
+  m4_pioneer: { 
+    id: "m4_pioneer", 
+    title: "Tranquility Base Commander", 
+    desc: "Landed Apollo 11 at West Crater successfully." 
+  }
+};
+// Retrieve unlocked achievements from LocalStorage
+function getUnlockedAchievements() {
+  const data = localStorage.getItem("galactic_archive_achievements");
+  return data ? JSON.parse(data) : [];
+}
+
+// Unlock a badge and persist to LocalStorage
+function unlockAchievement(achievementId) {
+  let unlocked = getUnlockedAchievements();
+  if (!unlocked.includes(achievementId)) {
+    unlocked.push(achievementId);
+    localStorage.setItem("galactic_archive_achievements", JSON.stringify(unlocked));
+    showAchievementPopup(ACHIEVEMENTS[achievementId]);
+    renderAchievementBadges();
+  }
+}
+
+// Display lightweight notification toast when unlocked
+function showAchievementPopup(badge) {
+  const toast = document.createElement("div");
+  toast.className = "achievement-toast";
+  toast.innerHTML = `
+    <div class="toast-title">🏆 ACHIEVEMENT UNLOCKED!</div>
+    <div class="toast-name">${badge.title}</div>
+    <div class="toast-desc">${badge.desc}</div>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+function renderAchievementBadges() {
+  const panel = document.getElementById("achievement-panel");
+  if (!panel) return;
+
+  const unlocked = getUnlockedAchievements();
+  panel.innerHTML = ""; // Clear existing
+
+  Object.values(ACHIEVEMENTS).forEach(badge => {
+    const isUnlocked = unlocked.includes(badge.id);
+    const badgeEl = document.createElement("div");
+    badgeEl.className = `badge-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+    badgeEl.title = `${badge.title}: ${badge.desc}`;
+    badgeEl.innerHTML = `
+      <span class="badge-icon">${isUnlocked ? '🏅' : '🔒'}</span>
+      <span class="badge-title">${badge.title}</span>
+    `;
+    panel.appendChild(badgeEl);
+  });
+}
+
+// Initialize badges on page load
+document.addEventListener("DOMContentLoaded", renderAchievementBadges);
 // --- CORE ENGINE RENDERER ---
+// --- RENDER NODE FUNCTION ---
 function renderNode(nodeKey) {
   const node = storyTree[nodeKey];
   
@@ -416,14 +564,14 @@ function renderNode(nodeKey) {
 
   // 1. Render Comic Panel Background Image
   const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
-  if (panelBox) {
+  if (panelBox && node.bgImage) {
     panelBox.style.backgroundImage = `url('${node.bgImage}')`;
   }
 
   // 2. Render Caption
   const captionBox = document.getElementById("caption-box") || document.getElementById("caption-text");
   if (captionBox) {
-    captionBox.textContent = node.caption;
+    captionBox.textContent = node.caption || "";
   }
 
   // 3. Render HUD Overlay
@@ -434,8 +582,8 @@ function renderNode(nodeKey) {
   if (hudOverlay) {
     if (node.hud) {
       hudOverlay.classList.remove("hidden");
-      if (hudImg) hudImg.src = node.hud.image;
-      if (hudCaption) hudCaption.textContent = node.hud.caption;
+      if (hudImg) hudImg.src = node.hud.image || node.hud.img || "";
+      if (hudCaption) hudCaption.textContent = node.hud.caption || "";
     } else {
       hudOverlay.classList.add("hidden");
     }
@@ -445,17 +593,58 @@ function renderNode(nodeKey) {
   const choicesContainer = document.getElementById("choices-container");
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
-    node.choices.forEach(choice => {
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = choice.text;
-      btn.onclick = () => renderNode(choice.nextNode);
-      choicesContainer.appendChild(btn);
-    });
+    if (node.choices && node.choices.length > 0) {
+      node.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = choice.text;
+        btn.onclick = () => renderNode(choice.nextNode);
+        choicesContainer.appendChild(btn);
+      });
+    }
+  }
+
+  // 5. AUTOMATIC BADGE UNLOCK CHECKER ---
+  if (nodeKey === "m1_p9_victory" || nodeKey === "m1_victory") {
+    unlockAchievement("m1_pioneer");
+  } else if (nodeKey === "m2_p9_victory" || nodeKey === "m2_p4_success" || nodeKey === "m2_victory") {
+    unlockAchievement("m2_pioneer");
+  } else if (nodeKey === "m3_p9_victory" || nodeKey === "m3_victory") {
+    unlockAchievement("m3_pioneer");
+  } else if (
+    nodeKey === "m4_p9_victory" || 
+    nodeKey === "m4_victory" || 
+    nodeKey === "m4_success" || 
+    nodeKey === "victory"
+  ) {
+    unlockAchievement("m4_pioneer");
+  }
+
+  // 6. Refresh persistent badges in UI
+  renderAchievementBadges();
+}
+// Triggered when returning to main menu
+function goToMainMenu() {
+  if (confirm("Return to the title screen? Progress in this session will be saved.")) {
+    // Show Title Screen
+    document.getElementById("title-screen").classList.remove("hidden");
+
+    // Hide Gameplay Screens
+    document.getElementById("hud-bar").classList.add("hidden");
+    document.getElementById("panel-box").classList.add("hidden");
+    document.getElementById("choices-container").classList.add("hidden");
   }
 }
+// Triggered when clicking "START GAME" on the front cover page
+function startGame() {
+  // Hide Title Screen
+  document.getElementById("title-screen").classList.add("hidden");
 
-// Boot Engine on Load
-document.addEventListener("DOMContentLoaded", () => {
-  renderNode("intro_p1");
-});
+  // Reveal Top HUD Bar & Main Game Panels
+  document.getElementById("hud-bar").classList.remove("hidden");
+  document.getElementById("panel-box").classList.remove("hidden");
+  document.getElementById("choices-container").classList.remove("hidden");
+
+  // Load the initial game node (MUST match storyTree key!)
+  renderNode("intro_p1"); 
+}
