@@ -13,14 +13,26 @@ const storyTree = {
   },
   intro_p2: {
     bgImage: "assets/panels/intro_2.jpg",
-    caption: "You discover a glowing retro-futuristic terminal in a dark alcove. Prompts flicker across the screen.",
+    caption: "ACT I TERMINAL: Select an archive log from the Historic Pioneer Era (1960s - 1970s).",
     hud: null,
     choices: [
-      { text: "Initiate Mission 1 (Friendship 7)", nextNode: "m1_entry" },
-      { text: "Initiate Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" },
-      { text: "Initiate Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" },
-      { text: "Initiate Mission 4 (Apollo 11)", nextNode: "m4_entry" },
-      { text: "Initiate Mission 5 (Artemis Gateway)", nextNode: "m5_entry" }
+      { text: "Mission 1: Friendship 7 (1962)", nextNode: "m1_entry" },
+      { text: "Mission 2: Gemini 4 EVA (1965)", nextNode: "m2_p1_hhmu" },
+      { text: "Mission 3: Apollo 8 Earthrise (1968)", nextNode: "m3_p1_mcc" },
+      { text: "Mission 4: Apollo 11 Landing (1969)", nextNode: "m4_entry" },
+      { text: "➡️ NEXT PAGE: Act II Deep Space Missions", nextNode: "intro_p3" }
+    ]
+  },
+
+  intro_p3: {
+    bgImage: "assets/panels/intro_2.jpg",
+    caption: "ACT II TERMINAL: Select an archive log from the Modern Deep Space & Artemis Era.",
+    hud: null,
+    choices: [
+      { text: "Mission 5: Artemis Gateway Orbit (2026)", nextNode: "m5_entry" },
+      { text: "Mission 6: Mars Chryse Landing (2042)", nextNode: "m6_entry" },
+      { text: "⬅️ PREVIOUS PAGE: Act I Historic Era", nextNode: "intro_p2" },
+      { text: "🏠 Return to Main Museum Hub", nextNode: "intro_p1" }
     ]
   },
 
@@ -408,7 +420,7 @@ const storyTree = {
     bgImage: "assets/panels/m5_p1_entry.jpg",
     caption: "MISSION 5 (2026): Flight Specialist Tahsina Chowdhury aboard Orion! Approaching the Lunar Gateway station. Systems nominal, preparing for final orbital lock.",
     hud: {
-      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      image: "assets/nasa_data/orion_gateway_telemetry.jpg",
       caption: "REAL TELEMETRY: Alt: 112.4 KM | Vel: 1.62 KM/S | Orbit Insertion T-00:12:04"
     },
     choices: [
@@ -421,7 +433,7 @@ const storyTree = {
     bgImage: "assets/panels/m5_p2_guidance.jpg",
     caption: "DP2: TRAJECTORY & GUIDANCE ALERT! Gyro slip detected (+12.4° off-nominal). Flight computer requests immediate override command.",
     hud: {
-      image: "assets/nasa_data/apollo_dsky_telemetry.jpg",
+      image: "assets/nasa_data/orion_guidance_telemetry.jpg",
       caption: "REAL TELEMETRY: Guidance Drift: 0.87 m/s² | Oxidizer: 42% | Gyro Lock: WARN"
     },
     choices: [
@@ -494,6 +506,101 @@ const storyTree = {
     caption: "HISTORICAL VICTORY: Mission 005 Passed! Achievement badge successfully saved to Galactic Archive terminal.",
     hud: null,
     choices: [
+      { text: "Proceed to Mission 6 (Mars Descent)", nextNode: "m6_entry" }
+    ]
+  },
+
+  // --- MISSION 6: MARS DESCENT & SURFACE EXPLORATION ---
+  m6_entry: {
+    bgImage: "assets/panels/m6_p1_entry.jpg",
+    caption: "MISSION 6 (2042): Mars Atmospheric Descent! Entering thin Martian air over Valles Marineris canyons. Heat shield glowing at 1650°C.",
+    hud: {
+      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      caption: "REAL TELEMETRY: Altitude: 18.4 KM | Velocity: 4.2 KM/S | Heat Shield: 1653°C - CRITICAL"
+    },
+    choices: [
+      { text: "Activate Terrain Avoidance Radar & Sky Crane", nextNode: "m6_p2_guidance" },
+      { text: "Deploy Parachute Early without Pitch Trim", nextNode: "m6_p6_shield_failure" }
+    ]
+  },
+
+  m6_p2_guidance: {
+    bgImage: "assets/panels/m6_p2_guidance.jpg",
+    caption: "DP2: TERRAIN RADAR ALERT! Boulder field detected at Chryse Planitia landing footprint (87% hazard rate). Sky Crane thrust vectoring requested.",
+    hud: {
+      image: "assets/nasa_data/west_crater_recon.jpg",
+      caption: "REAL TELEMETRY: Altitude: 122m | Sky Crane Power: 30% | Radar Lock: ACTIVE"
+    },
+    choices: [
+      { text: "Adjust Sky Crane Thrust to Clear Boulder Grid", nextNode: "m6_p3_dust_storm" },
+      { text: "Lock Thrusters on Auto-Descent Path", nextNode: "m6_p5_boulder_crash" }
+    ]
+  },
+
+  m6_p3_dust_storm: {
+    bgImage: "assets/panels/m6_p3_dust_storm.jpg",
+    caption: "DP3: ATMOSPHERIC BREACH & DUST STORM! Massive dust storm enveloping habitat zone. Sand intake filter clogged, cabin pressure leaking.",
+    hud: {
+      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      caption: "REAL TELEMETRY: O2: 12% - CRITICAL | Cabin Press: 0.62 ATM | Scrubber: OFFLINE"
+    },
+    choices: [
+      { text: "Purge Secondary Scrubber & Deploy Ground Drill", nextNode: "m6_p4_success" },
+      { text: "Reroute Main Power to Primary Intakes", nextNode: "m6_p7_habitat_freeze" },
+      { text: "Override Comm Array in Dust Interference", nextNode: "m6_p8_comms_blackout" }
+    ]
+  },
+
+  m6_p4_success: {
+    bgImage: "assets/panels/m6_p4_true_ending.jpg",
+    caption: "PATH 1 HISTORICAL SUCCESS: Touchdown at Chryse Planitia! Sample collection probe deployed on red Martian soil.",
+    hud: null,
+    choices: [
+      { text: "Log Mission 006 Badge to Archive", nextNode: "m6_p9_victory" }
+    ]
+  },
+
+  m6_p5_boulder_crash: {
+    bgImage: "assets/panels/m6_p5_boulder_crash.jpg",
+    caption: "PATH 2 FAILURE: Structural Crash! Lander struck a massive Martian boulder at 52° tilt angle. Hull integrity breached.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 6", nextNode: "m6_entry" }
+    ]
+  },
+
+  m6_p6_shield_failure: {
+    bgImage: "assets/panels/m6_p6_shield_failure.jpg",
+    caption: "PATH 3 FAILURE: Critical Thermal Failure! Unaligned heat shield disintegrated under Mach 18.7 plasma shear.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 6", nextNode: "m6_entry" }
+    ]
+  },
+
+  m6_p7_habitat_freeze: {
+    bgImage: "assets/panels/m6_p7_habitat_freeze.jpg",
+    caption: "PATH 4 FAILURE: Habitat Freeze! Filter clog tripped primary power grid. Temperatures plunged below freezing.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 6", nextNode: "m6_entry" }
+    ]
+  },
+
+  m6_p8_comms_blackout: {
+    bgImage: "assets/panels/m6_p8_comms_blackout.jpg",
+    caption: "PATH 5 FAILURE: Signal Blackout & Orbital Loss! Surface transmitter destroyed during dust storm overload.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 6", nextNode: "m6_entry" }
+    ]
+  },
+
+  m6_p9_victory: {
+    bgImage: "assets/panels/m6_p9_victory_log.jpg",
+    caption: "HISTORICAL VICTORY: Mission 006 Passed! Excellence Badge logged to Galactic Archive Museum terminal.",
+    hud: null,
+    choices: [
       { text: "Return to Museum Terminal", nextNode: "intro_p1" }
     ]
   }
@@ -527,16 +634,14 @@ const ACHIEVEMENTS = {
     id: "m5_pioneer", 
     title: "Artemis Gateway Commander", 
     desc: "Successfully navigated Lunar Gateway orbit and flare radiation." 
+  },
+  m6_pioneer: { 
+    id: "m6_pioneer", 
+    title: "Mars Chryse Commander", 
+    desc: "Successfully executed Mars descent and Chryse Planitia landing." 
   }
 };
-function startNewGame() {
-  const saved = getSavedSession();
-  if (saved && !confirm("Starting a new game will overwrite your previous session progress. Continue?")) {
-    return;
-  }
-  showGameInterface();
-  renderNode("intro_p1");
-}
+
 function getUnlockedAchievements() {
   const data = localStorage.getItem("galactic_archive_achievements");
   return data ? JSON.parse(data) : [];
@@ -609,6 +714,15 @@ function updateTitleMenuButtons() {
       resetBtn.textContent = "NO SAVED SESSION";
     }
   }
+}
+
+function startNewGame() {
+  const saved = getSavedSession();
+  if (saved && !confirm("Starting a new game will overwrite your previous session progress. Continue?")) {
+    return;
+  }
+  showGameInterface();
+  renderNode("intro_p1");
 }
 
 function startGame() {
@@ -724,6 +838,8 @@ function renderNode(nodeKey) {
     unlockAchievement("m4_pioneer");
   } else if (nodeKey === "m5_p9_victory" || nodeKey === "m5_p4_success") {
     unlockAchievement("m5_pioneer");
+  } else if (nodeKey === "m6_p9_victory" || nodeKey === "m6_p4_success") {
+    unlockAchievement("m6_pioneer");
   }
 
   // 6. Refresh persistent badges in UI

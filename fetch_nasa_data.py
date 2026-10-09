@@ -58,6 +58,7 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
 
 if __name__ == "__main__":
     print("=== STARTING NASA REAL DATA ASSET FETCH ===\n")
+    
     # --- MISSION 5 (ARTEMIS / ORION GATEWAY) ---
     download_nasa_asset(
         query="Orion Spacecraft Moon Artemis 1", 
@@ -123,6 +124,18 @@ if __name__ == "__main__":
         query="PIA16098", 
         target_nasa_id="PIA16098", 
         local_filename="hirise_gale_crater.jpg"
+    )
+
+    # --- MISSION 6 (MARS DESCENT & SURFACE) ---
+    download_nasa_asset(
+        query="Mars Gale Crater HiRISE", 
+        target_nasa_id="PIA16105", 
+        local_filename="hirise_gale_crater.jpg"
+    )
+    download_nasa_asset(
+        query="Viking 1 Lander Chryse Planitia surface", 
+        target_nasa_id="PIA00563", 
+        local_filename="viking_chryse_telemetry.jpg"
     )
 
     print("=== NASA REAL DATA FETCH COMPLETE ===")
