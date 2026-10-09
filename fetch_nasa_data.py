@@ -58,6 +58,17 @@ def download_nasa_asset(query: str, target_nasa_id: str, local_filename: str):
 
 if __name__ == "__main__":
     print("=== STARTING NASA REAL DATA ASSET FETCH ===\n")
+    # --- MISSION 5 (ARTEMIS / ORION GATEWAY) ---
+    download_nasa_asset(
+        query="Orion Spacecraft Moon Artemis 1", 
+        target_nasa_id="artemis1_orion_lunar", 
+        local_filename="orion_gateway_telemetry.jpg"
+    )
+    download_nasa_asset(
+        query="Artemis Orion Spacecraft Deep Space", 
+        target_nasa_id="orion_orbit_telemetry", 
+        local_filename="orion_guidance_telemetry.jpg"
+    )
 
     # --- MISSION 1 (FRIENDSHIP 7 / MERCURY-ATLAS 6) ---
     download_nasa_asset(

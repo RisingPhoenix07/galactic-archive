@@ -1,9 +1,11 @@
-// --- MASTER GAME STORY TREE ---
+// ==========================================
+// 1. MASTER GAME STORY TREE
+// ==========================================
 const storyTree = {
   // LEVEL 0: THE GALACTIC ARCHIVE MUSEUM
   intro_p1: {
     bgImage: "assets/panels/intro_1.jpg",
-    caption: "The year is 2026. Inside the Galactic Archive Museum, history isn't just stored... it's lived.",
+    caption: "The year is 2036. Inside the Galactic Archive Museum, history isn't just stored... it's lived.",
     hud: null,
     choices: [
       { text: "Approach Terminal Alcove", nextNode: "intro_p2" }
@@ -17,10 +19,12 @@ const storyTree = {
       { text: "Initiate Mission 1 (Friendship 7)", nextNode: "m1_entry" },
       { text: "Initiate Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" },
       { text: "Initiate Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" },
-      { text: "Initiate Mission 4 (Apollo 11)", nextNode: "m4_entry" }
+      { text: "Initiate Mission 4 (Apollo 11)", nextNode: "m4_entry" },
+      { text: "Initiate Mission 5 (Artemis Gateway)", nextNode: "m5_entry" }
     ]
   },
-  // --- MISSION 1: FRIENDSHIP 7 (EXACT IMAGE FILENAMES) ---
+
+  // --- MISSION 1: FRIENDSHIP 7 ---
   m1_entry: {
     bgImage: "assets/panels/m1p1.jpg",
     caption: "MISSION 1 (1962): John Glenn aboard Friendship 7! Systems initialized for Low Earth Orbit manual and fly-by-wire testing.",
@@ -109,7 +113,8 @@ const storyTree = {
       { text: "Proceed to Mission 2 (Gemini 4)", nextNode: "m2_p1_hhmu" }
     ]
   },
-  // --- MISSION 2: GEMINI 4 (FIRST US SPACEWALK) ---
+
+  // --- MISSION 2: GEMINI 4 ---
   m2_p1_hhmu: {
     bgImage: "assets/panels/m2_p1_hhmu.jpg",
     caption: "MISSION 2 (1965): Ed White activates Hand-Held Maneuvering Unit (HHMU)! Controlled gas bursts adjust position ~160 miles above the Pacific.",
@@ -150,7 +155,6 @@ const storyTree = {
     ]
   },
 
-  // MISSION 2 OUTCOMES & PATHS
   m2_p4_success: {
     bgImage: "assets/panels/m2_p4_true_ending.jpg",
     caption: "PATH 1 HISTORICAL SUCCESS: Cabin sealed and re-pressurized! 'Re-pressurized — all systems nominal — we did it!'",
@@ -204,7 +208,8 @@ const storyTree = {
       { text: "Proceed to Mission 3 (Apollo 8)", nextNode: "m3_p1_mcc" }
     ]
   },
-  // --- MISSION 3: APOLLO 8 (LUNAR ORBIT & EARTHRISE) ---
+
+  // --- MISSION 3: APOLLO 8 ---
   m3_p1_mcc: {
     bgImage: "assets/panels/m3_p1_mcc_burn.jpg",
     caption: "MISSION 3: Trans-Lunar Coast DP1! Service Propulsion System burn required for mid-course trajectory correction.",
@@ -245,9 +250,8 @@ const storyTree = {
     ]
   },
 
-  // MISSION 3 OUTCOMES & PATHS
   m3_p4_earthrise: {
-    bgImage: "assets/panels/m3_p4_path1_earthrise\".jpg",
+    bgImage: "assets/panels/m3_p4_path1_earthrise.jpg",
     caption: "PATH 1 SUCCESS: Earthrise & Genesis Reading! 'We read Genesis as Earth rose above the Moon.'",
     hud: {
       image: "assets/nasa_data/apollo8_earthrise.jpg",
@@ -302,7 +306,8 @@ const storyTree = {
       { text: "Proceed to Mission 4 (Apollo 11)", nextNode: "m4_entry" }
     ]
   },
-  // MISSION 4: APOLLO LUNAR DESCENT & ALARM
+
+  // --- MISSION 4: APOLLO 11 ---
   m4_entry: {
     bgImage: "assets/panels/m4_p4_alarm.jpg",
     caption: "DP1: 1202 ALARM FLASHING! Guidance computer executive overflow detected during powered descent!",
@@ -344,7 +349,6 @@ const storyTree = {
     ]
   },
 
-  // MISSION 4 OUTCOMES
   m4_success: {
     bgImage: "assets/panels/m4_p4_path1_tranquility.jpg",
     caption: "PATH 1 SUCCESS: 'Houston, Tranquility Base here. The Eagle has landed!' Mission Accomplished!",
@@ -395,88 +399,108 @@ const storyTree = {
     caption: "VICTORY: Lunar Pioneer Badge Granted! Archived data synced to Museum profile.",
     hud: null,
     choices: [
-      { text: "Return to Museum Intro", nextNode: "intro_p1" }
+      { text: "Proceed to Mission 5 (Artemis Gateway)", nextNode: "m5_entry" }
+    ]
+  },
+
+  // --- MISSION 5: ARTEMIS / GATEWAY ---
+  m5_entry: {
+    bgImage: "assets/panels/m5_p1_entry.jpg",
+    caption: "MISSION 5 (2026): Flight Specialist Tahsina Chowdhury aboard Orion! Approaching the Lunar Gateway station. Systems nominal, preparing for final orbital lock.",
+    hud: {
+      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      caption: "REAL TELEMETRY: Alt: 112.4 KM | Vel: 1.62 KM/S | Orbit Insertion T-00:12:04"
+    },
+    choices: [
+      { text: "Initiate Trajectory Alignment Check", nextNode: "m5_p2_guidance" },
+      { text: "Attempt Shallow Atmospheric Skim", nextNode: "m5_p5_skipout" }
+    ]
+  },
+
+  m5_p2_guidance: {
+    bgImage: "assets/panels/m5_p2_guidance.jpg",
+    caption: "DP2: TRAJECTORY & GUIDANCE ALERT! Gyro slip detected (+12.4° off-nominal). Flight computer requests immediate override command.",
+    hud: {
+      image: "assets/nasa_data/apollo_dsky_telemetry.jpg",
+      caption: "REAL TELEMETRY: Guidance Drift: 0.87 m/s² | Oxidizer: 42% | Gyro Lock: WARN"
+    },
+    choices: [
+      { text: "Execute Manual RCS Guidance Correction", nextNode: "m5_p3_solar_flare" },
+      { text: "Cut Power Bus B to Reset Gyros", nextNode: "m5_p7_power_fail" }
+    ]
+  },
+
+  m5_p3_solar_flare: {
+    bgImage: "assets/panels/m5_p3_solar_flare.jpg",
+    caption: "DP3: RADIATION CRITICAL! Class X9 solar flare inbound. Shield status at 12% and overloading. Immediate action required!",
+    hud: {
+      image: "assets/nasa_data/tranquility_coordinates.jpg",
+      caption: "REAL TELEMETRY: Solar Flare Class X9 | Radiation: 1284 mSv/hr | Shield: OVERLOAD"
+    },
+    choices: [
+      { text: "Re-orient Capsule Heat Shield to Sun", nextNode: "m5_p4_success" },
+      { text: "Attempt Direct Re-entry with Unaligned Shield", nextNode: "m5_p6_thermal_breach" },
+      { text: "Slew Communications Antenna to Deep Space", nextNode: "m5_p8_comms_blackout" }
+    ]
+  },
+
+  m5_p4_success: {
+    bgImage: "assets/panels/m5_p4_true_ending.jpg",
+    caption: "PATH 1 HISTORICAL SUCCESS: Docking locked and cabin pressurized! 'Docking complete — historical victory logged!'",
+    hud: null,
+    choices: [
+      { text: "Log Mission 005 Badge to Archive", nextNode: "m5_p9_victory" }
+    ]
+  },
+
+  m5_p5_skipout: {
+    bgImage: "assets/panels/m5_p5_skipout.jpg",
+    caption: "PATH 2 FAILURE: Trajectory Skipout! Atmospheric skim was too shallow. Craft bouncing out into deep space with no re-capture trajectory.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 5", nextNode: "m5_entry" }
+    ]
+  },
+
+  m5_p6_thermal_breach: {
+    bgImage: "assets/panels/m5_p6_thermal_breach.jpg",
+    caption: "PATH 3 FAILURE: Thermal Shield Breach! Plasma stream burned through unaligned shield tiles during re-entry.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 5", nextNode: "m5_entry" }
+    ]
+  },
+
+  m5_p7_power_fail: {
+    bgImage: "assets/panels/m5_p7_power_fail.jpg",
+    caption: "PATH 4 FAILURE: Power Critical! Main battery fault caused total bus shutdown. Frost forming on viewports.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 5", nextNode: "m5_entry" }
+    ]
+  },
+
+  m5_p8_comms_blackout: {
+    bgImage: "assets/panels/m5_p8_comms_blackout.jpg",
+    caption: "PATH 5 FAILURE: Far-Side Comms Blackout! Trajectory drifted into lunar shadow with no signal reconnect.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 5", nextNode: "m5_entry" }
+    ]
+  },
+
+  m5_p9_victory: {
+    bgImage: "assets/panels/m5_p9_victory_log.jpg",
+    caption: "HISTORICAL VICTORY: Mission 005 Passed! Achievement badge successfully saved to Galactic Archive terminal.",
+    hud: null,
+    choices: [
+      { text: "Return to Museum Terminal", nextNode: "intro_p1" }
     ]
   }
 };
-function goToMainMenu() {
-  // Confirm if the user actually wants to leave mid-mission
-  if (confirm("Are you sure you want to quit the current mission and return to the Main Menu?")) {
-    renderNode("intro_p1"); // Or whatever your opening/main menu node ID is
-  }
-}
+
 // ==========================================
-// 2. SESSION SAVING & RESTORATION
-// ==========================================
-
-function saveCurrentSession(nodeKey) {
-  localStorage.setItem("galactic_archive_saved_node", nodeKey);
-}
-
-function getSavedSession() {
-  return localStorage.getItem("galactic_archive_saved_node");
-}
-
-// Check saved state to enable/disable "RESET SESSION" button on title page
-function updateTitleMenuButtons() {
-  const resetBtn = document.getElementById("reset-btn") || document.getElementById("restore-btn");
-  const savedNode = getSavedSession();
-  
-  if (resetBtn) {
-    if (savedNode) {
-      resetBtn.disabled = false;
-      resetBtn.textContent = "RESET SESSION";
-    } else {
-      resetBtn.disabled = true;
-      resetBtn.textContent = "NO SAVED SESSION";
-    }
-  }
-}
-function startNewGame() {
-  const saved = getSavedSession();
-  if (saved && !confirm("Starting a new game will overwrite your previous session progress. Continue?")) {
-    return;
-  }
-  showGameInterface();
-  renderNode("intro_p1");
-}
-
-// Option 2: Reset Session (Purges achievements, clears session, and starts from the very beginning)
-function resetSession() {
-  if (!confirm("This will clear all unlocked achievements and restart your progress from the beginning. Continue?")) {
-    return;
-  }
-
-  // 1. Remove all unlocked achievements & save data from LocalStorage
-  localStorage.removeItem("galactic_archive_achievements");
-  localStorage.removeItem("galactic_archive_saved_node");
-
-  // 2. Re-render empty/locked badge panel
-  if (typeof renderAchievementBadges === "function") {
-    renderAchievementBadges();
-  }
-
-  // 3. Update title screen buttons state
-  updateTitleMenuButtons();
-
-  // 4. Switch view and start from the very beginning
-  showGameInterface();
-  renderNode("intro_p1");
-}
-
-function showGameInterface() {
-  const titleScreen = document.getElementById("title-screen");
-  const hudBar = document.getElementById("hud-bar");
-  const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
-  const choicesContainer = document.getElementById("choices-container");
-
-  if (titleScreen) titleScreen.classList.add("hidden");
-  if (hudBar) hudBar.classList.remove("hidden");
-  if (panelBox) panelBox.classList.remove("hidden");
-  if (choicesContainer) choicesContainer.classList.remove("hidden");
-}
-// ==========================================
-// 1. ACHIEVEMENTS DATA DEFINITION
+// 2. ACHIEVEMENTS SYSTEM
 // ==========================================
 const ACHIEVEMENTS = {
   m1_pioneer: { 
@@ -498,15 +522,26 @@ const ACHIEVEMENTS = {
     id: "m4_pioneer", 
     title: "Tranquility Base Commander", 
     desc: "Landed Apollo 11 at West Crater successfully." 
+  },
+  m5_pioneer: { 
+    id: "m5_pioneer", 
+    title: "Artemis Gateway Commander", 
+    desc: "Successfully navigated Lunar Gateway orbit and flare radiation." 
   }
 };
-// Retrieve unlocked achievements from LocalStorage
+function startNewGame() {
+  const saved = getSavedSession();
+  if (saved && !confirm("Starting a new game will overwrite your previous session progress. Continue?")) {
+    return;
+  }
+  showGameInterface();
+  renderNode("intro_p1");
+}
 function getUnlockedAchievements() {
   const data = localStorage.getItem("galactic_archive_achievements");
   return data ? JSON.parse(data) : [];
 }
 
-// Unlock a badge and persist to LocalStorage
 function unlockAchievement(achievementId) {
   let unlocked = getUnlockedAchievements();
   if (!unlocked.includes(achievementId)) {
@@ -517,8 +552,8 @@ function unlockAchievement(achievementId) {
   }
 }
 
-// Display lightweight notification toast when unlocked
 function showAchievementPopup(badge) {
+  if (!badge) return;
   const toast = document.createElement("div");
   toast.className = "achievement-toast";
   toast.innerHTML = `
@@ -535,7 +570,7 @@ function renderAchievementBadges() {
   if (!panel) return;
 
   const unlocked = getUnlockedAchievements();
-  panel.innerHTML = ""; // Clear existing
+  panel.innerHTML = "";
 
   Object.values(ACHIEVEMENTS).forEach(badge => {
     const isUnlocked = unlocked.includes(badge.id);
@@ -550,10 +585,81 @@ function renderAchievementBadges() {
   });
 }
 
-// Initialize badges on page load
-document.addEventListener("DOMContentLoaded", renderAchievementBadges);
-// --- CORE ENGINE RENDERER ---
-// --- RENDER NODE FUNCTION ---
+// ==========================================
+// 3. SESSION SAVING & UI CONTROL
+// ==========================================
+function saveCurrentSession(nodeKey) {
+  localStorage.setItem("galactic_archive_saved_node", nodeKey);
+}
+
+function getSavedSession() {
+  return localStorage.getItem("galactic_archive_saved_node");
+}
+
+function updateTitleMenuButtons() {
+  const resetBtn = document.getElementById("reset-btn") || document.getElementById("restore-btn");
+  const savedNode = getSavedSession();
+  
+  if (resetBtn) {
+    if (savedNode) {
+      resetBtn.disabled = false;
+      resetBtn.textContent = "RESET SESSION";
+    } else {
+      resetBtn.disabled = true;
+      resetBtn.textContent = "NO SAVED SESSION";
+    }
+  }
+}
+
+function startGame() {
+  showGameInterface();
+  const savedNode = getSavedSession();
+  renderNode(savedNode || "intro_p1"); 
+}
+
+function resetSession() {
+  if (!confirm("This will clear all unlocked achievements and restart your progress from the beginning. Continue?")) {
+    return;
+  }
+
+  localStorage.removeItem("galactic_archive_achievements");
+  localStorage.removeItem("galactic_archive_saved_node");
+
+  renderAchievementBadges();
+  updateTitleMenuButtons();
+  showGameInterface();
+  renderNode("intro_p1");
+}
+
+function goToMainMenu() {
+  if (confirm("Return to the title screen? Progress in this session will be saved.")) {
+    const titleScreen = document.getElementById("title-screen");
+    const hudBar = document.getElementById("hud-bar");
+    const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
+    const choicesContainer = document.getElementById("choices-container");
+
+    if (titleScreen) titleScreen.classList.remove("hidden");
+    if (hudBar) hudBar.classList.add("hidden");
+    if (panelBox) panelBox.classList.add("hidden");
+    if (choicesContainer) choicesContainer.classList.add("hidden");
+  }
+}
+
+function showGameInterface() {
+  const titleScreen = document.getElementById("title-screen");
+  const hudBar = document.getElementById("hud-bar");
+  const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
+  const choicesContainer = document.getElementById("choices-container");
+
+  if (titleScreen) titleScreen.classList.add("hidden");
+  if (hudBar) hudBar.classList.remove("hidden");
+  if (panelBox) panelBox.classList.remove("hidden");
+  if (choicesContainer) choicesContainer.classList.remove("hidden");
+}
+
+// ==========================================
+// 4. CORE ENGINE RENDERER
+// ==========================================
 function renderNode(nodeKey) {
   const node = storyTree[nodeKey];
   
@@ -561,6 +667,9 @@ function renderNode(nodeKey) {
     console.error(`Error: Node key '${nodeKey}' does not exist in storyTree!`);
     return;
   }
+
+  // Auto-save current progress
+  saveCurrentSession(nodeKey);
 
   // 1. Render Comic Panel Background Image
   const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
@@ -604,47 +713,25 @@ function renderNode(nodeKey) {
     }
   }
 
-  // 5. AUTOMATIC BADGE UNLOCK CHECKER ---
+  // 5. Automatic Badge Unlock Checker
   if (nodeKey === "m1_p9_victory" || nodeKey === "m1_victory") {
     unlockAchievement("m1_pioneer");
   } else if (nodeKey === "m2_p9_victory" || nodeKey === "m2_p4_success" || nodeKey === "m2_victory") {
     unlockAchievement("m2_pioneer");
   } else if (nodeKey === "m3_p9_victory" || nodeKey === "m3_victory") {
     unlockAchievement("m3_pioneer");
-  } else if (
-    nodeKey === "m4_p9_victory" || 
-    nodeKey === "m4_victory" || 
-    nodeKey === "m4_success" || 
-    nodeKey === "victory"
-  ) {
+  } else if (nodeKey === "m4_p9_victory" || nodeKey === "m4_victory" || nodeKey === "m4_success" || nodeKey === "victory") {
     unlockAchievement("m4_pioneer");
+  } else if (nodeKey === "m5_p9_victory" || nodeKey === "m5_p4_success") {
+    unlockAchievement("m5_pioneer");
   }
 
   // 6. Refresh persistent badges in UI
   renderAchievementBadges();
 }
-// Triggered when returning to main menu
-function goToMainMenu() {
-  if (confirm("Return to the title screen? Progress in this session will be saved.")) {
-    // Show Title Screen
-    document.getElementById("title-screen").classList.remove("hidden");
 
-    // Hide Gameplay Screens
-    document.getElementById("hud-bar").classList.add("hidden");
-    document.getElementById("panel-box").classList.add("hidden");
-    document.getElementById("choices-container").classList.add("hidden");
-  }
-}
-// Triggered when clicking "START GAME" on the front cover page
-function startGame() {
-  // Hide Title Screen
-  document.getElementById("title-screen").classList.add("hidden");
-
-  // Reveal Top HUD Bar & Main Game Panels
-  document.getElementById("hud-bar").classList.remove("hidden");
-  document.getElementById("panel-box").classList.remove("hidden");
-  document.getElementById("choices-container").classList.remove("hidden");
-
-  // Load the initial game node (MUST match storyTree key!)
-  renderNode("intro_p1"); 
-}
+// Initializing application state on load
+document.addEventListener("DOMContentLoaded", () => {
+  renderAchievementBadges();
+  updateTitleMenuButtons();
+});
