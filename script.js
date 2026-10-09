@@ -5,7 +5,7 @@ const storyTree = {
   // LEVEL 0: THE GALACTIC ARCHIVE MUSEUM
   intro_p1: {
     bgImage: "assets/panels/intro_1.jpg",
-    caption: "The year is 2036. Inside the Galactic Archive Museum, history isn't just stored... it's lived.",
+    caption: "The year is 2036. Inside the Galactic Archive Museum, where history isn't just stored... it's lived.\nYou found a glowing terminal and wondering if you could approach it...",
     hud: null,
     choices: [
       { text: "Approach Terminal Alcove", nextNode: "intro_p2" }

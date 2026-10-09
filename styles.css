@@ -241,6 +241,10 @@ body {
   box-shadow: 4px 4px 0px #000000;
   z-index: 10;
 }
+.caption-box {
+  white-space: pre-line;
+  /* your existing caption styles */
+}
 
 /* ==========================================
    NASA REAL DATA OVERLAY (HUD)
