@@ -1004,7 +1004,7 @@ function renderNode(nodeKey) {
   // Toggle Astro Care Easter Egg Zone
   const astroZone = document.getElementById("secret-astro-zone");
   if (astroZone) {
-    if (nodeKey === "museum_exit" || nodeKey === "intro_p1") {
+    if (nodeKey ===  "intro_p1") {
       astroZone.classList.remove("hidden");
     } else {
       astroZone.classList.add("hidden");

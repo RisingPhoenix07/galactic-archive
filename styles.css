@@ -562,3 +562,34 @@ body {
   opacity: 0.9;
   color: #64ffda;
 }
+/* Title Screen Interactive Astro Care Signature */
+.secret-astro-zone {
+  margin-bottom: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.secret-astro-zone:hover {
+  transform: scale(1.08);
+}
+
+.glowing-astro-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #00f0ff;
+  letter-spacing: 1.5px;
+  animation: astroGlow 2s infinite alternate;
+}
+
+@keyframes astroGlow {
+  0% {
+    opacity: 0.7;
+    text-shadow: 0 0 4px #00f0ff, 0 0 8px #00f0ff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #64ffda;
+  }
+}
