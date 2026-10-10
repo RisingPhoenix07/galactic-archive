@@ -697,7 +697,17 @@ const storyTree = {
     caption: "HISTORICAL VICTORY: Mission 007 Passed! Europa Explorer Badge logged to Galactic Archive Museum terminal.",
     hud: null,
     choices: [
-      { text: "Proceed to Mission 8 (Titan Probe)", nextNode: "m8_entry" }
+      { text: "Log Off Terminal & Exit Museum", nextNode: "museum_exit" }
+    ]
+  },
+
+  // EPILOGUE / GOODBYE PAGE
+  museum_exit: {
+    bgImage: "assets/panels/museum_exit.jpg",
+    caption: "THE GALACTIC ARCHIVE: As the terminal screen dims, the museum lights begin to fade into twilight.\nHistory has been remembered... and lived.\nThank you for exploring the archives, Commander.",
+    hud: null,
+    choices: [
+      { text: "🏠 Return to Title Screen", nextNode: "intro_p1" }
     ]
   }
 };
@@ -932,10 +942,24 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- 2. CAPTION RENDER ---
+  // --- 2. CAPTION RENDER & SECRET HOVER ZONE TOGGLE ---
   const captionBox = document.getElementById("caption-box") || document.getElementById("caption-text");
   if (captionBox) {
     captionBox.textContent = node.caption || "";
+    if (nodeKey === "museum_exit") {
+      captionBox.classList.add("caption-epilogue");
+    } else {
+      captionBox.classList.remove("caption-epilogue");
+    }
+  }
+
+  const rezZone = document.getElementById("secret-rez-zone");
+  if (rezZone) {
+    if (nodeKey === "museum_exit") {
+      rezZone.classList.remove("hidden");
+    } else {
+      rezZone.classList.add("hidden");
+    }
   }
 
   // --- 3. HUD OVERLAY ---

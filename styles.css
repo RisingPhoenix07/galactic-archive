@@ -217,7 +217,48 @@ body {
   z-index: 10;
   white-space: pre-line; /* Preserves \n line breaks in JS textContent */
 }
+.caption-box.caption-epilogue {
+  right: 320px; /* Pulls caption back further on the goodbye screen */
+  max-width: 60%;
+}
+/* ==========================================
+   INTERACTIVE SECRET REZ HOVER EASTER EGG
+   ========================================== */
 
+.secret-rez-zone {
+  position: absolute;
+  bottom: 18px;
+  right: 28px;
+  padding: 8px 16px;
+  cursor: pointer;
+  z-index: 20;
+  user-select: none;
+}
+
+/* Base text styling matching the subtle curved signature */
+.glowing-rez-text {
+  font-family: 'Courier New', monospace;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 2px;
+  display: inline-block;
+  transform: rotate(-6deg); /* Subtle curve tilt */
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Cyan & Gold Neon Glow Effect on Mouse Hover */
+.secret-rez-zone:hover .glowing-rez-text {
+  color: #64ffda;
+  transform: rotate(-6deg) scale(1.2);
+  text-shadow: 
+    0 0 5px #64ffda,
+    0 0 12px #00f0ff,
+    0 0 25px #00f0ff,
+    0 0 40px #ffb703;
+}
 /* ==========================================
    NASA REAL DATA OVERLAY (HUD)
    ========================================== */
@@ -464,4 +505,17 @@ body {
     box-shadow: inset 0 0 65px rgba(0, 240, 255, 0.85), 0 0 40px rgba(0, 240, 255, 0.95); 
     border-color: #00f0ff !important;
   }
+}
+/* Subtle hidden signature text style */
+.secret-sig {
+  font-style: italic;
+  opacity: 0.35;
+  font-size: 0.85em;
+  color: #8892b0;
+  transition: opacity 0.3s ease;
+}
+
+.secret-sig:hover {
+  opacity: 0.9;
+  color: #64ffda;
 }
