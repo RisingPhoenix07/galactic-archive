@@ -68,8 +68,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Sensor Seg 51: UNLATCHED | Retropack: LOCKED | Re-entry Approaching"
     },
     choices: [
-      { text: "Keep Retropack Strapped On for Re-entry", nextNode: "m1_p5_fireball" },
-      { text: "Jettison Retropack Prematurely", nextNode: "m1_p4_jettison" }
+      { text: "Jettison Retropack Prematurely", nextNode: "m1_p4_jettison" },
+      { text: "Keep Retropack Strapped On for Re-entry", nextNode: "m1_p5_fireball" }
     ]
   },
 
@@ -136,8 +136,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Altitude: 160 MI | Hand-Held Thruster Pressure: 4,000 PSI | Oxygen: Nominal"
     },
     choices: [
-      { text: "Control EVA Thrusters & Pull Tether", nextNode: "m2_p2_tether" },
-      { text: "Exceed Gas Bursts & Entangle Tether", nextNode: "m2_p5_tether_wrap" }
+      { text: "Exceed Gas Bursts & Entangle Tether", nextNode: "m2_p5_tether_wrap" },
+      { text: "Control EVA Thrusters & Pull Tether", nextNode: "m2_p2_tether" }
     ]
   },
 
@@ -162,8 +162,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Thermal Expansion Delta: +1.2mm | Hatch Seal: UNLOCKED | Cabin Pressure: LOW"
     },
     choices: [
-      { text: "Force Ratchet Lock Mechanism", nextNode: "m2_p4_success" },
       { text: "Force Lock & Bend Hatch Dogs", nextNode: "m2_p8_pressure_leak" },
+      { text: "Force Ratchet Lock Mechanism", nextNode: "m2_p4_success" },
       { text: "Initiate Emergency Retrofire Unsealed", nextNode: "m2_p6_jammed_retro" }
     ]
   },
@@ -231,8 +231,8 @@ const storyTree = {
       caption: "REAL NASA DATA: S-IVB Trans-Lunar Injection Telemetry | TLI Velocity 24,200 mph"
     },
     choices: [
-      { text: "Execute Mid-Course Burn", nextNode: "m3_p2_loi" },
-      { text: "Over-Thrust & Deviate Trajectory", nextNode: "m3_p7_skipout" }
+      { text: "Over-Thrust & Deviate Trajectory", nextNode: "m3_p7_skipout" },
+      { text: "Execute Mid-Course Burn", nextNode: "m3_p2_loi" }
     ]
   },
 
@@ -257,9 +257,9 @@ const storyTree = {
       caption: "REAL NASA DATA: Farside Mapping Frame AS08-12-2209 | LOS +00:12:43"
     },
     choices: [
-      { text: "Hold Attitude & Await AOS", nextNode: "m3_p4_earthrise" },
       { text: "Manual Thruster Override", nextNode: "m3_p5_impact" },
-      { text: "Mishandle Orbital Stabilization", nextNode: "m3_p8_mascon" }
+      { text: "Mishandle Orbital Stabilization", nextNode: "m3_p8_mascon" },
+      { text: "Hold Attitude & Await AOS", nextNode: "m3_p4_earthrise" }
     ]
   },
 
@@ -329,8 +329,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Executive Overflow | BAILOUT 1201/1202 | CPU Load: 115%"
     },
     choices: [
-      { text: "Trust Steve Bales & Override", nextNode: "m4_pitchover" },
       { text: "Abort Landing Immediately", nextNode: "m4_abort" },
+      { text: "Trust Steve Bales & Override", nextNode: "m4_pitchover" },
       { text: "Clear Computer RAM Cache", nextNode: "m4_glitch" }
     ]
   },
@@ -343,9 +343,9 @@ const storyTree = {
       caption: "REAL TELEMETRY: Pitchover Mode | Altitude: 1,180 FT | Fuel: 12%"
     },
     choices: [
-      { text: "Take Semi-Automatic P66 Control", nextNode: "m4_touchdown" },
       { text: "Maintain Auto-Pilot Trajectory", nextNode: "m4_crash" },
-      { text: "Increase Engine Thrust to 100%", nextNode: "m4_engine_fault" }
+      { text: "Increase Engine Thrust to 100%", nextNode: "m4_engine_fault" },
+      { text: "Take Semi-Automatic P66 Control", nextNode: "m4_touchdown" }
     ]
   },
 
@@ -425,8 +425,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Alt: 112.4 KM | Vel: 1.62 KM/S | Orbit Insertion T-00:12:04"
     },
     choices: [
-      { text: "Initiate Trajectory Alignment Check", nextNode: "m5_p2_guidance" },
-      { text: "Attempt Shallow Atmospheric Skim", nextNode: "m5_p5_skipout" }
+      { text: "Attempt Shallow Atmospheric Skim", nextNode: "m5_p5_skipout" },
+      { text: "Initiate Trajectory Alignment Check", nextNode: "m5_p2_guidance" }
     ]
   },
 
@@ -451,8 +451,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Solar Flare Class X9 | Radiation: 1284 mSv/hr | Shield: OVERLOAD"
     },
     choices: [
-      { text: "Re-orient Capsule Heat Shield to Sun", nextNode: "m5_p4_success" },
       { text: "Attempt Direct Re-entry with Unaligned Shield", nextNode: "m5_p6_thermal_breach" },
+      { text: "Re-orient Capsule Heat Shield to Sun", nextNode: "m5_p4_success" },
       { text: "Slew Communications Antenna to Deep Space", nextNode: "m5_p8_comms_blackout" }
     ]
   },
@@ -520,8 +520,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Altitude: 18.4 KM | Velocity: 4.2 KM/S | Heat Shield: 1653°C - CRITICAL"
     },
     choices: [
-      { text: "Activate Terrain Avoidance Radar & Sky Crane", nextNode: "m6_p2_guidance" },
-      { text: "Deploy Parachute Early without Pitch Trim", nextNode: "m6_p6_shield_failure" }
+      { text: "Deploy Parachute Early without Pitch Trim", nextNode: "m6_p6_shield_failure" },
+      { text: "Activate Terrain Avoidance Radar & Sky Crane", nextNode: "m6_p2_guidance" }
     ]
   },
 
@@ -546,9 +546,9 @@ const storyTree = {
       caption: "REAL TELEMETRY: O2: 12% - CRITICAL | Cabin Press: 0.62 ATM | Scrubber: OFFLINE"
     },
     choices: [
-      { text: "Purge Secondary Scrubber & Deploy Ground Drill", nextNode: "m6_p4_success" },
       { text: "Reroute Main Power to Primary Intakes", nextNode: "m6_p7_habitat_freeze" },
-      { text: "Override Comm Array in Dust Interference", nextNode: "m6_p8_comms_blackout" }
+      { text: "Override Comm Array in Dust Interference", nextNode: "m6_p8_comms_blackout" },
+      { text: "Purge Secondary Scrubber & Deploy Ground Drill", nextNode: "m6_p4_success" }
     ]
   },
 
@@ -615,8 +615,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Depth: 8.5 KM | Ice Shell Thickness: 15 KM | Cutters: 3200°C NOMINAL"
     },
     choices: [
-      { text: "Deploy Subsurface Ocean Sonar Array", nextNode: "m7_p2_guidance" },
-      { text: "Increase Cutter Heat Output to 100%", nextNode: "m7_p6_cutter_overheat" }
+      { text: "Increase Cutter Heat Output to 100%", nextNode: "m7_p6_cutter_overheat" },
+      { text: "Deploy Subsurface Ocean Sonar Array", nextNode: "m7_p2_guidance" }
     ]
   },
 
@@ -641,8 +641,8 @@ const storyTree = {
       caption: "REAL TELEMETRY: Bio-Organic Scan: CONFIRMED | Depth: 3.2 KM | Salinity: 35ppt"
     },
     choices: [
-      { text: "Lock Tether Relay & Transmit Bio-Data", nextNode: "m7_p4_success" },
       { text: "Cut Navigation Beacons to Save Power", nextNode: "m7_p7_abyss_drift" },
+      { text: "Lock Tether Relay & Transmit Bio-Data", nextNode: "m7_p4_success" },
       { text: "Increase Antenna Power in Radiation Zone", nextNode: "m7_p8_radiation_loss" }
     ]
   },
@@ -711,7 +711,6 @@ const storyTree = {
     ]
   }
 };
-
 // ==========================================
 // 2. ACHIEVEMENTS SYSTEM
 // ==========================================
