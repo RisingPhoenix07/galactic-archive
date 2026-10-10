@@ -31,6 +31,7 @@ const storyTree = {
     choices: [
       { text: "Mission 5: Artemis Gateway Orbit (2026)", nextNode: "m5_entry" },
       { text: "Mission 6: Mars Chryse Landing (2042)", nextNode: "m6_entry" },
+      { text: "Mission 7: Europa Subsurface Probe (2055)", nextNode: "m7_entry" },
       { text: "⬅️ PREVIOUS PAGE: Act I Historic Era", nextNode: "intro_p2" },
       { text: "🏠 Return to Main Museum Hub", nextNode: "intro_p1" }
     ]
@@ -603,6 +604,101 @@ const storyTree = {
     choices: [
       { text: "Return to Museum Terminal", nextNode: "intro_p1" }
     ]
+  },
+
+  // --- MISSION 7: EUROPA SUBSURFACE PROBE & OCEAN DISCOVERY ---
+  m7_entry: {
+    bgImage: "assets/panels/m7_p1_entry.jpg",
+    caption: "MISSION 7 (2055): Sub-surface descent into Europa's 15km thick ice shell! External temp: -160°C. Thermal cutters burning at 3200°C.",
+    hud: {
+      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      caption: "REAL TELEMETRY: Depth: 8.5 KM | Ice Shell Thickness: 15 KM | Cutters: 3200°C NOMINAL"
+    },
+    choices: [
+      { text: "Deploy Subsurface Ocean Sonar Array", nextNode: "m7_p2_guidance" },
+      { text: "Increase Cutter Heat Output to 100%", nextNode: "m7_p6_cutter_overheat" }
+    ]
+  },
+
+  m7_p2_guidance: {
+    bgImage: "assets/panels/m7_p2_guidance.jpg",
+    caption: "DP2: ICE SHELL PRESSURE CRITICAL! Compression alert at 1208m depth. Active hydrothermal vent detected ahead at 310°C.",
+    hud: {
+      image: "assets/nasa_data/west_crater_recon.jpg",
+      caption: "REAL TELEMETRY: Pressure: 118.4 ATM | Hull Integrity: 63% | Sonar Lock: ACTIVE"
+    },
+    choices: [
+      { text: "Target Hydrothermal Plume Signature", nextNode: "m7_p3_hazard" },
+      { text: "Force Descent Through Narrow Ice Rift", nextNode: "m7_p5_ice_crush" }
+    ]
+  },
+
+  m7_p3_hazard: {
+    bgImage: "assets/panels/m7_p3_hazard.jpg",
+    caption: "DP3: BIO-SIGNATURE DETECTED! Bio-organic particles detected around active vent chimney beneath 15km of ocean ice.",
+    hud: {
+      image: "assets/nasa_data/tranquility_coordinates.jpg",
+      caption: "REAL TELEMETRY: Bio-Organic Scan: CONFIRMED | Depth: 3.2 KM | Salinity: 35ppt"
+    },
+    choices: [
+      { text: "Lock Tether Relay & Transmit Bio-Data", nextNode: "m7_p4_success" },
+      { text: "Cut Navigation Beacons to Save Power", nextNode: "m7_p7_abyss_drift" },
+      { text: "Increase Antenna Power in Radiation Zone", nextNode: "m7_p8_radiation_loss" }
+    ]
+  },
+
+  m7_p4_success: {
+    bgImage: "assets/panels/m7_p4_true_ending.jpg",
+    caption: "PATH 1 HISTORICAL SUCCESS: First confirmed biological activity in Europa's ocean! Ice-tether relay transmitting clear bio-data stream.",
+    hud: null,
+    choices: [
+      { text: "Log Mission 007 Badge to Archive", nextNode: "m7_p9_victory" }
+    ]
+  },
+
+  m7_p5_ice_crush: {
+    bgImage: "assets/panels/m7_p5_ice_crush.jpg",
+    caption: "PATH 2 FAILURE: Hull Implosion! Subsurface ice sheet shift crushed probe structure at 4000 BAR pressure.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 7", nextNode: "m7_entry" }
+    ]
+  },
+
+  m7_p6_cutter_overheat: {
+    bgImage: "assets/panels/m7_p6_cutter_overheat.jpg",
+    caption: "PATH 3 FAILURE: Thermal Cutter Overheat! Mk-IV melt probe jammed in ice layer 12 with 0% coolant flow.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 7", nextNode: "m7_entry" }
+    ]
+  },
+
+  m7_p7_abyss_drift: {
+    bgImage: "assets/panels/m7_p7_abyss_drift.jpg",
+    caption: "PATH 4 FAILURE: Sonar Blind & Abyss Drift! Navigation failed at 1832m depth. Drifting into pitch-black ocean abyss.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 7", nextNode: "m7_entry" }
+    ]
+  },
+
+  m7_p8_radiation_loss: {
+    bgImage: "assets/panels/m7_p8_radiation_loss.jpg",
+    caption: "PATH 5 FAILURE: Radiation Signal Loss! Jovian radiation burst destroyed surface relay array. All contact lost.",
+    hud: null,
+    choices: [
+      { text: "Retry Mission 7", nextNode: "m7_entry" }
+    ]
+  },
+
+  m7_p9_victory: {
+    bgImage: "assets/panels/m7_p9_victory_log.jpg",
+    caption: "HISTORICAL VICTORY: Mission 007 Passed! Europa Explorer Badge logged to Galactic Archive Museum terminal.",
+    hud: null,
+    choices: [
+      { text: "Proceed to Mission 8 (Titan Probe)", nextNode: "m8_entry" }
+    ]
   }
 };
 
@@ -639,6 +735,11 @@ const ACHIEVEMENTS = {
     id: "m6_pioneer", 
     title: "Mars Chryse Commander", 
     desc: "Successfully executed Mars descent and Chryse Planitia landing." 
+  },
+  m7_pioneer: { 
+    id: "m7_pioneer", 
+    title: "Europa Ocean Explorer", 
+    desc: "Successfully navigated Europa's subsurface ocean and logged alien bio-signatures." 
   }
 };
 
@@ -806,6 +907,8 @@ function renderNode(nodeKey) {
       nodeKey.includes("tumble") ||
       nodeKey.includes("skipout") ||
       nodeKey.includes("impact") ||
+      nodeKey.includes("crush") ||
+      nodeKey.includes("overheat") ||
       (node.caption && (node.caption.includes("FAILURE") || node.caption.includes("CRITICAL")));
 
     // Detect Historical Success / Victory Nodes
@@ -844,7 +947,7 @@ function renderNode(nodeKey) {
     if (node.hud) {
       hudOverlay.classList.remove("hidden");
       
-      if (nodeKey.includes("fail") || nodeKey.includes("crash") || nodeKey.includes("alarm") || nodeKey.includes("breach")) {
+      if (nodeKey.includes("fail") || nodeKey.includes("crash") || nodeKey.includes("alarm") || nodeKey.includes("breach") || nodeKey.includes("overheat")) {
         hudOverlay.classList.add("alert");
       } else {
         hudOverlay.classList.remove("alert");
@@ -886,10 +989,13 @@ function renderNode(nodeKey) {
     unlockAchievement("m5_pioneer");
   } else if (nodeKey === "m6_p9_victory" || nodeKey === "m6_p4_success") {
     unlockAchievement("m6_pioneer");
+  } else if (nodeKey === "m7_p9_victory" || nodeKey === "m7_p4_success") {
+    unlockAchievement("m7_pioneer");
   }
 
   renderAchievementBadges();
 }
+
 // Initializing application state on load
 document.addEventListener("DOMContentLoaded", () => {
   renderAchievementBadges();

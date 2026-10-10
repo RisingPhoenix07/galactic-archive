@@ -187,18 +187,20 @@ body {
    COMIC PANEL FRAME (Dynamic Image Fitting)
    ========================================== */
 
-.panel-box {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-image: url('assets/panels/intro_1.jpg'); /* Default initial image */
-  position: relative;
-  transition: background-image 0.4s ease-in-out;
-}
-
+   .panel-box {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    
+    /* Fit entire comic image without cropping top/bottom banners */
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #020c1b; /* Dark backdrop fills letterbox space smoothly */
+    
+    position: relative;
+    transition: background-image 0.4s ease-in-out;
+  }
 /* Comic Caption Box */
 .caption-box {
   position: absolute;
