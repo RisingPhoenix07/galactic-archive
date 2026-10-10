@@ -58,7 +58,11 @@ galactic-archive/
     ├── nasa_data/              # Real NASA telemetry overlay graphics
     └── sfx/                    # Game sound effects & theme tracks (Last_Known_Orbit.mp3)
 
-## ⚡ Quick Start (Local Setup)
+## ⚡ Quick Start:~The game is live inside github 
+link : https://risingphoenix07.github.io/galactic-archive/
+
+
+(Local Setup)
 
 ### 1. Clone the Repository
 ```bash
@@ -96,3 +100,4 @@ python3 build_asset_pipeline.py
 
 ### 4. Launch the Game
 Open `index.html` directly in any modern browser, or launch it using VS Code's **Live Server** extension
+
