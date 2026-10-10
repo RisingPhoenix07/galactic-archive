@@ -157,11 +157,11 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  pointer-events: none; /* Allows clicks to pass through empty space */
+  pointer-events: none;
 }
 
 #hud-bar * {
-  pointer-events: auto; /* Re-enable pointer events for buttons and badges */
+  pointer-events: auto;
 }
 
 .hud-home-btn {
@@ -183,24 +183,54 @@ body {
   box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
 }
 
+.hud-mute-btn {
+  background: rgba(0, 20, 40, 0.8);
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.hud-mute-btn:hover {
+  background: #00f0ff;
+  color: #050a14;
+  box-shadow: 0 0 10px #00f0ff;
+}
+
+.hud-mute-btn.muted {
+  border-color: #ff3366;
+  color: #ff3366;
+}
+
+.hud-mute-btn.muted:hover {
+  background: #ff3366;
+  color: #ffffff;
+  box-shadow: 0 0 10px #ff3366;
+}
+
 /* ==========================================
    COMIC PANEL FRAME (Dynamic Image Fitting)
    ========================================== */
 
-   .panel-box {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    
-    /* Fit entire comic image without cropping top/bottom banners */
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-color: #020c1b; /* Dark backdrop fills letterbox space smoothly */
-    
-    position: relative;
-    transition: background-image 0.4s ease-in-out;
-  }
+.panel-box {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020c1b;
+  
+  position: relative;
+  transition: background-image 0.4s ease-in-out;
+}
+
 /* Comic Caption Box */
 .caption-box {
   position: absolute;
@@ -215,14 +245,16 @@ body {
   color: #000000;
   box-shadow: 4px 4px 0px #000000;
   z-index: 10;
-  white-space: pre-line; /* Preserves \n line breaks in JS textContent */
+  white-space: pre-line;
 }
+
 .caption-box.caption-epilogue {
-  right: 320px; /* Pulls caption back further on the goodbye screen */
+  right: 320px;
   max-width: 60%;
 }
+
 /* ==========================================
-   INTERACTIVE SECRET REZ HOVER EASTER EGG
+   INTERACTIVE SECRET EASTER EGGS
    ========================================== */
 
 .secret-rez-zone {
@@ -235,7 +267,6 @@ body {
   user-select: none;
 }
 
-/* Base text styling matching the subtle curved signature */
 .glowing-rez-text {
   font-family: 'Courier New', monospace;
   font-style: italic;
@@ -244,12 +275,11 @@ body {
   color: rgba(255, 255, 255, 0.25);
   letter-spacing: 2px;
   display: inline-block;
-  transform: rotate(-6deg); /* Subtle curve tilt */
+  transform: rotate(-6deg);
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Cyan & Gold Neon Glow Effect on Mouse Hover */
 .secret-rez-zone:hover .glowing-rez-text {
   color: #64ffda;
   transform: rotate(-6deg) scale(1.2);
@@ -259,13 +289,44 @@ body {
     0 0 25px #00f0ff,
     0 0 40px #ffb703;
 }
+
+.secret-astro-zone {
+  position: absolute;
+  bottom: 20px;
+  right: 25px;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.glowing-astro-text {
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff, 0 0 15px #00f0ff;
+  letter-spacing: 2px;
+  animation: astroGlow 2s infinite alternate;
+}
+
+@keyframes astroGlow {
+  0% {
+    opacity: 0.6;
+    text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 12px #00f0ff, 0 0 25px #00f0ff, 0 0 35px #00f0ff;
+  }
+}
+
 /* ==========================================
    NASA REAL DATA OVERLAY (HUD)
    ========================================== */
 
 .hud-overlay {
   position: absolute;
-  top: 55px; /* Offset below HUD bar */
+  top: 55px;
   right: 16px;
   width: 320px;
   background: rgba(10, 25, 47, 0.88);
@@ -289,8 +350,8 @@ body {
 
 .hud-overlay img {
   width: 100%;
-  height: 140px;          /* Fixed height for HUD image container */
-  object-fit: cover;      /* Crops uneven NASA image dimensions cleanly */
+  height: 140px;
+  object-fit: cover;
   border: 1px solid #00f0ff;
   margin-bottom: 6px;
   display: block;
@@ -302,14 +363,15 @@ body {
   line-height: 1.3;
 }
 
-/* Emergency Alert Variant for HUD */
 .hud-overlay.alert {
-  border: 2px solid #ff3333;
-  box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+  border: 2px solid #ff3333 !important;
+  box-shadow: 0 0 18px rgba(255, 51, 51, 0.8) !important;
+  background: rgba(40, 0, 0, 0.9) !important;
 }
 
 .hud-overlay.alert .hud-header {
-  color: #ff3333;
+  color: #ff3333 !important;
+  font-weight: bold;
 }
 
 /* ==========================================
@@ -326,7 +388,7 @@ body {
   padding: 12px 16px;
   gap: 12px;
   z-index: 10;
-  flex-wrap: wrap; /* Prevents button overflow on smaller screens */
+  flex-wrap: wrap;
 }
 
 .choice-btn {
@@ -455,15 +517,6 @@ body {
   animation: screenShake 0.5s ease-in-out;
 }
 
-/* Red Screen Flash for Critical Alarms */
-.alarm-flash {
-  animation: flashRed 1s infinite alternate;
-}
-
-@keyframes flashRed {
-  0% { box-shadow: inset 0 0 0px rgba(255, 0, 0, 0); }
-  100% { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.8); }
-}
 /* Red Screen Flash for Critical Alarms & Failures */
 .alarm-flash {
   animation: flashRed 0.6s infinite alternate;
@@ -480,17 +533,6 @@ body {
   }
 }
 
-/* Hazard Warning Banner inside HUD */
-.hud-overlay.alert {
-  border: 2px solid #ff3333 !important;
-  box-shadow: 0 0 18px rgba(255, 51, 51, 0.8) !important;
-  background: rgba(40, 0, 0, 0.9) !important;
-}
-
-.hud-overlay.alert .hud-header {
-  color: #ff3333 !important;
-  font-weight: bold;
-}
 /* Blue/Cyan Glow Effect for Historical Success & Victory Nodes */
 .success-glow {
   animation: glowCyan 1.2s infinite alternate ease-in-out;
@@ -506,6 +548,7 @@ body {
     border-color: #00f0ff !important;
   }
 }
+
 /* Subtle hidden signature text style */
 .secret-sig {
   font-style: italic;

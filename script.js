@@ -879,6 +879,11 @@ function showGameInterface() {
   if (hudBar) hudBar.classList.remove("hidden");
   if (panelBox) panelBox.classList.remove("hidden");
   if (choicesContainer) choicesContainer.classList.remove("hidden");
+
+  // Play button click SFX and initialize audio playback context on start
+  if (window.audioManager) {
+    window.audioManager.play('ui_click');
+  }
 }
 
 // ==========================================
@@ -898,35 +903,33 @@ function renderNode(nodeKey) {
   const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
 
   // --- 1. VISUAL WARNING, SHAKE & GLOW DETECTOR ---
+  const isFailureOrDanger = node.shake || 
+    nodeKey.includes("fail") || 
+    nodeKey.includes("crash") || 
+    nodeKey.includes("alarm") || 
+    nodeKey.includes("warning") || 
+    nodeKey.includes("drift") || 
+    nodeKey.includes("storm") || 
+    nodeKey.includes("breach") ||
+    nodeKey.includes("freeze") ||
+    nodeKey.includes("blackout") ||
+    nodeKey.includes("tumble") ||
+    nodeKey.includes("skipout") ||
+    nodeKey.includes("impact") ||
+    nodeKey.includes("crush") ||
+    nodeKey.includes("overheat") ||
+    (node.caption && (node.caption.includes("FAILURE") || node.caption.includes("CRITICAL")));
+
+  const isSuccessNode = 
+    nodeKey.includes("success") || 
+    nodeKey.includes("victory") || 
+    nodeKey.includes("ending") || 
+    nodeKey === "victory" ||
+    (node.caption && (node.caption.includes("SUCCESS") || node.caption.includes("VICTORY")));
+
   if (panelBox) {
     // Reset all visual state classes
     panelBox.classList.remove("shake", "alarm-flash", "success-glow");
-
-    // Detect Failure / Alarm Nodes
-    const isFailureOrDanger = node.shake || 
-      nodeKey.includes("fail") || 
-      nodeKey.includes("crash") || 
-      nodeKey.includes("alarm") || 
-      nodeKey.includes("warning") || 
-      nodeKey.includes("drift") || 
-      nodeKey.includes("storm") || 
-      nodeKey.includes("breach") ||
-      nodeKey.includes("freeze") ||
-      nodeKey.includes("blackout") ||
-      nodeKey.includes("tumble") ||
-      nodeKey.includes("skipout") ||
-      nodeKey.includes("impact") ||
-      nodeKey.includes("crush") ||
-      nodeKey.includes("overheat") ||
-      (node.caption && (node.caption.includes("FAILURE") || node.caption.includes("CRITICAL")));
-
-    // Detect Historical Success / Victory Nodes
-    const isSuccessNode = 
-      nodeKey.includes("success") || 
-      nodeKey.includes("victory") || 
-      nodeKey.includes("ending") || 
-      nodeKey === "victory" ||
-      (node.caption && (node.caption.includes("SUCCESS") || node.caption.includes("VICTORY")));
 
     if (isFailureOrDanger) {
       void panelBox.offsetWidth; // Force DOM reflow
@@ -941,7 +944,45 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- 2. CAPTION RENDER & SECRET HOVER ZONE TOGGLE ---
+  // --- 2. AUDIO INTEGRATION MANAGER ---
+  if (window.audioManager) {
+    // 1. Clear previous ambient loops / alarms / tracks
+    audioManager.stopAll();
+
+    // 2. Play Theme Song on Title, Intro (intro_p1), Victory, or Epilogue
+    if (
+      nodeKey === "intro_p1" || 
+      isSuccessNode || 
+      nodeKey === "museum_exit" || 
+      nodeKey.includes("ending") || 
+      nodeKey.includes("victory")
+    ) {
+      audioManager.play('theme_song', true); // Loops Last_Known_Orbit.mp3
+    } else {
+      // 3. Play choice confirm on all middle story nodes
+      audioManager.play('choice_confirm');
+
+      // 4. Play node-specific atmospheric audio
+      if (node.sfx) {
+        audioManager.play(node.sfx, node.sfxLoop || false);
+      } else if (
+        nodeKey === "m4_entry" || 
+        nodeKey === "m1_p3_warning" || 
+        nodeKey.endsWith("_alarm") || 
+        nodeKey.endsWith("_warning")
+      ) {
+        audioManager.play('alarm_1202', false);
+      } else if (nodeKey.includes("launch") || nodeKey === "m3_p1_mcc") {
+        audioManager.play('rocket_launch');
+      } else if (nodeKey.includes("hhmu") || nodeKey.includes("loi_burn")) {
+        audioManager.play('rcs_thruster');
+      } else if (nodeKey.includes("crash") || nodeKey.includes("impact") || nodeKey.includes("crush")) {
+        audioManager.play('failure');
+      }
+    }
+  }
+
+  // --- 3. CAPTION RENDER & SECRET HOVER ZONE TOGGLE ---
   const captionBox = document.getElementById("caption-box") || document.getElementById("caption-text");
   if (captionBox) {
     captionBox.textContent = node.caption || "";
@@ -960,8 +1001,17 @@ function renderNode(nodeKey) {
       rezZone.classList.add("hidden");
     }
   }
+  // Toggle Astro Care Easter Egg Zone
+  const astroZone = document.getElementById("secret-astro-zone");
+  if (astroZone) {
+    if (nodeKey === "museum_exit" || nodeKey === "intro_p1") {
+      astroZone.classList.remove("hidden");
+    } else {
+      astroZone.classList.add("hidden");
+    }
+  }
 
-  // --- 3. HUD OVERLAY ---
+  // --- 4. HUD OVERLAY ---
   const hudOverlay = document.getElementById("hud-overlay") || document.getElementById("nasa-hud");
   const hudImg = document.getElementById("hud-img") || document.getElementById("hud-image");
   const hudCaption = document.getElementById("hud-caption");
@@ -984,7 +1034,8 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- 4. ACTION BUTTONS ---
+  // --- 5. ACTION BUTTONS & SFX LISTENERS ---
+  // --- 5. ACTION BUTTONS & SFX LISTENERS ---
   const choicesContainer = document.getElementById("choices-container");
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
@@ -993,13 +1044,21 @@ function renderNode(nodeKey) {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
         btn.textContent = choice.text;
+
+        // Hover SFX
+        btn.addEventListener("mouseenter", () => {
+          if (window.audioManager) audioManager.play('ui_hover');
+        });
+
+        // Direct Node Call — renderNode handles choice_confirm / whoosh cleanly on start!
         btn.onclick = () => renderNode(choice.nextNode);
+
         choicesContainer.appendChild(btn);
       });
     }
   }
 
-  // --- 5. BADGE UNLOCK CHECKER ---
+  // --- 6. BADGE UNLOCK CHECKER ---
   if (nodeKey === "m1_p9_victory" || nodeKey === "m1_victory") {
     unlockAchievement("m1_pioneer");
   } else if (nodeKey === "m2_p9_victory" || nodeKey === "m2_p4_success" || nodeKey === "m2_victory") {
@@ -1019,8 +1078,35 @@ function renderNode(nodeKey) {
   renderAchievementBadges();
 }
 
-// Initializing application state on load
+// Global Startup Trigger
 document.addEventListener("DOMContentLoaded", () => {
   renderAchievementBadges();
-  updateTitleMenuButtons();
+
+  if (window.audioManager) {
+    // 1. Try playing immediately on load
+    const playPromise = window.audioManager.sounds.theme_song.play();
+
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Played successfully on load! Set looping enabled
+          window.audioManager.sounds.theme_song.loop = true;
+        })
+        .catch(() => {
+          // Autoplay was blocked by browser policy — trigger on first click/keypress
+          const startAudioOnFirstInteraction = () => {
+            const titleScreen = document.getElementById("title-screen");
+            if (titleScreen && !titleScreen.classList.contains("hidden")) {
+              window.audioManager.play('theme_song', true);
+            }
+            // Remove listeners once activated
+            window.removeEventListener('click', startAudioOnFirstInteraction);
+            window.removeEventListener('keydown', startAudioOnFirstInteraction);
+          };
+
+          window.addEventListener('click', startAudioOnFirstInteraction);
+          window.addEventListener('keydown', startAudioOnFirstInteraction);
+        });
+    }
+  }
 });
