@@ -101,3 +101,15 @@ python3 build_asset_pipeline.py
 ### 4. Launch the Game
 Open `index.html` directly in any modern browser, or launch it using VS Code's **Live Server** extension
 
+
+## 💖 Acknowledgments
+
+
+Big thanks to these amazing individuals! They all helped with the storyline, images, sfx, overall testing and so on...
+
+[![progKitty](https://shields.io)](https://github.com/progKitty)
+[![zasheearameesa-dot](https://shields.io)](https://github.com/zasheearameesa-dot)
+[![f0rsakeNiSd3ad](https://shields.io)](https://github.com/f0rsakeNiSd3ad)
+[![MeherNaifa](https://shields.io)](https://github.com/MeherNaifa)
+Ananya Saha Orni
+
