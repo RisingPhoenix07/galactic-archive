@@ -111,5 +111,7 @@ Big thanks to these amazing individuals! They all helped with the storyline, ima
 [![zasheearameesa-dot](https://shields.io)](https://github.com/zasheearameesa-dot)
 [![f0rsakeNiSd3ad](https://shields.io)](https://github.com/f0rsakeNiSd3ad)
 [![MeherNaifa](https://shields.io)](https://github.com/MeherNaifa)
-Ananya Saha Orni
+[![Ananya Saha Orni](https://shields.io)](https://github.com/Hihumanbeings)
+
+team_AstroCare_
 
