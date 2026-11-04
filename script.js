@@ -835,16 +835,16 @@ function renderNode(nodeKey) {
     }
   }
 
+  // Render Educational Failure Debrief with Glossary Parser
   const debriefBox = document.getElementById("debrief-box");
   if (debriefBox) {
     if (node.debrief) {
-      debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${node.debrief}`;
+      debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${parseGlossaryTerms(node.debrief)}`;
       debriefBox.classList.remove("hidden");
     } else {
       debriefBox.classList.add("hidden");
     }
   }
-
   const rezZone = document.getElementById("secret-rez-zone");
   if (rezZone) {
     if (nodeKey === "museum_exit") {

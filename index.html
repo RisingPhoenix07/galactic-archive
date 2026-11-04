@@ -30,7 +30,7 @@
     <!-- Main Title Screen -->
     <div id="title-screen" class="title-screen">
       <!-- Mute Button (Left Side) -->
-      <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted">
+      <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted" aria-label="Toggle Mute">
         🔇 MUTE
       </button>
     
@@ -57,35 +57,32 @@
     </div>
 
     <!-- Comic Panel Screen (Hidden until Start Game) -->
-    
-<div id="panel-box" class="panel-box hidden">
-  <!-- NASA Real Data Overlay (HUD) -->
-  <div id="hud-overlay" class="hud-overlay hidden">
-    <span class="hud-header">REAL NASA TELEMETRY</span>
-    <img id="hud-img" src="" alt="Telemetry Data">
-    <p id="hud-caption"></p>
-  </div>
+    <div id="panel-box" class="panel-box hidden">
+      <!-- NASA Real Data Overlay (HUD) -->
+      <div id="hud-overlay" class="hud-overlay hidden">
+        <span class="hud-header">REAL NASA TELEMETRY</span>
+        <img id="hud-img" src="" alt="Telemetry Data">
+        <p id="hud-caption"></p>
+      </div>
 
-  <!-- Comic Caption Box -->
-  <div id="caption-box" class="caption-box"></div>
-  
-  <!-- Educational Failure Debrief Box (ADD THIS LINE) -->
-  <div id="debrief-box" class="debrief-box hidden"></div>
-  
-  <!-- Hidden Interactive Easter Egg Overlays -->
-  <div id="secret-rez-zone" class="secret-rez-zone hidden">
-    <span class="glowing-rez-text">Rez...</span>
-  </div>
-  <div id="secret-astro-zone" class="secret-astro-zone hidden">
-    <span class="glowing-astro-text">Astro Care</span>
-  </div>
-</div>
+      <!-- Comic Caption Box -->
+      <div id="caption-box" class="caption-box"></div>
+      
+      <!-- Educational Failure Debrief Box -->
+      <div id="debrief-box" class="debrief-box hidden"></div>
+      
+      <!-- Hidden Interactive Easter Egg Overlays -->
+      <div id="secret-rez-zone" class="secret-rez-zone hidden">
+        <span class="glowing-rez-text">Rez...</span>
+      </div>
+      <div id="secret-astro-zone" class="secret-astro-zone hidden">
+        <span class="glowing-astro-text">Astro Care</span>
+      </div>
+    </div>
 
     <!-- Choice Buttons Area (Hidden until Start Game) -->
     <div id="choices-container" class="choices-container hidden"></div>
   </div>
-
-  
 
   <!-- ========================================== -->
   <!-- JUDGE ARCHIVE INFO MODAL -->
@@ -141,6 +138,7 @@
       </div>
     </div>
   </div>
+
   <!-- Audio Manager Class First, then Game Logic -->
   <script src="audio.js"></script>
   <script src="script.js"></script>
