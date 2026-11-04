@@ -3,15 +3,19 @@
 // ==========================================
 const storyTree = {
   // LEVEL 0: THE GALACTIC ARCHIVE MUSEUM
+  // LEVEL 0: GALACTIC ARCHIVE TERMINAL HUB
   intro_p1: {
     bgImage: "assets/panels/intro_1.jpg",
-    caption: "The year is 2036. Inside the Galactic Archive Museum, where history isn't just stored... it's lived.\nYou found a glowing terminal and wondering if you could approach it...",
+    caption: "The year is 2036. Inside the Galactic Archive Museum, where history isn't just stored... it's lived.\nSelect a historical mission log from the terminal directory below.",
     hud: null,
-    choices: [{ text: "Approach Terminal Alcove (1)", nextNode: "intro_p2" }]
+    choices: [
+      { text: "📜 ACT I: Pioneer Era (1960s - 1970s)", nextNode: "intro_p2" },
+      { text: "🚀 ACT II: Deep Space & Artemis Era (2020s+)", nextNode: "intro_p3" }
+    ]
   },
   intro_p2: {
     bgImage: "assets/panels/intro_2.jpg",
-    caption: "ACT I TERMINAL: Select an archive log from the Historic Pioneer Era (1960s - 1970s).",
+    caption: "ACT I TERMINAL: Select an archive log from the Historic Pioneer Era.",
     hud: null,
     choices: [
       { text: "1. Mission 1: Friendship 7 (1962)", nextNode: "m1_entry" },
@@ -23,14 +27,14 @@ const storyTree = {
   },
   intro_p3: {
     bgImage: "assets/panels/intro_2.jpg",
-    caption: "ACT II TERMINAL: Select an archive log from the Modern Deep Space & Artemis Era.",
+    caption: "ACT II TERMINAL: Select an archive log from the Modern Deep Space Era.",
     hud: null,
     choices: [
       { text: "1. Mission 5: Artemis Gateway Orbit (2026)", nextNode: "m5_entry" },
       { text: "2. Mission 6: Mars Chryse Landing (2042)", nextNode: "m6_entry" },
       { text: "3. Mission 7: Europa Subsurface Probe (2055)", nextNode: "m7_entry" },
       { text: "⬅️ PREVIOUS PAGE: Act I Historic Era", nextNode: "intro_p2" },
-      { text: "🏠 Return to Main Museum Hub", nextNode: "intro_p1" }
+      { text: "🏠 Return to Archive Museum Hub", nextNode: "intro_p1" }
     ]
   },
 
@@ -50,6 +54,7 @@ const storyTree = {
   m1_p2_drift: {
     bgImage: "assets/panels/m1_p2_drift.jpg",
     caption: "PATH 4 FAILURE: Uncontrolled Orbital Drift! Cabin pressure loss detected, Seal 3B breach.",
+    debrief: "WHAT REALLY HAPPENED: In 1962, Glenn suffered a clogged yaw thruster. Had manual attitude control not been engaged promptly, uncontrolled tumbling would have caused rapid cabin pressure loss and re-entry angle deviation.",
     hud: null,
     choices: [{ text: "Retry Mission 1 (Enter)", nextNode: "m1_entry" }]
   },
@@ -68,6 +73,7 @@ const storyTree = {
   m1_p4_jettison: {
     bgImage: "assets/panels/m1_p4_jettison.jpg",
     caption: "PATH 2 FAILURE: Retropack jettisoned! Loose heat shield exposed without retropack straps holding it in place.",
+    debrief: "WHAT REALLY HAPPENED: NASA controllers feared Segment 51 was unlatched. Retropack straps were kept on during re-entry to hold the heat shield secure against 3,000°F plasma friction.",
     hud: null,
     choices: [{ text: "Retry Mission 1 (Enter)", nextNode: "m1_entry" }]
   },
@@ -86,12 +92,14 @@ const storyTree = {
   m1_p7_tumble: {
     bgImage: "assets/panels/m1_p7_tumble.jpg",
     caption: "FAILURE: Gyroscopic tumble! Friendship 7 capsule spinning wildly in Low Earth Orbit.",
+    debrief: "WHAT REALLY HAPPENED: Over-correcting fly-by-wire controls without monitoring rate gyros caused fuel depletion and high-rate tumbling, making controlled retroburn impossible.",
     hud: null,
     choices: [{ text: "Retry Mission 1 (Enter)", nextNode: "m1_entry" }]
   },
   m1_p8_autofail: {
     bgImage: "assets/panels/m1_p8_autofail.jpg",
     caption: "PATH 5 CRITICAL FAILURE: Auto Control Lost / Gyro Failure! Retropack controls locked in spin.",
+    debrief: "WHAT REALLY HAPPENED: Mercury ASCS auto-pilot gyros had high drift rates. Relying strictly on automated systems without manual Fly-By-Wire intervention led to orbital alignment loss prior to retrofire.",
     hud: null,
     choices: [{ text: "Retry Mission 1 (Enter)", nextNode: "m1_entry" }]
   },
@@ -149,24 +157,28 @@ const storyTree = {
   m2_p5_tether_wrap: {
     bgImage: "assets/panels/m2_p5_tether_wrap.jpg",
     caption: "PATH 2 FAILURE: Tether Entanglement & Spin Failure! Critical oxygen exhaustion. Capsule spinning at 12 RPM.",
+    debrief: "WHAT REALLY HAPPENED: During America's first EVA in 1965, Ed White found the Hand-Held Maneuvering Unit (HHMU) ran out of propellant in just 20 seconds. Over-using gas bursts caused severe tether wrapping and rapid metabolic exertion.",
     hud: null,
     choices: [{ text: "Retry Mission 2 (Enter)", nextNode: "m2_p1_hhmu" }]
   },
   m2_p6_jammed_retro: {
     bgImage: "assets/panels/m2_p6_jammed_retro.jpg",
     caption: "PATH 3 FAILURE: Jammed Latch & Retrofire! Emergency de-orbit initiated while hatch seal remained unlatched.",
+    debrief: "WHAT REALLY HAPPENED: Initiating retrofire while the hatch mechanism was binding would cause explosive depressurization. Ed White had to manually ratchet the hatch dogs using sheer physical force while Jim McDivitt held his legs.",
     hud: null,
     choices: [{ text: "Retry Mission 2 (Enter)", nextNode: "m2_p1_hhmu" }]
   },
   m2_p7_fogged: {
     bgImage: "assets/panels/m2_p7_fogged_visor.jpg",
     caption: "PATH 4 FAILURE: Metabolic Overheat & Visor Fogging! Suit temp reached 48.7°C. Cooling system offline.",
+    debrief: "WHAT REALLY HAPPENED: Floating in microgravity required far more physical effort than anticipated. Ed White's heart rate spiked to 178 BPM, overloading the suit's environmental cooling system and blinding him with internal visor condensation.",
     hud: null,
     choices: [{ text: "Retry Mission 2 (Enter)", nextNode: "m2_p1_hhmu" }]
   },
   m2_p8_pressure_leak: {
     bgImage: "assets/panels/m2_p8_pressure_leak.jpg",
     caption: "PATH 5 CRITICAL FAILURE: Bent Hatch Dogs & Cabin Pressure Leak! Pressure falling past 3.2 PSI.",
+    debrief: "WHAT REALLY HAPPENED: Solar radiation caused thermal differential expansion (+1.2mm) in the titanium hatch rim. Forcing the locking dogs without proper mechanical leverage would strip the gears, leaving the cabin unable to hold atmosphere.",
     hud: null,
     choices: [{ text: "Retry Mission 2 (Enter)", nextNode: "m2_p1_hhmu" }]
   },
@@ -227,24 +239,28 @@ const storyTree = {
   m3_p5_impact: {
     bgImage: "assets/panels/m3_p5_path2_impact.jpg",
     caption: "PATH 2 FAILURE: Fatal Trajectory Error! Impact imminent on Lunar Farside. Gyro failed, no rescue possible.",
+    debrief: "WHAT REALLY HAPPENED: Behind the Moon, telemetry with Earth (LOS) was completely severed. Manually firing RCS thrusters during blackout without inertial guidance lock resulted in trajectory decay directly into farside lunar highlands.",
     hud: null,
     choices: [{ text: "Restart Mission 3 (Enter)", nextNode: "m3_p1_mcc" }]
   },
   m3_p6_flyby: {
     bgImage: "assets/panels/m3_p6_path3_flyby.jpg",
     caption: "PATH 3 FAILURE: Hyperbolic Flyby / Missed Capture! Orbit capture failed. Capsule committed to free-return loop.",
+    debrief: "WHAT REALLY HAPPENED: Aborting the SPS LOI engine burn prematurely prevented Apollo 8 from entering lunar orbit, forcing the spacecraft into a hyperbolic trajectory back toward Earth on a high-risk free-return coast.",
     hud: null,
     choices: [{ text: "Restart Mission 3 (Enter)", nextNode: "m3_p1_mcc" }]
   },
   m3_p7_skipout: {
     bgImage: "assets/panels/m3_p7_path4_skipout.jpg",
     caption: "PATH 4 FAILURE: Atmospheric Skip-Out! Heatshield glowing at 1200°C. Trajectory skipped off atmosphere into orbital drift.",
+    debrief: "WHAT REALLY HAPPENED: Over-thrusting during Trans-Lunar Coast mid-course correction shifted the entry flight path angle ($\gamma$) shallower than $-5.2^\circ$, causing the capsule to skip off Earth's upper atmosphere into solar orbit.",
     hud: null,
     choices: [{ text: "Restart Mission 3 (Enter)", nextNode: "m3_p1_mcc" }]
   },
   m3_p8_mascon: {
     bgImage: "assets/panels/m3_p8_path5_mascon_reentry.jpg",
     caption: "PATH 5 CRITICAL FAILURE: Mascon Drift & Steep Re-entry! Thermal limit exceeded at 3,300°C. Structural failure imminent.",
+    debrief: "WHAT REALLY HAPPENED: Lunar mascons (mass concentrations) distort unmonitored lunar orbits. Unchecked gravitational perturbations altered the return corridor to a steep entry angle (> -7.4°), exceeding heatshield thermal limits.",
     hud: null,
     choices: [{ text: "Restart Mission 3 (Enter)", nextNode: "m3_p1_mcc" }]
   },
@@ -303,24 +319,28 @@ const storyTree = {
   m4_abort: {
     bgImage: "assets/panels/m4_p5_path2_abort.jpg",
     caption: "PATH 2 FAILURE: Abort stage fired at 5,000 FT. Crew survived, but landing was abandoned.",
+    debrief: "WHAT REALLY HAPPENED: The 1202/1201 alarm was caused by the rendezvous radar leaking data into the Apollo Guidance Computer (AGC). Guidance Officer Steve Bales famously realized the CPU was recovering via executive overflow, saving the historic landing.",
     hud: null,
     choices: [{ text: "Restart Mission 4 (Enter)", nextNode: "m4_entry" }]
   },
   m4_crash: {
     bgImage: "assets/panels/m4_p6_path3_tipover.jpg",
     caption: "PATH 3 CRITICAL FAILURE: Lander struck West Crater boulders at 22° tilt angle. Hull breached.",
+    debrief: "WHAT REALLY HAPPENED: P64 auto-pilot was targeting a boulder field surrounding West Crater. Neil Armstrong had to take semi-automatic P66 manual control to overfly the crater and find a smooth touchdown spot.",
     hud: null,
     choices: [{ text: "Restart Mission 4 (Enter)", nextNode: "m4_entry" }]
   },
   m4_engine_fault: {
     bgImage: "assets/panels/m4_p7_path4_explosion.jpg",
     caption: "PATH 4 CRITICAL FAULT: Engine thermal overload! Nozzle vapor seal ruptured in vacuum.",
+    debrief: "WHAT REALLY HAPPENED: Throttle adjustments in low-density vacuum required precise P66 rate throttling. Pinning the descent engine at full 100% thrust close to the surface would cause thermal blowback against the landing legs.",
     hud: null,
     choices: [{ text: "Restart Mission 4 (Enter)", nextNode: "m4_entry" }]
   },
   m4_glitch: {
     bgImage: "assets/panels/m4_p8_path5_tumble.jpg",
     caption: "PATH 5 SYSTEM FAILURE: RAM wipe erased orbital guidance tables. Lander tumbling out of control.",
+    debrief: "WHAT REALLY HAPPENED: Attempting to clear the AGC RAM during powered descent purged state vector guidance coordinates, depriving the RCS thrusters of baseline stabilization references.",
     hud: null,
     choices: [{ text: "Restart Mission 4 (Enter)", nextNode: "m4_entry" }]
   },
@@ -378,24 +398,28 @@ const storyTree = {
   m5_p5_skipout: {
     bgImage: "assets/panels/m5_p5_skipout.jpg",
     caption: "PATH 2 FAILURE: Trajectory Skipout! Atmospheric skim was too shallow. Craft bouncing out into deep space with no re-capture trajectory.",
+    debrief: "WHAT REALLY HAPPENED: Artemis Orion skip re-entry uses atmospheric lift to trim velocity. Entering at an angle shallow by even 0.5 degrees causes the capsule to ricochet off dense mesospheric air layers into heliocentric orbit.",
     hud: null,
     choices: [{ text: "Retry Mission 5 (Enter)", nextNode: "m5_entry" }]
   },
   m5_p6_thermal_breach: {
     bgImage: "assets/panels/m5_p6_thermal_breach.jpg",
     caption: "PATH 3 FAILURE: Thermal Shield Breach! Plasma stream burned through unaligned shield tiles during re-entry.",
+    debrief: "WHAT REALLY HAPPENED: Re-entering from deep space trajectories involves speeds exceeding 24,500 mph. Any misalignment between the thermal shield vector and the plasma shockwave stream causes local tile erosion and structural burn-through.",
     hud: null,
     choices: [{ text: "Retry Mission 5 (Enter)", nextNode: "m5_entry" }]
   },
   m5_p7_power_fail: {
     bgImage: "assets/panels/m5_p7_power_fail.jpg",
     caption: "PATH 4 FAILURE: Power Critical! Main battery fault caused total bus shutdown. Frost forming on viewports.",
+    debrief: "WHAT REALLY HAPPENED: Cutting Power Bus B to clear gyro slip tripped emergency breaker switches on primary fuel cell channels, freezing environmental life support systems in deep space.",
     hud: null,
     choices: [{ text: "Retry Mission 5 (Enter)", nextNode: "m5_entry" }]
   },
   m5_p8_comms_blackout: {
     bgImage: "assets/panels/m5_p8_comms_blackout.jpg",
     caption: "PATH 5 FAILURE: Far-Side Comms Blackout! Trajectory drifted into lunar shadow with no signal reconnect.",
+    debrief: "WHAT REALLY HAPPENED: Slewing primary high-gain antennas away from Earth relay satellites during solar radiation storms broke automated trajectory telemetry, causing unmonitored orbital decay behind the Moon.",
     hud: null,
     choices: [{ text: "Retry Mission 5 (Enter)", nextNode: "m5_entry" }]
   },
@@ -453,24 +477,28 @@ const storyTree = {
   m6_p5_boulder_crash: {
     bgImage: "assets/panels/m6_p5_boulder_crash.jpg",
     caption: "PATH 2 FAILURE: Structural Crash! Lander struck a massive Martian boulder at 52° tilt angle. Hull integrity breached.",
+    debrief: "WHAT REALLY HAPPENED: The thin Martian atmosphere (1% of Earth's pressure) provides minimal braking. Locking thrusters on auto-descent over un-mapped boulder grids causes lander leg shear or tip-over upon touchdown.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
   m6_p6_shield_failure: {
     bgImage: "assets/panels/m6_p6_shield_failure.jpg",
     caption: "PATH 3 FAILURE: Critical Thermal Failure! Unaligned heat shield disintegrated under Mach 18.7 plasma shear.",
+    debrief: "WHAT REALLY HAPPENED: Deploying supersonic parachutes before pitch trim stabilization generates extreme aerodynamic torque, stripping the heat shield tiles under Mach 18 reentry shear forces.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
   m6_p7_habitat_freeze: {
     bgImage: "assets/panels/m6_p7_habitat_freeze.jpg",
     caption: "PATH 4 FAILURE: Habitat Freeze! Filter clog tripped primary power grid. Temperatures plunged below freezing.",
+    debrief: "WHAT REALLY HAPPENED: Fine Martian dust contains electrostatic iron particles. Rerouting maximum power into clogged intakes creates an electrical dead-short, tripping main habitat thermal scrubbers in -80°C night air.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
   m6_p8_comms_blackout: {
     bgImage: "assets/panels/m6_p8_comms_blackout.jpg",
     caption: "PATH 5 FAILURE: Signal Blackout & Orbital Loss! Surface transmitter destroyed during dust storm overload.",
+    debrief: "WHAT REALLY HAPPENED: Overdriving high-frequency radio arrays during regional Martian dust storms causes ionospheric plasma arc discharges, frying surface transmitter relays permanently.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
@@ -528,24 +556,28 @@ const storyTree = {
   m7_p5_ice_crush: {
     bgImage: "assets/panels/m7_p5_ice_crush.jpg",
     caption: "PATH 2 FAILURE: Hull Implosion! Subsurface ice sheet shift crushed probe structure at 4000 BAR pressure.",
+    debrief: "WHAT REALLY HAPPENED: Europa's 15km thick outer ice crust undergoes active tidal flexing from Jupiter's gravitational pull. Forcing descent through narrow rift fractures exposes probes to localized tectonic ice crushes exceeding 4,000 atmospheres.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p6_cutter_overheat: {
     bgImage: "assets/panels/m7_p6_cutter_overheat.jpg",
     caption: "PATH 3 FAILURE: Thermal Cutter Overheat! Mk-IV melt probe jammed in ice layer 12 with 0% coolant flow.",
+    debrief: "WHAT REALLY HAPPENED: Running cryo-melt lasers at 100% capacity without regulating liquid meltwater recirculation boils away ambient coolant, causing thermal stress fracturing of the probe's tungsten cutter nose.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p7_abyss_drift: {
     bgImage: "assets/panels/m7_p7_abyss_drift.jpg",
     caption: "PATH 4 FAILURE: Sonar Blind & Abyss Drift! Navigation failed at 1832m depth. Drifting into pitch-black ocean abyss.",
+    debrief: "WHAT REALLY HAPPENED: Disabling active sonar and optical beacons to save power in sub-ice oceans leaves probes vulnerable to thermal convection currents, drifting off-course into abyssal trenches with zero signal recovery.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p8_radiation_loss: {
     bgImage: "assets/panels/m7_p8_radiation_loss.jpg",
     caption: "PATH 5 FAILURE: Radiation Signal Loss! Jovian radiation burst destroyed surface relay array. All contact lost.",
+    debrief: "WHAT REALLY HAPPENED: Jupiter's magnetosphere traps intense radiation belts. Increasing RF transmission power during high-energy magnetospheric bursts attracts static discharge across the surface ice transceiver array.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
@@ -564,6 +596,7 @@ const storyTree = {
     choices: [{ text: "🏠 Return to Title Screen", nextNode: "intro_p1" }]
   }
 };
+
 
 // ==========================================
 // 2. ACHIEVEMENTS SYSTEM
@@ -618,6 +651,42 @@ function renderAchievementBadges() {
 }
 
 // ==========================================
+// GLOSSARY & ACRONYM DICTIONARY
+// ==========================================
+const GLOSSARY = {
+  "HHMU": "Hand-Held Maneuvering Unit (Gas thruster gun used during Gemini EVA)",
+  "EVA": "Extravehicular Activity (Spacewalk outside spacecraft)",
+  "LOS": "Loss of Signal (Comms blackout behind celestial bodies)",
+  "AOS": "Acquisition of Signal (Telemetry link re-established with Earth)",
+  "SPS": "Service Propulsion System (Apollo main rocket engine)",
+  "LOI": "Lunar Orbit Insertion (Engine retro-burn to capture into lunar orbit)",
+  "AGC": "Apollo Guidance Computer (Primary flight computer)",
+  "RCS": "Reaction Control System (Attitude control thruster jets)"
+};
+
+function parseGlossaryTerms(text) {
+  if (!text) return "";
+  let parsedText = text;
+  Object.keys(GLOSSARY).forEach(term => {
+    const regex = new RegExp(`\\b(${term})\\b`, 'g');
+    parsedText = parsedText.replace(regex, `<span class="glossary-term" data-tooltip="${GLOSSARY[term]}">$1</span>`);
+  });
+  return parsedText;
+}
+
+// ==========================================
+// UTILITY: CHOICE SHUFFLER
+// ==========================================
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// ==========================================
 // 3. SESSION SAVING & UI CONTROL
 // ==========================================
 function saveCurrentSession(nodeKey) {
@@ -666,13 +735,11 @@ function goToMainMenu() {
     const gameContainer = document.getElementById("game-container");
     const astroZone = document.getElementById("secret-astro-zone");
 
-    // 1. Reset & Restart Audio Context to Theme Song
     if (window.audioManager) {
       window.audioManager.stopAll();
       window.audioManager.play('theme_song', true);
     }
 
-    // 2. Reveal Title Screen & Unhide Astro Care Text
     if (titleScreen) titleScreen.classList.remove("hidden");
     if (hudBar) hudBar.classList.add("hidden");
     if (gameContainer) gameContainer.classList.add("hidden");
@@ -700,6 +767,11 @@ function showGameInterface() {
   }
 }
 
+function openMissionSelect() {
+  showGameInterface();
+  renderNode("intro_p1");
+}
+
 // ==========================================
 // 4. CORE ENGINE RENDERER
 // ==========================================
@@ -710,9 +782,7 @@ function renderNode(nodeKey) {
     return;
   }
 
-  // Auto-save session
   saveCurrentSession(nodeKey);
-
   const panelBox = document.getElementById("panel-box") || document.getElementById("comic-panel");
 
   // --- 1. VISUAL WARNING, SHAKE & GLOW DETECTOR ---
@@ -722,13 +792,12 @@ function renderNode(nodeKey) {
   if (panelBox) {
     panelBox.classList.remove("shake", "alarm-flash", "success-glow");
     if (isFailureOrDanger) {
-      void panelBox.offsetWidth; // Force DOM reflow
+      void panelBox.offsetWidth;
       panelBox.classList.add("shake", "alarm-flash");
     } else if (isSuccessNode) {
-      void panelBox.offsetWidth; // Force DOM reflow
+      void panelBox.offsetWidth;
       panelBox.classList.add("success-glow");
     }
-
     if (node.bgImage) {
       panelBox.style.backgroundImage = `url('${node.bgImage}')`;
     }
@@ -737,7 +806,6 @@ function renderNode(nodeKey) {
   // --- 2. AUDIO INTEGRATION MANAGER ---
   if (window.audioManager && typeof audioManager.play === "function") {
     audioManager.stopAll();
-
     if (nodeKey === "intro_p1" || isSuccessNode || nodeKey === "museum_exit" || nodeKey.includes("ending") || nodeKey.includes("victory")) {
       audioManager.play('theme_song', true);
     } else {
@@ -756,14 +824,24 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- 3. CAPTION RENDER & SECRET HOVER ZONE TOGGLE ---
+  // --- 3. CAPTION & DEBRIEF RENDER ---
   const captionBox = document.getElementById("caption-box") || document.getElementById("caption-text");
   if (captionBox) {
-    captionBox.textContent = node.caption || "";
+    captionBox.innerHTML = parseGlossaryTerms(node.caption || "");
     if (nodeKey === "museum_exit") {
       captionBox.classList.add("caption-epilogue");
     } else {
       captionBox.classList.remove("caption-epilogue");
+    }
+  }
+
+  const debriefBox = document.getElementById("debrief-box");
+  if (debriefBox) {
+    if (node.debrief) {
+      debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${node.debrief}`;
+      debriefBox.classList.remove("hidden");
+    } else {
+      debriefBox.classList.add("hidden");
     }
   }
 
@@ -810,15 +888,20 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- 5. ACTION BUTTONS ---
+  // --- 5. ACTION BUTTONS (WITH SHUFFLING) ---
   const choicesContainer = document.getElementById("choices-container");
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
     if (node.choices && node.choices.length > 0) {
-      node.choices.forEach(choice => {
+      const isMenuNode = nodeKey.startsWith("intro_") || nodeKey.includes("victory") || nodeKey === "museum_exit";
+      const displayChoices = isMenuNode ? node.choices : shuffleArray(node.choices);
+
+      displayChoices.forEach((choice, index) => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
-        btn.textContent = choice.text;
+        const cleanText = choice.text.replace(/^[0-9]\.\s*/, "");
+        btn.textContent = isMenuNode ? choice.text : `${index + 1}. ${cleanText}`;
+
         btn.addEventListener("mouseenter", () => {
           if (window.audioManager && typeof audioManager.play === "function") {
             audioManager.play('ui_hover');
@@ -853,19 +936,18 @@ function renderNode(nodeKey) {
 }
 
 // ==========================================
-// 5. KEYBOARD NAVIGATION HOTKEYS
+// 5. KEYBOARD NAVIGATION HOTKEYS & INITIALIZATION
 // ==========================================
 document.addEventListener("keydown", (e) => {
   const choicesContainer = document.getElementById("choices-container");
   const titleScreen = document.getElementById("title-screen");
-  
+
   if (titleScreen && !titleScreen.classList.contains("hidden")) return;
   const modal = document.getElementById("judge-info-modal");
   if (modal && !modal.classList.contains("hidden")) return;
 
   if (choicesContainer && !choicesContainer.classList.contains("hidden")) {
     const buttons = choicesContainer.querySelectorAll(".choice-btn");
-    
     if (["1", "2", "3"].includes(e.key)) {
       const index = parseInt(e.key) - 1;
       if (buttons[index]) {
@@ -877,7 +959,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Initial startup call
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof renderAchievementBadges === 'function') renderAchievementBadges();
   if (typeof updateTitleMenuButtons === 'function') updateTitleMenuButtons();
