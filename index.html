@@ -27,15 +27,24 @@
 
   <div class="game-container">
 
-    <!-- Title / First Screen Page -->
+    <!-- Main Title Screen -->
     <div id="title-screen" class="title-screen">
+      <!-- Mute Button (Left Side) -->
+      <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted">
+        🔇 MUTE
+      </button>
+    
+      <!-- Info Button for Judges (Right Side) -->
+      <button id="info-btn" onclick="openJudgeInfoModal()" class="hud-mute-btn title-info-pos">
+        ℹ️ INFO
+      </button>
+    
       <div class="title-content">
         <img src="assets/panels/game_icon.jpg" alt="Galactic Archive Icon" class="game-cover-icon">
         <h1 class="game-title">GALACTIC ARCHIVE</h1>
         <p class="game-subtitle">Interactive Space History RPG</p>
-
-        <!-- Interactive Astro Care Audio Unlock Trigger -->
-        <div id="secret-astro-zone" class="secret-astro-zone">
+    
+        <div class="title-astro-tag">
           <span class="glowing-astro-text">__presented by Astro Care__</span>
         </div>
         
@@ -73,6 +82,62 @@
     <div id="choices-container" class="choices-container hidden"></div>
   </div>
 
+  
+
+  <!-- ========================================== -->
+  <!-- JUDGE ARCHIVE INFO MODAL -->
+  <!-- ========================================== -->
+  <div id="judge-info-modal" class="modal-overlay hidden">
+    <div class="modal-content crt-terminal-box">
+      <div class="modal-header">
+        <h2>🚀 GALACTIC ARCHIVE — Tech summary</h2>
+        <button class="modal-close-btn" onclick="closeJudgeInfoModal()">✖</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="info-section">
+          <h3>📋 Project Overview</h3>
+          <p><strong>Galactic Archive</strong> is an interactive retro-comic RPG built to simulate historic and speculative space missions. Players solve critical telemetry warnings using real NASA data logs.</p>
+        </div>
+
+        <div class="info-section">
+          <h3>🛠️ Tech Stack & Architecture</h3>
+          <ul>
+            <li><strong>Frontend:</strong> Vanilla JavaScript (ES6+), HTML5, Custom CSS3 CRT Effects</li>
+            <li><strong>Audio Engine:</strong> Custom <code>AudioManager</code> class with dynamic SFX triggers and browser policy compliance</li>
+            <li><strong>State Management:</strong> <code>localStorage</code> session persistence and achievement tracking</li>
+            <li><strong>Asset Engine:</strong> Preloaded WebP/JPG panel rendering pipeline</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>📡 NASA Telemetry & Scientific Accuracy</h3>
+          <ul>
+            <li><strong>Historic Era (Act I):</strong> Friendship 7 (1962), Gemini 4 EVA (1965), Apollo 8 Earthrise (1968), Apollo 11 Landing (1969) mapped with real telemetry figures.</li>
+            <li><strong>Deep Space Era (Act II):</strong> Artemis Gateway (2026), Mars Chryse Landing (2042), and Europa Ocean Probe (2055) featuring simulated physics data.</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>🏅 Game Features</h3>
+          <ul>
+            <li>Interactive HUD Overlays with real NASA data frames</li>
+            <li>Persistent Badge System (7 collectible achievements)</li>
+            <li>Dynamic failure mechanics with scientific cause-and-effect explanations</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>⭐ Team & Credits</h3>
+          <p>Presented by <strong>Astro Care</strong> | Designed for Space History & Educational Interactive Media</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="choice-btn" onclick="closeJudgeInfoModal()">CLOSE BRIEFING</button>
+      </div>
+    </div>
+  </div>
   <!-- Audio Manager Class First, then Game Logic -->
   <script src="audio.js"></script>
   <script src="script.js"></script>

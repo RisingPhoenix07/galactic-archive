@@ -21,11 +21,9 @@ body {
 }
 
 .game-container {
-  /* Dynamic 16:9 scaling */
   width: min(96vw, 1200px);
   aspect-ratio: 16 / 9;
   max-height: 92vh;
-  
   position: relative;
   background-color: #000000;
   border: 4px solid #000000;
@@ -92,7 +90,6 @@ body {
   margin-bottom: 24px;
 }
 
-/* Title Screen Menu Buttons Container */
 .title-menu-buttons {
   display: flex;
   flex-direction: column;
@@ -100,7 +97,6 @@ body {
   width: 100%;
 }
 
-/* Start New Game Button */
 .start-btn {
   background: #64ffda;
   color: #0a192f;
@@ -122,7 +118,6 @@ body {
   transform: scale(1.03);
 }
 
-/* Restore Session Button */
 .start-btn.restore-btn {
   background: transparent;
   color: #00f0ff;
@@ -141,6 +136,23 @@ body {
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+}
+
+/* MUTE & INFO Position Controls */
+.title-mute-pos {
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.title-info-pos {
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  transform: translateY(-50%);
+  z-index: 1000;
 }
 
 /* ==========================================
@@ -214,24 +226,21 @@ body {
 }
 
 /* ==========================================
-   COMIC PANEL FRAME (Dynamic Image Fitting)
+   COMIC PANEL FRAME
    ========================================== */
 
 .panel-box {
   flex: 1;
   width: 100%;
   height: 100%;
-  
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
   background-color: #020c1b;
-  
   position: relative;
   transition: background-image 0.4s ease-in-out;
 }
 
-/* Comic Caption Box */
 .caption-box {
   position: absolute;
   bottom: 12px;
@@ -254,7 +263,7 @@ body {
 }
 
 /* ==========================================
-   INTERACTIVE SECRET EASTER EGGS
+   INTERACTIVE EASTER EGGS & BRANDING
    ========================================== */
 
 .secret-rez-zone {
@@ -290,33 +299,34 @@ body {
     0 0 40px #ffb703;
 }
 
-.secret-astro-zone {
-  position: absolute;
-  bottom: 20px;
-  right: 25px;
-  z-index: 10;
+.secret-astro-zone, .title-astro-tag {
+  margin-bottom: 20px;
   cursor: pointer;
   user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.secret-astro-zone:hover, .title-astro-tag:hover {
+  transform: scale(1.08);
 }
 
 .glowing-astro-text {
-  font-family: inherit;
-  font-size: 1.1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
   font-weight: bold;
   color: #00f0ff;
-  text-shadow: 0 0 8px #00f0ff, 0 0 15px #00f0ff;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   animation: astroGlow 2s infinite alternate;
 }
 
 @keyframes astroGlow {
   0% {
-    opacity: 0.6;
-    text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
+    opacity: 0.7;
+    text-shadow: 0 0 4px #00f0ff, 0 0 8px #00f0ff;
   }
   100% {
     opacity: 1;
-    text-shadow: 0 0 12px #00f0ff, 0 0 25px #00f0ff, 0 0 35px #00f0ff;
+    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #64ffda;
   }
 }
 
@@ -452,7 +462,6 @@ body {
   opacity: 0.6;
 }
 
-/* Achievement Toast Notification */
 .achievement-toast {
   position: fixed;
   bottom: 20px;
@@ -486,6 +495,111 @@ body {
 }
 
 /* ==========================================
+   JUDGE INFO MODAL (CRT TERMINAL BOX)
+   ========================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 12, 24, 0.88);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.crt-terminal-box {
+  background: #0a192f;
+  border: 2px solid #64ffda;
+  box-shadow: 0 0 25px rgba(100, 255, 218, 0.4), inset 0 0 15px rgba(100, 255, 218, 0.1);
+  width: 90%;
+  max-width: 680px;
+  max-height: 85vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  color: #e6f1ff;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(100, 255, 218, 0.1);
+  border-bottom: 1px solid #64ffda;
+}
+
+.modal-header h2 {
+  font-size: 1.1rem;
+  color: #64ffda;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #ff5555;
+  font-size: 1.4rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #020c1b;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #64ffda;
+  border-radius: 3px;
+}
+
+.info-section {
+  margin-bottom: 18px;
+  border-bottom: 1px dashed rgba(100, 255, 218, 0.2);
+  padding-bottom: 12px;
+}
+
+.info-section h3 {
+  color: #64ffda;
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.info-section ul {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  text-align: right;
+  border-top: 1px solid rgba(100, 255, 218, 0.2);
+  background: rgba(10, 25, 47, 0.95);
+}
+
+/* ==========================================
    ANIMATIONS & UTILITIES
    ========================================== */
 
@@ -498,7 +612,6 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Screen Shake FX for Danger/Failure Nodes */
 @keyframes screenShake {
   0% { transform: translate(1px, 1px) rotate(0deg); }
   10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -517,7 +630,6 @@ body {
   animation: screenShake 0.5s ease-in-out;
 }
 
-/* Red Screen Flash for Critical Alarms & Failures */
 .alarm-flash {
   animation: flashRed 0.6s infinite alternate;
 }
@@ -533,7 +645,6 @@ body {
   }
 }
 
-/* Blue/Cyan Glow Effect for Historical Success & Victory Nodes */
 .success-glow {
   animation: glowCyan 1.2s infinite alternate ease-in-out;
 }
@@ -549,47 +660,42 @@ body {
   }
 }
 
-/* Subtle hidden signature text style */
-.secret-sig {
-  font-style: italic;
-  opacity: 0.35;
-  font-size: 0.85em;
-  color: #8892b0;
-  transition: opacity 0.3s ease;
-}
+/* ==========================================
+   MOBILE LAYOUT FIXES
+   ========================================== */
 
-.secret-sig:hover {
-  opacity: 0.9;
-  color: #64ffda;
-}
-/* Title Screen Interactive Astro Care Signature */
-.secret-astro-zone {
-  margin-bottom: 20px;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-.secret-astro-zone:hover {
-  transform: scale(1.08);
-}
-
-.glowing-astro-text {
-  font-family: 'Courier New', monospace;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #00f0ff;
-  letter-spacing: 1.5px;
-  animation: astroGlow 2s infinite alternate;
-}
-
-@keyframes astroGlow {
-  0% {
-    opacity: 0.7;
-    text-shadow: 0 0 4px #00f0ff, 0 0 8px #00f0ff;
+@media screen and (max-width: 768px) {
+  .game-container {
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 100vh;
+    flex-direction: column;
   }
-  100% {
-    opacity: 1;
-    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #64ffda;
+
+  .title-mute-pos {
+    top: 16px !important;
+    left: 16px !important;
+    transform: none !important;
+  }
+
+  .title-info-pos {
+    top: 16px !important;
+    right: 16px !important;
+    transform: none !important;
+  }
+
+  .hud-overlay {
+    position: relative !important;
+    width: 95% !important;
+    margin: 10px auto !important;
+    max-height: 160px;
+    overflow-y: auto;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .panel-box {
+    width: 100% !important;
+    min-height: 300px !important;
   }
 }
