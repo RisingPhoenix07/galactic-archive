@@ -3,44 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Galactic Archive — An interactive sci-fi space history RPG powered by real NASA telemetry data and retro visual comic panels.">
   <title>Galactic Archive RPG</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
   <!-- Top HUD Bar (Hidden initially on title screen) -->
-  <div id="hud-bar" class="hidden">
-    <button id="main-menu-btn" onclick="goToMainMenu()" class="hud-home-btn">
+  <header id="hud-bar" class="hidden">
+    <button id="main-menu-btn" onclick="goToMainMenu()" class="hud-home-btn" aria-label="Return to Main Menu">
       🏠 Main Menu
     </button>
     
     <!-- Mute Toggle Button -->
-    <button id="mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn">
+    <button id="mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn" aria-label="Toggle Mute">
       🔊 SOUND
     </button>
     
     <!-- Achievement Badges Floating Bar -->
-    <div id="achievement-panel" class="badge-container">
+    <div id="achievement-panel" class="badge-container" aria-label="Achievements Panel">
       <!-- Badges render dynamically -->
     </div>
-  </div>
+  </header>
 
-  <div class="game-container">
+  <main class="game-container">
 
     <!-- Main Title Screen -->
-    <div id="title-screen" class="title-screen">
+    <section id="title-screen" class="title-screen">
       <!-- Mute Button (Left Side) -->
-      <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted" aria-label="Toggle Mute">
+      <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted" aria-label="Toggle Sound Mute">
         🔇 MUTE
       </button>
     
       <!-- Info Button for Judges (Right Side) -->
-      <button id="info-btn" onclick="openJudgeInfoModal()" class="hud-mute-btn title-info-pos">
+      <button id="info-btn" onclick="openJudgeInfoModal()" class="hud-mute-btn title-info-pos" aria-label="Open Technical Briefing">
         ℹ️ INFO
       </button>
     
       <div class="title-content">
-        <img src="assets/panels/game_icon.jpg" alt="Galactic Archive Icon" class="game-cover-icon">
+        <img src="assets/panels/game_icon.jpg" alt="Galactic Archive Cover Art" class="game-cover-icon">
         <h1 class="game-title">GALACTIC ARCHIVE</h1>
         <p class="game-subtitle">Interactive Space History RPG</p>
     
@@ -54,14 +55,14 @@
           <button id="reset-btn" class="start-btn restore-btn" onclick="resetSession()">RESET SESSION...</button>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Comic Panel Screen (Hidden until Start Game) -->
-    <div id="panel-box" class="panel-box hidden">
+    <section id="panel-box" class="panel-box hidden">
       <!-- NASA Real Data Overlay (HUD) -->
       <div id="hud-overlay" class="hud-overlay hidden">
         <span class="hud-header">REAL NASA TELEMETRY</span>
-        <img id="hud-img" src="" alt="Telemetry Data">
+        <img id="hud-img" src="" alt="Real NASA Telemetry Overlay">
         <p id="hud-caption"></p>
       </div>
 
@@ -78,20 +79,20 @@
       <div id="secret-astro-zone" class="secret-astro-zone hidden">
         <span class="glowing-astro-text">Astro Care</span>
       </div>
-    </div>
+    </section>
 
     <!-- Choice Buttons Area (Hidden until Start Game) -->
-    <div id="choices-container" class="choices-container hidden"></div>
-  </div>
+    <nav id="choices-container" class="choices-container hidden" aria-label="Mission Options"></nav>
+  </main>
 
   <!-- ========================================== -->
   <!-- JUDGE ARCHIVE INFO MODAL -->
   <!-- ========================================== -->
-  <div id="judge-info-modal" class="modal-overlay hidden">
+  <div id="judge-info-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-content crt-terminal-box">
       <div class="modal-header">
-        <h2>🚀 GALACTIC ARCHIVE — Tech summary</h2>
-        <button class="modal-close-btn" onclick="closeJudgeInfoModal()">✖</button>
+        <h2 id="modal-title">🚀 GALACTIC ARCHIVE — Tech summary</h2>
+        <button class="modal-close-btn" onclick="closeJudgeInfoModal()" aria-label="Close modal">✖</button>
       </div>
       
       <div class="modal-body">
