@@ -34,7 +34,132 @@ body {
 }
 
 /* ==========================================
-   TITLE / LANDING SCREEN (START PAGE)
+   TOP HUD BAR (FIXED CORNER CONTROLS)
+   ========================================== */
+
+.hud-bar {
+  position: fixed;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.hud-left-controls, 
+.hud-right-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.hud-btn {
+  background: rgba(10, 25, 47, 0.85);
+  color: #64ffda;
+  border: 1px solid #64ffda;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.hud-btn:hover {
+  background: #64ffda;
+  color: #0a192f;
+  box-shadow: 0 0 12px rgba(100, 255, 218, 0.6);
+}
+
+.hud-mute-btn {
+  background: rgba(0, 20, 40, 0.8);
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-mute-btn:hover {
+  background: #00f0ff;
+  color: #050a14;
+  box-shadow: 0 0 10px #00f0ff;
+}
+
+.hud-mute-btn.muted {
+  border-color: #ff3366;
+  color: #ff3366;
+}
+
+.hud-mute-btn.muted:hover {
+  background: #ff3366;
+  color: #ffffff;
+  box-shadow: 0 0 10px #ff3366;
+}
+/* ==========================================
+   HUD LOG PROGRESS BAR & PILL BUTTON
+   ========================================== */
+
+.hud-logs-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+}
+
+.log-btn-label {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Outer Progress Track (Rounded Pill Bar) */
+.log-progress-track {
+  width: 90px;
+  height: 12px;
+  background: rgba(2, 12, 27, 0.9);
+  border: 1px solid #64ffda;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Inner Filling Bar */
+.log-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff 0%, #64ffda 100%);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px #64ffda;
+}
+
+/* Percentage Text Label */
+.log-progress-text {
+  font-size: 0.75rem;
+  color: #64ffda;
+  min-width: 32px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.hud-logs-btn:hover .log-progress-track {
+  border-color: #ffffff;
+}
+
+.hud-logs-btn:hover .log-progress-fill {
+  background: linear-gradient(90deg, #64ffda 0%, #ffffff 100%);
+  box-shadow: 0 0 12px #ffffff;
+}
+/* ==========================================
+   TITLE / LANDING SCREEN
    ========================================== */
 
 .title-screen {
@@ -75,7 +200,6 @@ body {
 }
 
 .game-title {
-  font-family: 'Courier New', monospace;
   font-size: 2.2rem;
   color: #64ffda;
   margin: 0 0 8px 0;
@@ -84,10 +208,39 @@ body {
 }
 
 .game-subtitle {
-  font-family: 'Courier New', monospace;
   font-size: 1rem;
   color: #8892b0;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+/* ASTRO CARE BRANDING TAGLINE */
+.title-astro-credit, 
+.secret-astro-zone {
+  margin: 10px 0 20px 0;
+  text-align: center;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.title-astro-credit:hover, 
+.secret-astro-zone:hover {
+  transform: scale(1.08);
+}
+
+.glowing-astro-text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #00f0ff;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.7), 0 0 15px rgba(100, 255, 218, 0.4);
+  animation: astroGlow 2.5s infinite ease-in-out alternate;
+}
+
+@keyframes astroGlow {
+  0% { opacity: 0.75; transform: scale(1); text-shadow: 0 0 4px #00f0ff; }
+  100% { opacity: 1; transform: scale(1.03); text-shadow: 0 0 12px #00f0ff, 0 0 22px #64ffda; }
 }
 
 .title-menu-buttons {
@@ -100,7 +253,6 @@ body {
 .start-btn {
   background: #64ffda;
   color: #0a192f;
-  font-family: 'Courier New', monospace;
   font-size: 1.1rem;
   font-weight: bold;
   padding: 12px 24px;
@@ -131,14 +283,6 @@ body {
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.7);
 }
 
-.start-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* MUTE & INFO Position Controls */
 .title-mute-pos {
   position: absolute;
   top: 50%;
@@ -156,77 +300,7 @@ body {
 }
 
 /* ==========================================
-   TOP HUD BAR & HOME BUTTON
-   ========================================== */
-
-#hud-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-  pointer-events: none;
-}
-
-#hud-bar * {
-  pointer-events: auto;
-}
-
-.hud-home-btn {
-  background: rgba(10, 25, 47, 0.85);
-  color: #64ffda;
-  border: 1px solid #64ffda;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
-}
-
-.hud-home-btn:hover {
-  background: #64ffda;
-  color: #0a192f;
-  box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
-}
-
-.hud-mute-btn {
-  background: rgba(0, 20, 40, 0.8);
-  border: 1px solid #00f0ff;
-  color: #00f0ff;
-  padding: 6px 14px;
-  font-family: inherit;
-  font-size: 0.85rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-left: 8px;
-}
-
-.hud-mute-btn:hover {
-  background: #00f0ff;
-  color: #050a14;
-  box-shadow: 0 0 10px #00f0ff;
-}
-
-.hud-mute-btn.muted {
-  border-color: #ff3366;
-  color: #ff3366;
-}
-
-.hud-mute-btn.muted:hover {
-  background: #ff3366;
-  color: #ffffff;
-  box-shadow: 0 0 10px #ff3366;
-}
-
-/* ==========================================
-   COMIC PANEL FRAME
+   COMIC PANEL FRAME & CAPTION BOX
    ========================================== */
 
 .panel-box {
@@ -239,6 +313,7 @@ body {
   background-color: #020c1b;
   position: relative;
   transition: background-image 0.4s ease-in-out;
+  overflow: visible !important;
 }
 
 .caption-box {
@@ -255,15 +330,144 @@ body {
   box-shadow: 4px 4px 0px #000000;
   z-index: 10;
   white-space: pre-line;
+  overflow: visible !important;
 }
 
 .caption-box.caption-epilogue {
   right: 320px;
   max-width: 60%;
 }
+/* ==========================================
+   JUDGE INFO MODAL - REPO LINK BUTTON
+   ========================================== */
+
+.repo-link-box {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.repo-link-box span {
+  font-size: 0.85rem;
+  color: #8892b0;
+}
+
+.repo-link-btn {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  background: rgba(100, 255, 218, 0.08);
+  color: #64ffda;
+  border: 1px solid #64ffda;
+  padding: 8px 14px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.15);
+}
+
+.repo-link-btn:hover {
+  background: #64ffda;
+  color: #0a192f;
+  box-shadow: 0 0 18px rgba(100, 255, 218, 0.6);
+  transform: translateY(-1px);
+}
+/* ==========================================
+   EDUCATIONAL FAILURE DEBRIEF BOX
+   ========================================== */
+
+.debrief-box {
+  position: absolute;
+  top: 60px;
+  left: 16px;
+  max-width: 360px;
+  background: rgba(30, 5, 10, 0.94);
+  border: 2px solid #ff3366;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #ff99bb;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
+  z-index: 25;
+  overflow: visible !important;
+}
+
+.debrief-title {
+  color: #ff3366;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
 
 /* ==========================================
-   INTERACTIVE EASTER EGGS & BRANDING
+   GLOSSARY TOOLTIPS (CAPTION & DEBRIEF)
+   ========================================== */
+
+.glossary-term {
+  color: #64ffda;
+  border-bottom: 1px dashed #64ffda;
+  cursor: help;
+  position: relative;
+  display: inline-block;
+}
+
+/* Terms inside red debrief box highlight in yellow */
+.debrief-box .glossary-term {
+  color: #ffe600;
+  border-bottom: 1px dashed #ffe600;
+}
+
+/* Tooltips popping upward from caption box */
+.caption-box .glossary-term:hover::after,
+.caption-box .glossary-term:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 130%;
+  left: 0;
+  background: #0a192f;
+  color: #e6f1ff;
+  border: 1px solid #64ffda;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  white-space: normal;
+  width: 230px;
+  box-shadow: 0 0 12px rgba(100, 255, 218, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  text-align: left;
+}
+
+/* Tooltips popping downward from debrief box */
+.debrief-box .glossary-term:hover::after,
+.debrief-box .glossary-term:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 130%;
+  left: 0;
+  background: #0a192f;
+  color: #e6f1ff;
+  border: 1px solid #ffe600;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  white-space: normal;
+  width: 230px;
+  box-shadow: 0 0 12px rgba(255, 230, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  text-align: left;
+}
+
+/* ==========================================
+   INTERACTIVE EASTER EGG OVERLAYS
    ========================================== */
 
 .secret-rez-zone {
@@ -286,52 +490,16 @@ body {
   display: inline-block;
   transform: rotate(-6deg);
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 }
 
 .secret-rez-zone:hover .glowing-rez-text {
   color: #64ffda;
   transform: rotate(-6deg) scale(1.2);
-  text-shadow: 
-    0 0 5px #64ffda,
-    0 0 12px #00f0ff,
-    0 0 25px #00f0ff,
-    0 0 40px #ffb703;
-}
-
-.secret-astro-zone, .title-astro-tag {
-  margin-bottom: 20px;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-.secret-astro-zone:hover, .title-astro-tag:hover {
-  transform: scale(1.08);
-}
-
-.glowing-astro-text {
-  font-family: 'Courier New', monospace;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #00f0ff;
-  letter-spacing: 1.5px;
-  animation: astroGlow 2s infinite alternate;
-}
-
-@keyframes astroGlow {
-  0% {
-    opacity: 0.7;
-    text-shadow: 0 0 4px #00f0ff, 0 0 8px #00f0ff;
-  }
-  100% {
-    opacity: 1;
-    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #64ffda;
-  }
+  text-shadow: 0 0 8px #64ffda, 0 0 18px #00f0ff, 0 0 30px #ffb703;
 }
 
 /* ==========================================
-   NASA REAL DATA OVERLAY (HUD)
+   NASA HUD OVERLAY
    ========================================== */
 
 .hud-overlay {
@@ -385,7 +553,7 @@ body {
 }
 
 /* ==========================================
-   CHOICE BUTTONS & CONTROLS
+   CHOICE BUTTONS
    ========================================== */
 
 .choices-container {
@@ -423,80 +591,41 @@ body {
   box-shadow: 5px 5px 0px #000000;
 }
 
-.choice-btn:active {
-  transform: translate(0px, 0px);
-  box-shadow: 1px 1px 0px #000000;
-}
-
 /* ==========================================
-   ACHIEVEMENTS & BADGES
+   LOG NOTIFICATION TOAST & TERMINAL MODAL
    ========================================== */
 
-.badge-container {
-  display: flex;
-  gap: 10px;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 4px;
-}
-
-.badge-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.85em;
-}
-
-.badge-item.unlocked {
-  border: 1px solid #64ffda;
-  color: #64ffda;
-  background: rgba(100, 255, 218, 0.1);
-}
-
-.badge-item.locked {
-  border: 1px dashed #48566e;
-  color: #48566e;
-  opacity: 0.6;
-}
-
-.achievement-toast {
+.log-toast-popup {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(10, 25, 47, 0.95);
+  bottom: 25px;
+  right: 25px;
+  background: #0a192f;
   border: 2px solid #64ffda;
-  color: #64ffda;
-  padding: 12px 20px;
+  box-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
+  color: #e6f1ff;
+  padding: 12px 18px;
   border-radius: 6px;
-  font-family: 'Courier New', monospace;
-  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
-  z-index: 2000;
-  animation: slideIn 0.3s ease-out;
+  z-index: 9999;
+  animation: toastSlideUp 0.4s ease-out;
 }
 
-.toast-title {
-  font-size: 0.8em;
+.log-toast-header {
   color: #ffb703;
   font-weight: bold;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
 }
 
-.toast-name {
-  font-size: 1.1em;
+.log-toast-body {
+  color: #64ffda;
   font-weight: bold;
   margin: 4px 0;
 }
 
-.toast-desc {
-  font-size: 0.85em;
+.log-toast-hint {
   color: #8892b0;
+  font-size: 0.78rem;
 }
-
-/* ==========================================
-   JUDGE INFO MODAL (CRT TERMINAL BOX)
-   ========================================== */
 
 .modal-overlay {
   position: fixed;
@@ -512,14 +641,10 @@ body {
   z-index: 9999;
 }
 
-.modal-overlay.hidden {
-  display: none !important;
-}
-
 .crt-terminal-box {
   background: #0a192f;
   border: 2px solid #64ffda;
-  box-shadow: 0 0 25px rgba(100, 255, 218, 0.4), inset 0 0 15px rgba(100, 255, 218, 0.1);
+  box-shadow: 0 0 25px rgba(100, 255, 218, 0.4);
   width: 90%;
   max-width: 680px;
   max-height: 85vh;
@@ -527,7 +652,6 @@ body {
   display: flex;
   flex-direction: column;
   color: #e6f1ff;
-  font-family: 'Courier New', monospace;
   overflow: hidden;
 }
 
@@ -574,41 +698,31 @@ body {
   border-radius: 3px;
 }
 
-.info-section {
-  margin-bottom: 18px;
-  border-bottom: 1px dashed rgba(100, 255, 218, 0.2);
-  padding-bottom: 12px;
-}
-
-.info-section h3 {
-  color: #64ffda;
-  font-size: 1rem;
-  margin-top: 0;
+.log-entry-item {
+  background: rgba(100, 255, 218, 0.05);
+  border: 1px solid rgba(100, 255, 218, 0.2);
+  padding: 8px 12px;
   margin-bottom: 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
 }
 
-.info-section ul {
-  padding-left: 20px;
-  margin: 6px 0;
-}
-
-.modal-footer {
-  padding: 12px 20px;
-  text-align: right;
-  border-top: 1px solid rgba(100, 255, 218, 0.2);
-  background: rgba(10, 25, 47, 0.95);
+.log-entry-item.locked {
+  border-style: dashed;
+  color: #48566e;
+  background: transparent;
 }
 
 /* ==========================================
-   ANIMATIONS & UTILITIES
+   ANIMATIONS & DANGER / VICTORY GLOWS
    ========================================== */
 
 .hidden {
   display: none !important;
 }
 
-@keyframes slideIn {
-  from { transform: translateY(100%); opacity: 0; }
+@keyframes toastSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
@@ -661,7 +775,7 @@ body {
 }
 
 /* ==========================================
-   MOBILE LAYOUT FIXES
+   MOBILE LAYOUT OVERRIDES
    ========================================== */
 
 @media screen and (max-width: 768px) {
@@ -694,111 +808,6 @@ body {
     right: auto !important;
   }
 
-  .panel-box {
-    width: 100% !important;
-    min-height: 300px !important;
-  }
-}
-/* ==========================================
-   EDUCATIONAL FAILURE DEBRIEF BOX
-   ========================================== */
-.debrief-box {
-  position: absolute;
-  top: 60px;
-  left: 16px;
-  max-width: 360px;
-  background: rgba(30, 5, 10, 0.94);
-  border: 2px solid #ff3366;
-  border-radius: 6px;
-  padding: 12px 16px;
-  color: #ff99bb;
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
-  z-index: 25;
-  overflow: visible !important;
-}
-
-.debrief-title {
-  color: #ff3366;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-  letter-spacing: 1px;
-}
-
-/* ==========================================
-   GLOSSARY TOOLTIPS STYLING & POSITIONING
-   ========================================== */
-.caption-box,
-.panel-box,
-.debrief-box {
-  overflow: visible !important;
-}
-
-.glossary-term {
-  color: #64ffda;
-  border-bottom: 1px dashed #64ffda;
-  cursor: help;
-  position: relative;
-  display: inline-block;
-}
-
-/* Yellow highlight for terms inside the red debrief box */
-.debrief-box .glossary-term {
-  color: #ffe600;
-  border-bottom: 1px dashed #ffe600;
-}
-
-/* Tooltips in bottom caption box: pop UPWARDS, left-aligned */
-.caption-box .glossary-term:hover::after,
-.caption-box .glossary-term:focus::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 130%;
-  left: 0;
-  transform: none;
-  background: #0a192f;
-  color: #e6f1ff;
-  border: 1px solid #64ffda;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 0.78rem;
-  white-space: normal;
-  width: 220px;
-  box-shadow: 0 0 12px rgba(100, 255, 218, 0.5);
-  z-index: 1000;
-  pointer-events: none;
-  text-align: left;
-}
-
-/* Tooltips in top debrief box: pop DOWNWARDS, left-aligned */
-.debrief-box .glossary-term:hover::after,
-.debrief-box .glossary-term:focus::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  top: 130%;
-  left: 0;
-  transform: none;
-  background: #0a192f;
-  color: #e6f1ff;
-  border: 1px solid #ffe600;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 0.78rem;
-  white-space: normal;
-  width: 220px;
-  box-shadow: 0 0 12px rgba(255, 230, 0, 0.5);
-  z-index: 1000;
-  pointer-events: none;
-  text-align: left;
-}+
-
-/* ==========================================
-   MOBILE RESPONSIVENESS OVERRIDES
-   ========================================== */
-@media screen and (max-width: 768px) {
   .debrief-box {
     position: relative !important;
     top: auto !important;
@@ -807,5 +816,10 @@ body {
     max-width: 95% !important;
     margin: 10px auto !important;
     z-index: 30;
+  }
+
+  .panel-box {
+    width: 100% !important;
+    min-height: 300px !important;
   }
 }

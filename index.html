@@ -9,33 +9,64 @@
 </head>
 <body>
 
-  <!-- Top HUD Bar (Hidden initially on title screen) -->
-  <header id="hud-bar" class="hidden">
-    <button id="main-menu-btn" onclick="goToMainMenu()" class="hud-home-btn" aria-label="Return to Main Menu">
-      🏠 Main Menu
-    </button>
-    
-    <!-- Mute Toggle Button -->
-    <button id="mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn" aria-label="Toggle Mute">
-      🔊 SOUND
-    </button>
-    
-    <!-- Achievement Badges Floating Bar -->
-    <div id="achievement-panel" class="badge-container" aria-label="Achievements Panel">
-      <!-- Badges render dynamically -->
+  <!-- Top Screen HUD / Control Bar (Active during gameplay) -->
+  <header id="hud-bar" class="hud-bar hidden">
+    <!-- Top Left Corner Controls -->
+    <div class="hud-left-controls">
+      <button id="mute-btn" onclick="audioManager.toggleMute()" class="hud-btn hud-mute-btn">
+        🔊 SOUND
+      </button>
+      <button id="menu-btn" onclick="goToMainMenu()" class="hud-btn hud-menu-btn">
+        🏠 MAIN MENU
+      </button>
     </div>
+
+    <!-- Top Right Corner Controls (Visual Progress Bar) -->
+<div class="hud-right-controls">
+  <button id="logs-btn" onclick="openLogsModal()" class="hud-btn hud-logs-btn" title="Click to open Archive Logs Terminal">
+    <span class="log-btn-label">📁 LOGS</span>
+    <div class="log-progress-track">
+      <div id="log-progress-fill" class="log-progress-fill" style="width: 0%;"></div>
+    </div>
+    <span id="log-progress-percent" class="log-progress-text">0%</span>
+  </button>
+</div>
   </header>
 
+  <!-- Log Terminal Modal Overlay -->
+  <div id="logs-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="logs-modal-title">
+    <div class="crt-terminal-box">
+      <div class="modal-header">
+        <h2 id="logs-modal-title">📂 GALACTIC ARCHIVE MISSION & ENDING LOGS</h2>
+        <button class="modal-close-btn" onclick="closeLogsModal()" aria-label="Close logs">✖</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-section">
+          <h3>🏆 COMPLETED MISSIONS & VICTORIES</h3>
+          <div id="victories-log-list" class="log-entry-list"></div>
+        </div>
+        <div class="info-section">
+          <h3>⚠️ DISCOVERED ENDINGS & ANOMALIES</h3>
+          <div id="endings-log-list" class="log-entry-list"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="hud-btn" onclick="closeLogsModal()">CLOSE TERMINAL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Game Window -->
   <main class="game-container">
 
-    <!-- Main Title Screen -->
+    <!-- Title / Landing Screen -->
     <section id="title-screen" class="title-screen">
-      <!-- Mute Button (Left Side) -->
+      <!-- Title Screen Sound Control -->
       <button id="title-mute-btn" onclick="audioManager.toggleMute()" class="hud-mute-btn title-mute-pos muted" aria-label="Toggle Sound Mute">
         🔇 MUTE
       </button>
     
-      <!-- Info Button for Judges (Right Side) -->
+      <!-- Technical Briefing Control -->
       <button id="info-btn" onclick="openJudgeInfoModal()" class="hud-mute-btn title-info-pos" aria-label="Open Technical Briefing">
         ℹ️ INFO
       </button>
@@ -45,7 +76,8 @@
         <h1 class="game-title">GALACTIC ARCHIVE</h1>
         <p class="game-subtitle">Interactive Space History RPG</p>
     
-        <div class="title-astro-tag">
+        <!-- Astro Care Branding & Tagline -->
+        <div class="title-astro-credit">
           <span class="glowing-astro-text">__presented by Astro Care__</span>
         </div>
         
@@ -57,7 +89,7 @@
       </div>
     </section>
 
-    <!-- Comic Panel Screen (Hidden until Start Game) -->
+    <!-- Comic Panel Display Box -->
     <section id="panel-box" class="panel-box hidden">
       <!-- NASA Real Data Overlay (HUD) -->
       <div id="hud-overlay" class="hud-overlay hidden">
@@ -72,7 +104,7 @@
       <!-- Educational Failure Debrief Box -->
       <div id="debrief-box" class="debrief-box hidden"></div>
       
-      <!-- Hidden Interactive Easter Egg Overlays -->
+      <!-- Secret Interactive Easter Eggs -->
       <div id="secret-rez-zone" class="secret-rez-zone hidden">
         <span class="glowing-rez-text">Rez...</span>
       </div>
@@ -81,13 +113,11 @@
       </div>
     </section>
 
-    <!-- Choice Buttons Area (Hidden until Start Game) -->
+    <!-- Choice Buttons Area -->
     <nav id="choices-container" class="choices-container hidden" aria-label="Mission Options"></nav>
   </main>
 
-  <!-- ========================================== -->
-  <!-- JUDGE ARCHIVE INFO MODAL -->
-  <!-- ========================================== -->
+  <!-- Technical Briefing Info Modal -->
   <div id="judge-info-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-content crt-terminal-box">
       <div class="modal-header">
@@ -98,16 +128,15 @@
       <div class="modal-body">
         <div class="info-section">
           <h3>📋 Project Overview</h3>
-          <p><strong>Galactic Archive</strong> is an interactive retro-comic RPG built to simulate historic and speculative space missions. Players solve critical telemetry warnings using real NASA data logs.</p>
+          <p><strong>Galactic Archive</strong> is an interactive retro-comic RPG simulating historic (1960s–70s) and speculative (2020s+) space missions using real NASA telemetry logs.</p>
         </div>
 
         <div class="info-section">
           <h3>🛠️ Tech Stack & Architecture</h3>
           <ul>
             <li><strong>Frontend:</strong> Vanilla JavaScript (ES6+), HTML5, Custom CSS3 CRT Effects</li>
-            <li><strong>Audio Engine:</strong> Custom <code>AudioManager</code> class with dynamic SFX triggers and browser policy compliance</li>
-            <li><strong>State Management:</strong> <code>localStorage</code> session persistence and achievement tracking</li>
-            <li><strong>Asset Engine:</strong> Preloaded WebP/JPG panel rendering pipeline</li>
+            <li><strong>Audio Engine:</strong> Custom <code>AudioManager</code> class with dynamic SFX triggers</li>
+            <li><strong>State Management:</strong> <code>localStorage</code> session persistence and archive log tracking</li>
           </ul>
         </div>
 
@@ -120,17 +149,19 @@
         </div>
 
         <div class="info-section">
-          <h3>🏅 Game Features</h3>
-          <ul>
-            <li>Interactive HUD Overlays with real NASA data frames</li>
-            <li>Persistent Badge System (7 collectible achievements)</li>
-            <li>Dynamic failure mechanics with scientific cause-and-effect explanations</li>
-          </ul>
-        </div>
-
-        <div class="info-section">
           <h3>⭐ Team & Credits</h3>
           <p>Presented by <strong>Astro Care</strong> | Designed for Space History & Educational Interactive Media</p>
+          
+          <!-- Repository Link for Judges -->
+          <div class="repo-link-box">
+            <span>🔗 Source Code Repository:</span>
+            <a href="https://github.com/RisingPhoenix07/galactic-archive.git" target="_blank" rel="noopener noreferrer" class="repo-link-btn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom; margin-right: 6px;">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+              GitHub: RisingPhoenix07/galactic-archive
+            </a>
+          </div>
         </div>
       </div>
 
@@ -140,8 +171,11 @@
     </div>
   </div>
 
-  <!-- Audio Manager Class First, then Game Logic -->
+  <!-- Scripts Loaded in Order -->
+  <script src="storyData.js"></script>
+  <script src="failureLogs.js"></script>
+  <script src="achievements.js"></script>
   <script src="audio.js"></script>
-  <script src="script.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
