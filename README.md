@@ -120,4 +120,14 @@ Big thanks to these amazing individuals! They all helped with the storyline, ima
 [![Ananya Saha Orni](https://shields.io)](https://github.com/Hihumanbeings)
 
 team_AstroCare_
+## 📊 NASA Telemetry & Asset Data Sources
 
+| Mission | Era / Year | Real vs. Simulated | NASA Image ID / Telemetry Reference |
+| :--- | :--- | :--- | :--- |
+| **Mission 1: Friendship 7** | 1962 (Historic) | Real NASA Data | `428-GX-02-12` (Friendship 7 Capsule & Retropack Data) |
+| **Mission 2: Gemini 4 EVA** | 1965 (Historic) | Real NASA Data | `S65-30433` (Ed White EVA & HHMU Telemetry) |
+| **Mission 3: Apollo 8 Earthrise** | 1968 (Historic) | Real NASA Data | `AS08-14-2383` (Apollo 8 Earthrise & LOI Burn GET 069:08) |
+| **Mission 4: Apollo 11 Landing** | 1969 (Historic) | Real NASA Data | `AS11-40-5874` (Tranquility Base & AGC 1202 Executive Overflow) |
+| **Mission 5: Artemis Gateway** | 2026 (Speculative) | Simulated NASA Projection | Artemis NRHO Trajectory Models & Solar Particle Events (SPE) |
+| **Mission 6: Mars Chryse** | 2042 (Speculative) | Simulated NASA Projection | HiRISE Terrain Reconnaissance (`PIA23726` Gale/Chryse Planitia) |
+| **Mission 7: Europa Probe** | 2055 (Speculative) | Simulated NASA Projection | Galileo Thermal Sensing & Europa Clipper Subsurface Profiling |

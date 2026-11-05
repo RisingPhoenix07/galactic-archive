@@ -316,7 +316,7 @@ body {
   overflow: visible !important;
 }
 
-.caption-box {
+/*.caption-box {
   position: absolute;
   bottom: 12px;
   left: 12px;
@@ -331,7 +331,51 @@ body {
   z-index: 10;
   white-space: pre-line;
   overflow: visible !important;
+}*/
+/* RETRO CRT TERMINAL STYLE — ENHANCED CAPTION TEXT */
+.caption-box {
+  position: absolute;
+  bottom: 0px;
+  left: 12px;
+  right: 12px;
+  background: rgba(6, 20, 42, 0.94) !important; /* Slightly deeper opacity for maximum contrast */
+  color: #fdfdfd !important;                   /* Crisp white primary text */
+  border: 2px solid #64ffda !important;          /* Glowing Neon Cyan Border */
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.05rem !important;                /* Increased size slightly above 0.95rem */
+  font-weight: 700 !weight;                    /* Bold weight makes caption readable at a glance */
+  letter-spacing: 0.5px;                        /* Spaced characters give terminal printout feel */
+  line-height: 1.55;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.3), 
+              inset 0 0 10px rgba(100, 255, 218, 0.15);
+  text-shadow: 0 0 4px rgba(100, 255, 218, 0.6); /* Stronger glow layer behind text */
+  overflow: visible !important;                 /* Critical for glossary tooltips */
 }
+/* VINTAGE COMIC BOOK CAPTION PANEL */
+/* FROSTED HUD GLASS */
+/*
+.caption-box {
+  position: absolute;
+  bottom: 0px;
+  left: 12px;
+  right: 12px;
+  background: rgba(5, 15, 30, 0.75) !important;
+  backdrop-filter: blur(8px);                         
+  -webkit-backdrop-filter: blur(8px);
+  color: #f0f6fc !important;
+  border-left: 4px solid #ffb703 !important;          
+  border-top: 1px solid rgba(255, 183, 3, 0.3) !important;
+  border-right: 1px solid rgba(255, 183, 3, 0.3) !important;
+  border-bottom: 3px solid rgba(255, 183, 3, 0.3) !important;
+  padding: 14px 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  overflow: visible !important;
+}*/
 
 .caption-box.caption-epilogue {
   right: 320px;
@@ -822,4 +866,28 @@ body {
     width: 100% !important;
     min-height: 300px !important;
   }
+}
+
+.hud-read-btn {
+  background: rgba(255, 183, 3, 0.15);
+  color: #ffb703;
+  border: 1px solid #ffb703;
+}
+
+.hud-read-btn:hover {
+  background: #ffb703;
+  color: #0a192f;
+  box-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
+}
+
+.hud-read-btn.reading-active {
+  background: #ff0055;
+  color: #ffffff;
+  border-color: #ff0055;
+  animation: pulseRead 1s infinite alternate;
+}
+
+@keyframes pulseRead {
+  0% { box-shadow: 0 0 5px #ff0055; }
+  100% { box-shadow: 0 0 15px #ff0055; }
 }

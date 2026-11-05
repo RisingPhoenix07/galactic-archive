@@ -61,6 +61,7 @@ function openMissionSelect() {
 
 // 3. CORE NODE RENDERER
 function renderNode(nodeKey) {
+    stopReadAloud();
   const node = storyTree[nodeKey];
   if (!node) {
     console.error(`Error: Node key '${nodeKey}' does not exist in storyTree!`);
@@ -136,11 +137,15 @@ function renderNode(nodeKey) {
     }
   }
 
-  // Failure Log System Handler
+  // Failure Log System & Educational Debrief Handler
   const debriefBox = document.getElementById("debrief-box");
   if (debriefBox) {
     if (node.debrief) {
-      debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${typeof parseGlossaryTerms === "function" ? parseGlossaryTerms(node.debrief) : node.debrief}`;
+      const parsedDebrief = typeof parseGlossaryTerms === "function" 
+        ? parseGlossaryTerms(node.debrief) 
+        : node.debrief;
+
+      debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${parsedDebrief}`;
       debriefBox.classList.remove("hidden");
     } else {
       debriefBox.classList.add("hidden");
@@ -247,6 +252,7 @@ function renderNode(nodeKey) {
   if (typeof updateLogsCounterUI === "function") {
     updateLogsCounterUI();
   }
+  preloadNextNodeAssets(nodeKey);
 }
 
 // 4. KEYBOARD NAVIGATION HOTKEYS
@@ -286,6 +292,123 @@ function closeJudgeInfoModal() {
   }
 }
 
+// ==========================================
+// ACCESSIBILITY: ENHANCED READ-ALOUD SPEECH ENGINE
+// ==========================================
+
+let activeUtterance = null;
+
+function toggleReadAloud() {
+  if (!('speechSynthesis' in window)) {
+    alert("Speech synthesis is not supported by your browser.");
+    return;
+  }
+
+  // If already speaking, stop playback
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    updateReadAloudBtnUI(false);
+    return;
+  }
+
+  const captionBox = document.getElementById("caption-box");
+  if (!captionBox) return;
+
+  // Clean HTML tags & tooltips before reading
+  const cleanText = captionBox.innerText.replace(/[\r\n]+/g, " ");
+
+  activeUtterance = new SpeechSynthesisUtterance(cleanText);
+
+  // --- VOICE SELECTOR & TUNING ---
+  const voices = window.speechSynthesis.getVoices();
+  
+  // Find a smoother English voice (Google US English, Samantha, or Natural voice)
+  const preferredVoice = voices.find(v => 
+    v.lang.startsWith('en') && (
+      v.name.includes('Google') || 
+      v.name.includes('Natural') || 
+      v.name.includes('Samantha') ||
+      v.name.includes('Karen') ||
+      v.name.includes('Zira')
+    )
+  ) || voices.find(v => v.lang.startsWith('en'));
+
+  if (preferredVoice) {
+    activeUtterance.voice = preferredVoice;
+  }
+
+  // Tune pace and pitch for narrative storytelling
+activeUtterance.rate = 0.78;  // Slower, clearer storytelling pace
+activeUtterance.pitch = 0.80; // Deeper tone removes high-frequency synthetic chirp
+
+  activeUtterance.onend = () => updateReadAloudBtnUI(false);
+  activeUtterance.onerror = () => updateReadAloudBtnUI(false);
+
+  window.speechSynthesis.speak(activeUtterance);
+  updateReadAloudBtnUI(true);
+}
+
+// Pre-load voices (some browsers load voices asynchronously)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
+}
+function updateReadAloudBtnUI(isPlaying) {
+  const btn = document.getElementById("read-aloud-btn");
+  if (btn) {
+    btn.innerHTML = isPlaying ? "⏹️ STOP READ" : "🔊 READ CAPTION";
+    btn.classList.toggle("reading-active", isPlaying);
+  }
+}
+
+// Cancel active speech whenever navigating to a new node
+function stopReadAloud() {
+  if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    updateReadAloudBtnUI(false);
+  }
+}
+// ==========================================
+// ASSET PIPELINE: BACKGROUND IMAGE PRELOADER
+// ==========================================
+
+const preloadedImages = new Map();
+
+/**
+ * Silently pre-fetches an image URL into browser cache
+ */
+function preloadSingleImage(url) {
+  if (!url || preloadedImages.has(url)) return;
+
+  const img = new Image();
+  img.src = url;
+  preloadedImages.set(url, img);
+}
+
+/**
+ * Inspects current node choices and preloads images for all immediate next nodes
+ */
+function preloadNextNodeAssets(currentNodeKey) {
+  const currentNode = storyTree[currentNodeKey];
+  if (!currentNode || !currentNode.choices) return;
+
+  currentNode.choices.forEach(choice => {
+    const nextKey = choice.nextNode;
+    const nextNode = storyTree[nextKey];
+
+    if (nextNode) {
+      // Preload background panel artwork
+      if (nextNode.bgImage) {
+        preloadSingleImage(nextNode.bgImage);
+      }
+      // Preload telemetry HUD image if present
+      if (nextNode.hud && nextNode.hud.image) {
+        preloadSingleImage(nextNode.hud.image);
+      }
+    }
+  });
+}
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeJudgeInfoModal();
 });
