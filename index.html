@@ -174,11 +174,20 @@
     </div>
   </div>
 
-  <!-- Scripts Loaded in Order -->
-  <script src="storyData.js"></script>
-  <script src="failureLogs.js"></script>
-  <script src="achievements.js"></script>
-  <script src="audio.js"></script>
-  <script src="game.js"></script>
+  <!-- Mini-Game Arcade Canvas Overlay (Hidden by Default) -->
+<div id="canvas-view" class="canvas-view hidden">
+  <div id="phaser-game-container"></div>
+</div>
+
+<!-- Load Phaser 3 CDN before your game scripts -->
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+
+<!-- Scripts Loaded in Order -->
+<script src="storyData.js"></script>
+<script src="failureLogs.js"></script>
+<script src="achievements.js"></script>
+<script src="audio.js"></script>
+<script src="minigames/LunarLanderGame.js"></script>
+<script src="game.js"></script>
 </body>
 </html>

@@ -891,3 +891,45 @@ body {
   0% { box-shadow: 0 0 5px #ff0055; }
   100% { box-shadow: 0 0 15px #ff0055; }
 }
+/* ==========================================
+   MINI-GAME CANVAS OVERLAY STYLING
+   ========================================== */
+   /* Ensure the parent game wrapper maintains a centered relative grid */
+   #game-container, .game-viewport {
+     position: relative;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     width: 100%;
+   }
+   
+   /* Force canvas container to center horizontally and take full viewport width */
+   #canvas-view {
+     width: 100%;
+     max-width: 800px;
+     height: 450px;
+     margin: 0 auto;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+   }
+   
+   /* Hide inactive elements cleanly without leaving blank flex gaps */
+   .hidden {
+     display: none !important;
+   }
+   
+   /* Ensure Phaser canvas sits squarely in the middle */
+   #phaser-game-container {
+     width: 800px;
+     height: 450px;
+     margin: 0 auto;
+   }
+   
+   #phaser-game-container canvas {
+     display: block;
+     margin: 0 auto;
+     border-radius: 4px;
+   }

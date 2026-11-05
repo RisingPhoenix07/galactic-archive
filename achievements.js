@@ -50,6 +50,33 @@ const ARCHIVE_LOGS = {
   m7_p5_ice_crush: { id: "m7_p5_ice_crush", title: "Tectonic Ice Crush", type: "ending", desc: "Ice sheet shift imploded probe hull at 4,000 BAR." }
 };
 
+// ==========================================
+// ACRONYM & TELEMETRY GLOSSARY DICTIONARY
+// ==========================================
+
+const GLOSSARY = {
+  "HHMU": "Hand-Held Maneuvering Unit (Gas thruster gun used during Gemini EVA)",
+  "EVA": "Extravehicular Activity (Spacewalk outside spacecraft)",
+  "LOS": "Loss of Signal (Comms blackout behind celestial bodies)",
+  "AOS": "Acquisition of Signal (Telemetry link re-established with Earth)",
+  "SPS": "Service Propulsion System (Apollo main rocket engine)",
+  "LOI": "Lunar Orbit Insertion (Engine retro-burn to capture into lunar orbit)",
+  "AGC": "Apollo Guidance Computer (Primary flight computer)",
+  "RCS": "Reaction Control System (Attitude control thruster jets)",
+  "DSKY": "Display & Keyboard interface for the Apollo Guidance Computer",
+  "NRHO": "Near-Rectilinear Halo Orbit (Stable elliptical orbit around the Moon)"
+};
+
+function parseGlossaryTerms(text) {
+  if (!text) return "";
+  let parsedText = text;
+  Object.keys(GLOSSARY).forEach(term => {
+    const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+    parsedText = parsedText.replace(regex, `<span class="glossary-term" data-tooltip="${GLOSSARY[term]}">$1</span>`);
+  });
+  return parsedText;
+}
+
 function getDiscoveredLogs() {
   const data = localStorage.getItem("galactic_archive_logs");
   return data ? JSON.parse(data) : [];

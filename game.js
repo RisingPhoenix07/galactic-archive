@@ -217,12 +217,29 @@ function renderNode(nodeKey) {
           }
         });
 
-        btn.onclick = () => renderNode(choice.nextNode);
+        // ACTION VS NEXTNODE DISPATCHER
+        btn.onclick = () => {
+          if (choice.action === "LAUNCH_LANDER_MINIGAME") {
+            if (typeof launchLanderMiniGame === "function") {
+              launchLanderMiniGame(
+                () => renderNode("m4_success"),
+                () => renderNode("m4_crash")
+              );
+            } else {
+              console.warn("launchLanderMiniGame not defined! Falling back to m4_touchdown");
+              renderNode("m4_touchdown");
+            }
+          } else if (choice.nextNode) {
+            renderNode(choice.nextNode);
+          } else {
+            console.error("Choice is missing both 'action' and 'nextNode':", choice);
+          }
+        };
+
         choicesContainer.appendChild(btn);
       });
     }
   }
-
   // --- F. AUTOMATIC ARCHIVE & ENDING LOG TRIGGER ---
   if (typeof recordArchiveLog === "function") {
     // 1. Direct match for any registered node in ARCHIVE_LOGS
@@ -390,22 +407,18 @@ function preloadSingleImage(url) {
  * Inspects current node choices and preloads images for all immediate next nodes
  */
 function preloadNextNodeAssets(currentNodeKey) {
+  if (typeof storyTree === "undefined") return; // Added guard check
   const currentNode = storyTree[currentNodeKey];
   if (!currentNode || !currentNode.choices) return;
 
   currentNode.choices.forEach(choice => {
     const nextKey = choice.nextNode;
+    if (!nextKey) return; // Added safety check for action-based choices
     const nextNode = storyTree[nextKey];
 
     if (nextNode) {
-      // Preload background panel artwork
-      if (nextNode.bgImage) {
-        preloadSingleImage(nextNode.bgImage);
-      }
-      // Preload telemetry HUD image if present
-      if (nextNode.hud && nextNode.hud.image) {
-        preloadSingleImage(nextNode.hud.image);
-      }
+      if (nextNode.bgImage) preloadSingleImage(nextNode.bgImage);
+      if (nextNode.hud && nextNode.hud.image) preloadSingleImage(nextNode.hud.image);
     }
   });
 }

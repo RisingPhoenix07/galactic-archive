@@ -297,7 +297,7 @@ const storyTree = {
       { text: "3. Perform Manual RAM System Reset", nextNode: "m4_glitch" }
     ]
   },
-  m4_pitchover: {
+  /*m4_pitchover: {
     bgImage: "assets/panels/m4_p2_boulders.jpg",
     caption: "DECISION POINT 2: Pitchover Mode! Altitude 1,180 FT. P64 auto-pilot targeting boulder field inside West Crater!",
     hud: {
@@ -309,7 +309,22 @@ const storyTree = {
       { text: "2. Increase Engine Thrust to Full 100%", nextNode: "m4_engine_fault" },
       { text: "3. Take Semi-Automatic P66 Manual Control", nextNode: "m4_touchdown" }
     ]
-  },
+  }*/
+ 
+    m4_pitchover: {
+      bgImage: "assets/panels/m4_p2_boulders.jpg",
+      caption: "DP2: Pitchover Mode! Altitude 1,180 FT. Boulders detected inside West Crater landing footprint! Take manual controls to land safely.",
+      choices: [
+        { 
+          text: "🎮 TAKE MANUAL P66 CONTROL (LAUNCH MINI-GAME)", 
+          action: "LAUNCH_LANDER_MINIGAME" 
+        },
+        { 
+          text: "Maintain Auto-Pilot Trajectory", 
+          nextNode: "m4_crash" 
+        }
+      ]
+    },
   m4_touchdown: {
     bgImage: "assets/panels/m4_p3_contact.jpg",
     caption: "DECISION POINT 3: Blue Contact Light Active! Descent engine probe touching lunar dust. Fuel at 3%.",
