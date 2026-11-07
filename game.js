@@ -19,6 +19,9 @@ function startNewGame() {
 
 function goToMainMenu() {
   if (confirm("Return to the main menu? Progress in this session will be saved.")) {
+    // Stop speech synthesis if currently active
+    stopReadAloud();
+
     const titleScreen = document.getElementById("title-screen");
     const hudBar = document.getElementById("hud-bar");
     const panelBox = document.getElementById("panel-box");
@@ -61,7 +64,8 @@ function openMissionSelect() {
 
 // 3. CORE NODE RENDERER
 function renderNode(nodeKey) {
-    stopReadAloud();
+  stopReadAloud();
+
   const node = storyTree[nodeKey];
   if (!node) {
     console.error(`Error: Node key '${nodeKey}' does not exist in storyTree!`);
@@ -126,9 +130,7 @@ function renderNode(nodeKey) {
   const captionBox = document.getElementById("caption-box");
   if (captionBox) {
     const textContent = node.caption || "";
-    captionBox.innerHTML = typeof parseGlossaryTerms === "function" 
-      ? parseGlossaryTerms(textContent) 
-      : textContent;
+    captionBox.innerHTML = typeof parseGlossaryTerms === "function" ? parseGlossaryTerms(textContent) : textContent;
 
     if (nodeKey === "museum_exit") {
       captionBox.classList.add("caption-epilogue");
@@ -141,15 +143,17 @@ function renderNode(nodeKey) {
   const debriefBox = document.getElementById("debrief-box");
   if (debriefBox) {
     if (node.debrief) {
-      const parsedDebrief = typeof parseGlossaryTerms === "function" 
-        ? parseGlossaryTerms(node.debrief) 
-        : node.debrief;
-
+      const parsedDebrief = typeof parseGlossaryTerms === "function" ? parseGlossaryTerms(node.debrief) : node.debrief;
       debriefBox.innerHTML = `<div class="debrief-title">📖 WHAT REALLY HAPPENED</div>${parsedDebrief}`;
       debriefBox.classList.remove("hidden");
     } else {
       debriefBox.classList.add("hidden");
     }
+  }
+
+  // Trigger educational debrief logger if this is a registered failure node
+  if (typeof handleFailureNode === "function") {
+    handleFailureNode(nodeKey);
   }
 
   // Secret Hover Overlay Toggles
@@ -188,6 +192,7 @@ function renderNode(nodeKey) {
           hudImg.style.display = "none";
         }
       }
+
       if (hudCaption) hudCaption.innerText = node.hud.caption || "";
     } else {
       hudOverlay.classList.add("hidden");
@@ -201,16 +206,14 @@ function renderNode(nodeKey) {
     choicesContainer.innerHTML = "";
     if (node.choices && node.choices.length > 0) {
       const isMenuNode = nodeKey.startsWith("intro_") || nodeKey.includes("victory") || nodeKey === "museum_exit";
-      const displayChoices = (isMenuNode || typeof shuffleArray !== "function") 
-        ? node.choices 
-        : shuffleArray(node.choices);
+      const displayChoices = (isMenuNode || typeof shuffleArray !== "function") ? node.choices : shuffleArray(node.choices);
 
       displayChoices.forEach((choice, index) => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
         const cleanText = choice.text.replace(/^[0-9]\.\s*/, "");
         btn.textContent = isMenuNode ? choice.text : `${index + 1}. ${cleanText}`;
-        
+
         btn.addEventListener("mouseenter", () => {
           if (window.audioManager && typeof audioManager.play === "function") {
             audioManager.play('ui_hover');
@@ -221,6 +224,7 @@ function renderNode(nodeKey) {
         btn.onclick = () => {
           if (choice.action === "LAUNCH_LANDER_MINIGAME") {
             if (typeof launchLanderMiniGame === "function") {
+              // Validated Lander callbacks: Route directly to valid victory / crash failure nodes
               launchLanderMiniGame(
                 () => renderNode("m4_success"),
                 () => renderNode("m4_crash")
@@ -240,40 +244,54 @@ function renderNode(nodeKey) {
       });
     }
   }
+
+  // Inside game.js -> renderNode(nodeKey)
+
   // --- F. AUTOMATIC ARCHIVE & ENDING LOG TRIGGER ---
   if (typeof recordArchiveLog === "function") {
     // 1. Direct match for any registered node in ARCHIVE_LOGS
     if (typeof ARCHIVE_LOGS !== "undefined" && ARCHIVE_LOGS[nodeKey]) {
       recordArchiveLog(nodeKey);
     }
-
     // 2. Mission Victory aliases fallback
     if (nodeKey === "m1_p9_victory" || nodeKey === "m1_p6_ending") {
       recordArchiveLog("m1_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m1_pioneer");
     } else if (nodeKey === "m2_p9_victory" || nodeKey === "m2_p4_success") {
       recordArchiveLog("m2_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m2_pioneer");
     } else if (nodeKey === "m3_p9_victory" || nodeKey === "m3_p4_earthrise") {
       recordArchiveLog("m3_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m3_pioneer");
     } else if (nodeKey === "m4_p9_victory" || nodeKey === "m4_success" || nodeKey === "victory") {
       recordArchiveLog("m4_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m4_pioneer");
     } else if (nodeKey === "m5_p9_victory" || nodeKey === "m5_p4_success") {
       recordArchiveLog("m5_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m5_pioneer");
     } else if (nodeKey === "m6_p9_victory" || nodeKey === "m6_p4_success") {
       recordArchiveLog("m6_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m6_pioneer");
     } else if (nodeKey === "m7_p9_victory" || nodeKey === "m7_p4_success") {
       recordArchiveLog("m7_victory");
+      if (typeof unlockAchievement === "function") unlockAchievement("m7_pioneer");
     }
   }
+  
+  // 3. Sync UI Counters & Badges immediately on node transition
+  if (typeof updateLogsCounterUI === "function") updateLogsCounterUI();
+  if (typeof renderAchievementBadges === "function") renderAchievementBadges();
 
-  // Sync HUD counter
-  if (typeof updateLogsCounterUI === "function") {
-    updateLogsCounterUI();
-  }
   preloadNextNodeAssets(nodeKey);
 }
 
-// 4. KEYBOARD NAVIGATION HOTKEYS
+// 4. KEYBOARD NAVIGATION & DIALOG HOTKEYS (1, 2, 3, 4, Enter, ESC)
 document.addEventListener("keydown", (e) => {
+  if (e.key === 'Escape') {
+    closeJudgeInfoModal();
+    return;
+  }
+
   const choicesContainer = document.getElementById("choices-container");
   const titleScreen = document.getElementById("title-screen");
   if (titleScreen && !titleScreen.classList.contains("hidden")) return;
@@ -312,7 +330,6 @@ function closeJudgeInfoModal() {
 // ==========================================
 // ACCESSIBILITY: ENHANCED READ-ALOUD SPEECH ENGINE
 // ==========================================
-
 let activeUtterance = null;
 
 function toggleReadAloud() {
@@ -321,7 +338,6 @@ function toggleReadAloud() {
     return;
   }
 
-  // If already speaking, stop playback
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     updateReadAloudBtnUI(false);
@@ -331,33 +347,21 @@ function toggleReadAloud() {
   const captionBox = document.getElementById("caption-box");
   if (!captionBox) return;
 
-  // Clean HTML tags & tooltips before reading
-  const cleanText = captionBox.innerText.replace(/[\r\n]+/g, " ");
-
+  const cleanText = captionBox.innerText.replace(/[\r\n]+/g, "");
   activeUtterance = new SpeechSynthesisUtterance(cleanText);
 
-  // --- VOICE SELECTOR & TUNING ---
   const voices = window.speechSynthesis.getVoices();
-  
-  // Find a smoother English voice (Google US English, Samantha, or Natural voice)
-  const preferredVoice = voices.find(v => 
-    v.lang.startsWith('en') && (
-      v.name.includes('Google') || 
-      v.name.includes('Natural') || 
-      v.name.includes('Samantha') ||
-      v.name.includes('Karen') ||
-      v.name.includes('Zira')
-    )
-  ) || voices.find(v => v.lang.startsWith('en'));
+  const preferredVoice = voices.find(v => v.lang.startsWith('en') && (
+    v.name.includes('Google') || v.name.includes('Natural') || 
+    v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Zira')
+  )) || voices.find(v => v.lang.startsWith('en'));
 
   if (preferredVoice) {
     activeUtterance.voice = preferredVoice;
   }
 
-  // Tune pace and pitch for narrative storytelling
-activeUtterance.rate = 0.78;  // Slower, clearer storytelling pace
-activeUtterance.pitch = 0.80; // Deeper tone removes high-frequency synthetic chirp
-
+  activeUtterance.rate = 0.78;
+  activeUtterance.pitch = 0.80;
   activeUtterance.onend = () => updateReadAloudBtnUI(false);
   activeUtterance.onerror = () => updateReadAloudBtnUI(false);
 
@@ -365,12 +369,12 @@ activeUtterance.pitch = 0.80; // Deeper tone removes high-frequency synthetic ch
   updateReadAloudBtnUI(true);
 }
 
-// Pre-load voices (some browsers load voices asynchronously)
 if ('speechSynthesis' in window) {
   window.speechSynthesis.onvoiceschanged = () => {
     window.speechSynthesis.getVoices();
   };
 }
+
 function updateReadAloudBtnUI(isPlaying) {
   const btn = document.getElementById("read-aloud-btn");
   if (btn) {
@@ -379,49 +383,37 @@ function updateReadAloudBtnUI(isPlaying) {
   }
 }
 
-// Cancel active speech whenever navigating to a new node
 function stopReadAloud() {
   if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     updateReadAloudBtnUI(false);
   }
 }
+
 // ==========================================
 // ASSET PIPELINE: BACKGROUND IMAGE PRELOADER
 // ==========================================
-
 const preloadedImages = new Map();
 
-/**
- * Silently pre-fetches an image URL into browser cache
- */
 function preloadSingleImage(url) {
   if (!url || preloadedImages.has(url)) return;
-
   const img = new Image();
   img.src = url;
   preloadedImages.set(url, img);
 }
 
-/**
- * Inspects current node choices and preloads images for all immediate next nodes
- */
 function preloadNextNodeAssets(currentNodeKey) {
-  if (typeof storyTree === "undefined") return; // Added guard check
+  if (typeof storyTree === "undefined") return;
   const currentNode = storyTree[currentNodeKey];
   if (!currentNode || !currentNode.choices) return;
 
   currentNode.choices.forEach(choice => {
     const nextKey = choice.nextNode;
-    if (!nextKey) return; // Added safety check for action-based choices
+    if (!nextKey) return;
     const nextNode = storyTree[nextKey];
-
     if (nextNode) {
       if (nextNode.bgImage) preloadSingleImage(nextNode.bgImage);
       if (nextNode.hud && nextNode.hud.image) preloadSingleImage(nextNode.hud.image);
     }
   });
 }
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeJudgeInfoModal();
-});

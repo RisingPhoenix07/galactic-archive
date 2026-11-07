@@ -892,44 +892,46 @@ body {
   100% { box-shadow: 0 0 15px #ff0055; }
 }
 /* ==========================================
-   MINI-GAME CANVAS OVERLAY STYLING
+   MINI-GAME CANVAS OVERLAY STYLING (FIXED)
    ========================================== */
-   /* Ensure the parent game wrapper maintains a centered relative grid */
-   #game-container, .game-viewport {
-     position: relative;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
-     width: 100%;
-   }
-   
-   /* Force canvas container to center horizontally and take full viewport width */
+
+   /* Full-bleed overlay inside the main game viewport */
    #canvas-view {
-     width: 100%;
-     max-width: 800px;
-     height: 450px;
-     margin: 0 auto;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     position: relative;
+     position: absolute !important;
+     top: 0 !important;
+     left: 0 !important;
+     width: 100% !important;
+     height: 100% !important;
+     margin: 0 !important;
+     padding: 0 !important;
+     background-color: #000000 !important;
+     display: flex !important;
+     justify-content: center !important;
+     align-items: center !important;
+     z-index: 50;
+     box-sizing: border-box !important;
    }
-   
-   /* Hide inactive elements cleanly without leaving blank flex gaps */
-   .hidden {
-     display: none !important;
-   }
-   
-   /* Ensure Phaser canvas sits squarely in the middle */
-   #phaser-game-container {
-     width: 800px;
-     height: 450px;
-     margin: 0 auto;
-   }
-   
-   #phaser-game-container canvas {
-     display: block;
-     margin: 0 auto;
-     border-radius: 4px;
-   }
+
+/* Ensure hidden state fully collapses display */
+#canvas-view.hidden {
+  display: none !important;
+}
+
+/* Fluid wrapper allowing Phaser canvas to scale dynamically */
+#phaser-game-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: hidden;
+}
+
+/* Let Phaser manage canvas scaling while enforcing max limits */
+#phaser-game-container canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
+}

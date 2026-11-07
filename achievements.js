@@ -71,15 +71,21 @@ function parseGlossaryTerms(text) {
   if (!text) return "";
   let parsedText = text;
   Object.keys(GLOSSARY).forEach(term => {
-    const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+    // Escape special characters to prevent regex crashes
+    const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b(${escapedTerm})\\b`, 'gi');
     parsedText = parsedText.replace(regex, `<span class="glossary-term" data-tooltip="${GLOSSARY[term]}">$1</span>`);
   });
   return parsedText;
 }
-
 function getDiscoveredLogs() {
-  const data = localStorage.getItem("galactic_archive_logs");
-  return data ? JSON.parse(data) : [];
+  try {
+    const data = localStorage.getItem("galactic_archive_logs");
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    console.error("Failed to parse discovered logs from localStorage:", e);
+    return [];
+  }
 }
 
 function recordArchiveLog(logId) {

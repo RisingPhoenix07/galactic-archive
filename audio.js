@@ -1,3 +1,7 @@
+// ==========================================
+// AUDIO ENGINE & MEDIA MANAGEMENT
+// ==========================================
+
 class AudioManager {
   constructor() {
     // Check local storage or default to MUTED (true) for clean browser autoplay compliance
@@ -29,6 +33,7 @@ class AudioManager {
     localStorage.setItem("galactic_archive_muted", this.isMuted);
 
     if (this.isMuted) {
+      // Pause active audio while retaining currentLoop reference
       const activeLoop = this.currentLoop;
       this.stopAll();
       this.currentLoop = activeLoop;
@@ -42,15 +47,14 @@ class AudioManager {
     return this.isMuted;
   }
 
-  // In audio.js:
-updateMuteButtonUI() {
-  // Select explicit mute buttons only (excluding #info-btn)
-  const btns = document.querySelectorAll("#mute-btn, #title-mute-btn");
-  btns.forEach(btn => {
-    btn.textContent = this.isMuted ? "🔇 MUTE" : "🔊 SOUND";
-    btn.classList.toggle("muted", this.isMuted);
-  });
-}
+  updateMuteButtonUI() {
+    // Select explicit mute buttons only (excluding #info-btn)
+    const btns = document.querySelectorAll("#mute-btn, #title-mute-btn");
+    btns.forEach(btn => {
+      btn.textContent = this.isMuted ? "🔇 MUTE" : "🔊 SOUND";
+      btn.classList.toggle("muted", this.isMuted);
+    });
+  }
 
   play(soundKey, loop = false) {
     if (loop) {
@@ -64,7 +68,16 @@ updateMuteButtonUI() {
 
     sound.currentTime = 0;
     sound.loop = loop;
-    sound.play().catch(err => console.warn(`Playback blocked for ${soundKey}:`, err));
+    
+    // Safely catch interrupted audio play promises (prevents AbortError warnings)
+    const playPromise = sound.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        if (err.name !== 'AbortError') {
+          console.warn(`Playback blocked for ${soundKey}:`, err);
+        }
+      });
+    }
   }
 
   stop(soundKey) {
@@ -108,7 +121,6 @@ const unlockAudioOnFirstInteraction = () => {
       window.audioManager.play('theme_song', true);
     }
   }
-
   window.removeEventListener('click', unlockAudioOnFirstInteraction);
   window.removeEventListener('keydown', unlockAudioOnFirstInteraction);
 };
