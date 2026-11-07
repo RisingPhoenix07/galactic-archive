@@ -66,6 +66,20 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
   let statusText;
   let gameEnded = false;
 
+  // Touch & Gyro Control States
+  let touchUp = false;
+  let touchLeft = false;
+  let touchRight = false;
+  let gyroTiltX = 0; // Gamma: Left/Right tilt
+  let gyroTiltY = 0; // Beta: Forward/Back tilt
+  let gyroActive = false;
+
+  function handleOrientation(event) {
+    gyroTiltX = event.gamma || 0;
+    gyroTiltY = event.beta || 0;
+    gyroActive = true;
+  }
+
   function preload() {
     this.load.image('lunarBackground', 'assets/panels/lunarBackground.jpg');
     this.load.image('apolloLM', 'assets/panels/lm_lander.png');
@@ -115,6 +129,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     fuel = 100;
     farLeftReached = false;
     checkpoints = [];
+    gyroActive = false;
 
     // --- 1. BACKGROUND ---
     if (this.textures.exists('lunarBackground')) {
@@ -237,6 +252,70 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     });
 
     this.physics.add.collider(lander, landingPad, checkTouchdown, null, this);
+
+    // --- 6. MOBILE TOUCH CONTROLS & GYRO INITIALIZATION ---
+    if (this.sys.game.device.input.touch) {
+      // Left RCS Button
+      const leftBtn = this.add.text(60, 390, '◀ RCS', {
+        fontSize: '16px',
+        fill: '#64ffda',
+        backgroundColor: '#030712d0',
+        padding: { x: 14, y: 10 }
+      }).setOrigin(0.5).setInteractive();
+
+      leftBtn.on('pointerdown', () => { touchLeft = true; });
+      leftBtn.on('pointerup', () => { touchLeft = false; });
+      leftBtn.on('pointerout', () => { touchLeft = false; });
+
+      // Right RCS Button
+      const rightBtn = this.add.text(160, 390, 'RCS ▶', {
+        fontSize: '16px',
+        fill: '#64ffda',
+        backgroundColor: '#030712d0',
+        padding: { x: 14, y: 10 }
+      }).setOrigin(0.5).setInteractive();
+
+      rightBtn.on('pointerdown', () => { touchRight = true; });
+      rightBtn.on('pointerup', () => { touchRight = false; });
+      rightBtn.on('pointerout', () => { touchRight = false; });
+
+      // Main Thruster Button
+      const thrustBtn = this.add.text(710, 390, '🔥 THRUST', {
+        fontSize: '18px',
+        fill: '#00ff88',
+        backgroundColor: '#030712d0',
+        padding: { x: 18, y: 12 }
+      }).setOrigin(0.5).setInteractive();
+
+      thrustBtn.on('pointerdown', () => { touchUp = true; });
+      thrustBtn.on('pointerup', () => { touchUp = false; });
+      thrustBtn.on('pointerout', () => { touchUp = false; });
+    }
+
+    // Request Gyroscope Permission / Bind Listeners
+    if (window.DeviceOrientationEvent) {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        const gyroBtn = this.add.text(400, 390, '📱 GYRO CONTROLS', {
+          fontSize: '13px',
+          fill: '#64ffda',
+          backgroundColor: '#030712d0',
+          padding: { x: 12, y: 8 }
+        }).setOrigin(0.5).setInteractive();
+
+        gyroBtn.on('pointerdown', () => {
+          DeviceOrientationEvent.requestPermission()
+            .then(response => {
+              if (response === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                gyroBtn.destroy();
+              }
+            })
+            .catch(console.error);
+        });
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
   }
 
   function update() {
@@ -260,8 +339,13 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       return;
     }
 
-    // THRUSTER CONTROLS
-    if (cursors.up.isDown && fuel > 0) {
+    // GYRO INPUT EVALUATION
+    const isGyroThrusting = gyroActive && gyroTiltY < 25;
+    const isGyroLeft = gyroActive && gyroTiltX < -10;
+    const isGyroRight = gyroActive && gyroTiltX > 10;
+
+    // MAIN ENGINE THRUST (Keyboard, Touch Button, or Gyro Tilt)
+    if ((cursors.up.isDown || touchUp || isGyroThrusting) && fuel > 0) {
       const angleRad = Phaser.Math.DegToRad(lander.angle - 90);
       const thrustPower = 135;
       lander.setAccelerationX(Math.cos(angleRad) * thrustPower);
@@ -279,11 +363,12 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       engineParticles.emitting = false;
     }
 
-    if (cursors.left.isDown && fuel > 0) {
+    // RCS ROTATION CONTROLS (Keyboard, Touch Buttons, or Gyro Tilt)
+    if ((cursors.left.isDown || touchLeft || isGyroLeft) && fuel > 0) {
       lander.setAngularVelocity(-65);
       fuel -= 0.02;
       rcsLeftParticles.emitting = true;
-    } else if (cursors.right.isDown && fuel > 0) {
+    } else if ((cursors.right.isDown || touchRight || isGyroRight) && fuel > 0) {
       lander.setAngularVelocity(65);
       fuel -= 0.02;
       rcsRightParticles.emitting = true;
@@ -381,6 +466,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
   }
 
   function closeMiniGame() {
+    window.removeEventListener('deviceorientation', handleOrientation);
     if (activePhaserGame) {
       activePhaserGame.destroy(true);
       activePhaserGame = null;
