@@ -126,9 +126,9 @@ const VERCEL_PROXY_URL = "https://galactic-archive-two.vercel.app/api/archie-cur
 
 async function fetchArchieAIResponse(userQuery, currentMissionContext) {
   try {
-    const controller = new AbortController();
-    // Extended timeout from 6s (6000ms) to 20s (20000ms)
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    // curator.js
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     const response = await fetch(VERCEL_PROXY_URL, {
       method: "POST",
