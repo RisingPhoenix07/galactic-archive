@@ -935,3 +935,160 @@ body {
   border-radius: 4px;
   box-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
 }
+
+/* ==========================================
+   ARCHIE CURATOR CRT DRAWER (INCREASED FONTS & FIXED UI)
+   ========================================== */
+.curator-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background: rgba(3, 7, 18, 0.96);
+  border-left: 2px solid #00ff88;
+  box-shadow: -10px 0 25px rgba(0, 255, 136, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  transition: transform 0.3s ease-in-out;
+  font-family: 'Courier New', monospace;
+  color: #64ffda;
+}
+
+.curator-drawer.hidden {
+  transform: translateX(100%);
+}
+
+.curator-header {
+  padding: 16px;
+  background: #09101d;
+  border-bottom: 1px solid #00ff88;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.curator-title {
+  font-size: 15px; /* Increased from 13px */
+  font-weight: bold;
+  color: #00ff88;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff88;
+}
+
+.curator-close-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 20px; /* Increased from 16px */
+  cursor: pointer;
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+.curator-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 14px; /* Increased from 12px for better readability */
+  line-height: 1.6;
+}
+
+.curator-msg {
+  padding: 10px 14px;
+  border-radius: 4px;
+  word-wrap: break-word;
+}
+
+.curator-msg.bot {
+  background: rgba(0, 255, 136, 0.1);
+  border-left: 4px solid #00ff88;
+  color: #f1f5f9;
+}
+
+.curator-msg.user {
+  background: rgba(56, 189, 248, 0.18);
+  border-right: 4px solid #38bdf8;
+  color: #38bdf8;
+  align-self: flex-end;
+}
+
+.bot-tag {
+  color: #00ff88;
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.curator-chips {
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid rgba(100, 255, 218, 0.25);
+  background: rgba(9, 16, 29, 0.5);
+}
+
+.chip-btn {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  font-family: inherit;
+  font-size: 12px; /* Increased from 10px */
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip-btn:hover {
+  background: #00ff88;
+  color: #030712;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+.curator-input-box {
+  padding: 14px;
+  background: #09101d;
+  border-top: 1px solid #00ff88;
+  display: flex;
+  gap: 10px;
+}
+
+.curator-input-box input {
+  flex: 1;
+  background: #030712;
+  border: 1px solid #64ffda;
+  color: #00ff88;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px; /* Increased from 11px */
+  border-radius: 4px;
+  outline: none;
+}
+
+.curator-input-box button {
+  background: #00ff88;
+  color: #030712;
+  border: none;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 13px; /* Increased from 11px */
+  padding: 0 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}

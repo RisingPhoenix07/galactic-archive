@@ -22,6 +22,9 @@
       <button id="read-aloud-btn" onclick="toggleReadAloud()" class="hud-btn hud-read-btn" title="Read caption aloud">
         🔊 READ CAPTION
       </button>
+      <button id="curator-btn" class="hud-btn" onclick="toggleCuratorDrawer()">
+        🤖 Ask ARCHIE
+      </button>
     </div>
 
     <!-- Top Right Corner Controls (Visual Progress Bar) -->
@@ -179,15 +182,44 @@
   <div id="phaser-game-container"></div>
 </div>
 
-<!-- Load Phaser 3 CDN before your game scripts -->
+
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
 
+
+<!-- ARCHIE Slide-Out CRT Drawer -->
+<div id="curator-drawer" class="curator-drawer hidden">
+  <div class="curator-header">
+    <div class="curator-title">
+      <span class="status-dot"></span> ARCHIE v4.2 // HISTORIC CURATOR
+    </div>
+    <button class="curator-close-btn" onclick="toggleCuratorDrawer()">✕</button>
+  </div>
+  
+  <div class="curator-body" id="curator-chat-log">
+    <div class="curator-msg bot">
+      <span class="bot-tag">[ARCHIE]:</span> Greetings, Commander. I am ARCHIE, Lead Historic Curator for the Galactic Archive. Select a telemetry query below or ask any question regarding flight maneuvers, acronyms, or real-world mission outcomes.
+    </div>
+  </div>
+
+  <!-- Quick FAQ Chips Container -->
+  <div class="curator-chips" id="curator-chips-container">
+    <!-- Dynamically populated based on active mission node -->
+  </div>
+
+  <!-- Freeform Input Area (MUST BE INCLUDED AND CLOSED) -->
+  <div class="curator-input-box">
+    <input type="text" id="curator-user-input" placeholder="Ask ARCHIE a question (e.g., What is DSKY?)..." onkeydown="handleCuratorKeydown(event)" />
+    <button onclick="sendCuratorMessage()">SEND</button>
+  </div>
+</div>
 <!-- Scripts Loaded in Order -->
 <script src="storyData.js"></script>
 <script src="failureLogs.js"></script>
 <script src="achievements.js"></script>
 <script src="audio.js"></script>
 <script src="minigames/LunarLanderGame.js"></script>
+
+<script src="curator.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
