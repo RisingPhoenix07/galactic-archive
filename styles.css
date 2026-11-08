@@ -103,6 +103,31 @@ body {
   color: #ffffff;
   box-shadow: 0 0 10px #ff3366;
 }
+
+.hud-read-btn {
+  background: rgba(255, 183, 3, 0.15);
+  color: #ffb703;
+  border: 1px solid #ffb703;
+}
+
+.hud-read-btn:hover {
+  background: #ffb703;
+  color: #0a192f;
+  box-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
+}
+
+.hud-read-btn.reading-active {
+  background: #ff0055;
+  color: #ffffff;
+  border-color: #ff0055;
+  animation: pulseRead 1s infinite alternate;
+}
+
+@keyframes pulseRead {
+  0% { box-shadow: 0 0 5px #ff0055; }
+  100% { box-shadow: 0 0 15px #ff0055; }
+}
+
 /* ==========================================
    HUD LOG PROGRESS BAR & PILL BUTTON
    ========================================== */
@@ -119,7 +144,6 @@ body {
   letter-spacing: 1px;
 }
 
-/* Outer Progress Track (Rounded Pill Bar) */
 .log-progress-track {
   width: 90px;
   height: 12px;
@@ -131,7 +155,6 @@ body {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
-/* Inner Filling Bar */
 .log-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #00f0ff 0%, #64ffda 100%);
@@ -141,7 +164,6 @@ body {
   box-shadow: 0 0 8px #64ffda;
 }
 
-/* Percentage Text Label */
 .log-progress-text {
   font-size: 0.75rem;
   color: #64ffda;
@@ -158,6 +180,7 @@ body {
   background: linear-gradient(90deg, #64ffda 0%, #ffffff 100%);
   box-shadow: 0 0 12px #ffffff;
 }
+
 /* ==========================================
    TITLE / LANDING SCREEN
    ========================================== */
@@ -213,7 +236,6 @@ body {
   margin-bottom: 16px;
 }
 
-/* ASTRO CARE BRANDING TAGLINE */
 .title-astro-credit, 
 .secret-astro-zone {
   margin: 10px 0 20px 0;
@@ -316,71 +338,32 @@ body {
   overflow: visible !important;
 }
 
-/*.caption-box {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
-  background: #ffffff;
-  border: 3px solid #000000;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-  z-index: 10;
-  white-space: pre-line;
-  overflow: visible !important;
-}*/
-/* RETRO CRT TERMINAL STYLE — ENHANCED CAPTION TEXT */
 .caption-box {
   position: absolute;
   bottom: 0px;
   left: 12px;
   right: 12px;
-  background: rgba(6, 20, 42, 0.94) !important; /* Slightly deeper opacity for maximum contrast */
-  color: #fdfdfd !important;                   /* Crisp white primary text */
-  border: 2px solid #64ffda !important;          /* Glowing Neon Cyan Border */
+  background: rgba(6, 20, 42, 0.94) !important;
+  color: #fdfdfd !important;
+  border: 2px solid #64ffda !important;
   border-radius: 6px;
   padding: 14px 18px;
   font-family: 'Courier New', monospace;
-  font-size: 1.05rem !important;                /* Increased size slightly above 0.95rem */
-  font-weight: 700 !weight;                    /* Bold weight makes caption readable at a glance */
-  letter-spacing: 0.5px;                        /* Spaced characters give terminal printout feel */
+  font-size: 1.05rem !important;
+  font-weight: 700 !important; /* FIXED TYPO HERE */
+  letter-spacing: 0.5px;
   line-height: 1.55;
   box-shadow: 0 0 15px rgba(100, 255, 218, 0.3), 
               inset 0 0 10px rgba(100, 255, 218, 0.15);
-  text-shadow: 0 0 4px rgba(100, 255, 218, 0.6); /* Stronger glow layer behind text */
-  overflow: visible !important;                 /* Critical for glossary tooltips */
-}
-/* VINTAGE COMIC BOOK CAPTION PANEL */
-/* FROSTED HUD GLASS */
-/*
-.caption-box {
-  position: absolute;
-  bottom: 0px;
-  left: 12px;
-  right: 12px;
-  background: rgba(5, 15, 30, 0.75) !important;
-  backdrop-filter: blur(8px);                         
-  -webkit-backdrop-filter: blur(8px);
-  color: #f0f6fc !important;
-  border-left: 4px solid #ffb703 !important;          
-  border-top: 1px solid rgba(255, 183, 3, 0.3) !important;
-  border-right: 1px solid rgba(255, 183, 3, 0.3) !important;
-  border-bottom: 3px solid rgba(255, 183, 3, 0.3) !important;
-  padding: 14px 18px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 4px rgba(100, 255, 218, 0.6);
   overflow: visible !important;
-}*/
+}
 
 .caption-box.caption-epilogue {
   right: 320px;
   max-width: 60%;
 }
+
 /* ==========================================
    JUDGE INFO MODAL - REPO LINK BUTTON
    ========================================== */
@@ -420,6 +403,7 @@ body {
   box-shadow: 0 0 18px rgba(100, 255, 218, 0.6);
   transform: translateY(-1px);
 }
+
 /* ==========================================
    EDUCATIONAL FAILURE DEBRIEF BOX
    ========================================== */
@@ -462,13 +446,11 @@ body {
   display: inline-block;
 }
 
-/* Terms inside red debrief box highlight in yellow */
 .debrief-box .glossary-term {
   color: #ffe600;
   border-bottom: 1px dashed #ffe600;
 }
 
-/* Tooltips popping upward from caption box */
 .caption-box .glossary-term:hover::after,
 .caption-box .glossary-term:focus::after {
   content: attr(data-tooltip);
@@ -489,7 +471,6 @@ body {
   text-align: left;
 }
 
-/* Tooltips popping downward from debrief box */
 .debrief-box .glossary-term:hover::after,
 .debrief-box .glossary-term:focus::after {
   content: attr(data-tooltip);
@@ -626,6 +607,7 @@ body {
   box-shadow: 3px 3px 0px #000000;
   transition: transform 0.1s, background-color 0.2s, color 0.2s;
   text-align: center;
+  touch-action: manipulation;
 }
 
 .choice-btn:hover {
@@ -758,6 +740,207 @@ body {
 }
 
 /* ==========================================
+   MINI-GAME CANVAS OVERLAY STYLING
+   ========================================== */
+
+#canvas-view {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #000000 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 50;
+  box-sizing: border-box !important;
+}
+
+#canvas-view.hidden {
+  display: none !important;
+}
+
+#phaser-game-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: hidden;
+}
+
+#phaser-game-container canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
+}
+
+/* ==========================================
+   ARCHIE CURATOR CRT DRAWER
+   ========================================== */
+
+.curator-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  max-width: 90vw;
+  height: 100vh;
+  background: rgba(3, 7, 18, 0.96);
+  border-left: 2px solid #00ff88;
+  box-shadow: -10px 0 25px rgba(0, 255, 136, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  transition: transform 0.3s ease-in-out;
+  font-family: 'Courier New', monospace;
+  color: #64ffda;
+}
+
+.curator-drawer.hidden {
+  transform: translateX(100%);
+}
+
+.curator-header {
+  padding: 16px;
+  background: #09101d;
+  border-bottom: 1px solid #00ff88;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.curator-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #00ff88;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff88;
+}
+
+.curator-close-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+.curator-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.curator-msg {
+  padding: 10px 14px;
+  border-radius: 4px;
+  word-wrap: break-word;
+}
+
+.curator-msg.bot {
+  background: rgba(0, 255, 136, 0.1);
+  border-left: 4px solid #00ff88;
+  color: #f1f5f9;
+}
+
+.curator-msg.user {
+  background: rgba(56, 189, 248, 0.18);
+  border-right: 4px solid #38bdf8;
+  color: #38bdf8;
+  align-self: flex-end;
+}
+
+.bot-tag {
+  color: #00ff88;
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.curator-chips {
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid rgba(100, 255, 218, 0.25);
+  background: rgba(9, 16, 29, 0.5);
+}
+
+.chip-btn {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 12px;
+  min-height: 44px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.chip-btn:hover {
+  background: #00ff88;
+  color: #030712;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+.curator-input-box {
+  padding: 14px;
+  background: #09101d;
+  border-top: 1px solid #00ff88;
+  display: flex;
+  gap: 10px;
+}
+
+.curator-input-box input {
+  flex: 1;
+  background: #030712;
+  border: 1px solid #64ffda;
+  color: #00ff88;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.curator-input-box button {
+  background: #00ff88;
+  color: #030712;
+  border: none;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 0 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* ==========================================
    ANIMATIONS & DANGER / VICTORY GLOWS
    ========================================== */
 
@@ -819,14 +1002,21 @@ body {
 }
 
 /* ==========================================
-   MOBILE LAYOUT OVERRIDES
+   MOBILE PORTRAIT OPTIMIZATIONS (<768px)
    ========================================== */
 
 @media screen and (max-width: 768px) {
+  body {
+    padding: 0;
+  }
+
   .game-container {
     width: 100vw !important;
     height: auto !important;
     min-height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     flex-direction: column;
   }
 
@@ -864,231 +1054,85 @@ body {
 
   .panel-box {
     width: 100% !important;
-    min-height: 300px !important;
+    min-height: 260px !important;
+  }
+
+  .caption-box {
+    font-size: 0.9rem !important;
+    padding: 10px 12px;
+  }
+
+  .choice-btn {
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 12px 14px;
+    width: 100%;
+  }
+
+  .curator-drawer {
+    width: 100vw;
+    max-width: 100vw;
   }
 }
 
-.hud-read-btn {
-  background: rgba(255, 183, 3, 0.15);
-  color: #ffb703;
-  border: 1px solid #ffb703;
-}
-
-.hud-read-btn:hover {
-  background: #ffb703;
-  color: #0a192f;
-  box-shadow: 0 0 12px rgba(255, 183, 3, 0.6);
-}
-
-.hud-read-btn.reading-active {
-  background: #ff0055;
-  color: #ffffff;
-  border-color: #ff0055;
-  animation: pulseRead 1s infinite alternate;
-}
-
-@keyframes pulseRead {
-  0% { box-shadow: 0 0 5px #ff0055; }
-  100% { box-shadow: 0 0 15px #ff0055; }
-}
 /* ==========================================
-   MINI-GAME CANVAS OVERLAY STYLING (FIXED)
+   MOBILE LANDSCAPE ORIENTATION OPTIMIZATIONS
    ========================================== */
 
-   /* Full-bleed overlay inside the main game viewport */
-   #canvas-view {
-     position: absolute !important;
-     top: 0 !important;
-     left: 0 !important;
-     width: 100% !important;
-     height: 100% !important;
-     margin: 0 !important;
-     padding: 0 !important;
-     background-color: #000000 !important;
-     display: flex !important;
-     justify-content: center !important;
-     align-items: center !important;
-     z-index: 50;
-     box-sizing: border-box !important;
-   }
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  body {
+    padding: 0;
+    margin: 0;
+  }
 
-/* Ensure hidden state fully collapses display */
-#canvas-view.hidden {
-  display: none !important;
+  .game-container {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    border: none;
+    border-radius: 0;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .panel-box {
+    height: 55vh;
+    min-height: auto;
+  }
+
+  #panel-img {
+    object-fit: contain;
+    max-height: 100%;
+  }
+
+  #choices-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 6px;
+    padding: 4px;
+  }
+
+  .choice-btn {
+    min-height: 40px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .hud-bar {
+    top: 6px;
+    left: 8px;
+    right: 8px;
+  }
 }
 
-/* Fluid wrapper allowing Phaser canvas to scale dynamically */
-#phaser-game-container {
-  width: 100% !important;
-  height: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  overflow: hidden;
-}
-
-/* Let Phaser manage canvas scaling while enforcing max limits */
-#phaser-game-container canvas {
-  max-width: 100% !important;
-  max-height: 100% !important;
-  object-fit: contain !important;
-  border-radius: 4px;
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.25);
-}
-
-/* ==========================================
-   ARCHIE CURATOR CRT DRAWER (INCREASED FONTS & FIXED UI)
-   ========================================== */
-.curator-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  max-width: 90vw;
-  height: 100vh;
-  background: rgba(3, 7, 18, 0.96);
-  border-left: 2px solid #00ff88;
-  box-shadow: -10px 0 25px rgba(0, 255, 136, 0.2);
-  display: flex;
-  flex-direction: column;
-  z-index: 9999;
-  transition: transform 0.3s ease-in-out;
-  font-family: 'Courier New', monospace;
-  color: #64ffda;
-}
-
-.curator-drawer.hidden {
-  transform: translateX(100%);
-}
-
-.curator-header {
-  padding: 16px;
-  background: #09101d;
-  border-bottom: 1px solid #00ff88;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.curator-title {
-  font-size: 15px; /* Increased from 13px */
-  font-weight: bold;
-  color: #00ff88;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  background-color: #00ff88;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #00ff88;
-}
-
-.curator-close-btn {
-  background: transparent;
-  border: none;
-  color: #ef4444;
-  font-size: 20px; /* Increased from 16px */
-  cursor: pointer;
-  font-weight: bold;
-  padding: 4px 8px;
-}
-
-.curator-body {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  font-size: 14px; /* Increased from 12px for better readability */
-  line-height: 1.6;
-}
-
-.curator-msg {
-  padding: 10px 14px;
-  border-radius: 4px;
-  word-wrap: break-word;
-}
-
-.curator-msg.bot {
-  background: rgba(0, 255, 136, 0.1);
-  border-left: 4px solid #00ff88;
-  color: #f1f5f9;
-}
-
-.curator-msg.user {
-  background: rgba(56, 189, 248, 0.18);
-  border-right: 4px solid #38bdf8;
-  color: #38bdf8;
-  align-self: flex-end;
-}
-
-.bot-tag {
-  color: #00ff88;
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-.curator-chips {
-  padding: 10px 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  border-top: 1px solid rgba(100, 255, 218, 0.25);
-  background: rgba(9, 16, 29, 0.5);
-}
-
-.chip-btn {
-  background: rgba(0, 255, 136, 0.15);
-  border: 1px solid #00ff88;
-  color: #00ff88;
-  font-family: inherit;
-  font-size: 12px; /* Increased from 10px */
-  font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.chip-btn:hover {
-  background: #00ff88;
-  color: #030712;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
-}
-
-.curator-input-box {
-  padding: 14px;
-  background: #09101d;
-  border-top: 1px solid #00ff88;
-  display: flex;
-  gap: 10px;
-}
-
-.curator-input-box input {
-  flex: 1;
-  background: #030712;
-  border: 1px solid #64ffda;
-  color: #00ff88;
-  padding: 10px 12px;
-  font-family: inherit;
-  font-size: 13px; /* Increased from 11px */
-  border-radius: 4px;
-  outline: none;
-}
-
-.curator-input-box button {
-  background: #00ff88;
-  color: #030712;
-  border: none;
-  font-family: inherit;
-  font-weight: bold;
-  font-size: 13px; /* Increased from 11px */
-  padding: 0 16px;
-  cursor: pointer;
-  border-radius: 4px;
+/* Rotate Prompt Hint */
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .portrait-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #64ffda;
+    text-align: center;
+  }
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="Galactic Archive — An interactive sci-fi space history RPG powered by real NASA telemetry data and retro visual comic panels.">
   <title>Galactic Archive RPG</title>
   <link rel="stylesheet" href="styles.css">
@@ -119,6 +119,11 @@
       </div>
     </section>
 
+    <!-- Mini-Game Arcade Canvas Overlay (Positioned inside main game-container) -->
+    <div id="canvas-view" class="canvas-view hidden">
+      <div id="phaser-game-container"></div>
+    </div>
+
     <!-- Choice Buttons Area -->
     <nav id="choices-container" class="choices-container hidden" aria-label="Mission Options"></nav>
   </main>
@@ -177,49 +182,41 @@
     </div>
   </div>
 
-  <!-- Mini-Game Arcade Canvas Overlay (Hidden by Default) -->
-<div id="canvas-view" class="canvas-view hidden">
-  <div id="phaser-game-container"></div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
-
-
-<!-- ARCHIE Slide-Out CRT Drawer -->
-<div id="curator-drawer" class="curator-drawer hidden">
-  <div class="curator-header">
-    <div class="curator-title">
-      <span class="status-dot"></span> ARCHIE v4.2 // HISTORIC CURATOR
+  <!-- ARCHIE Slide-Out CRT Drawer -->
+  <div id="curator-drawer" class="curator-drawer hidden">
+    <div class="curator-header">
+      <div class="curator-title">
+        <span class="status-dot"></span> ARCHIE v4.2 // HISTORIC CURATOR
+      </div>
+      <button class="curator-close-btn" onclick="toggleCuratorDrawer()">✕</button>
     </div>
-    <button class="curator-close-btn" onclick="toggleCuratorDrawer()">✕</button>
-  </div>
-  
-  <div class="curator-body" id="curator-chat-log">
-    <div class="curator-msg bot">
-      <span class="bot-tag">[ARCHIE]:</span> Greetings, Commander. I am ARCHIE, Lead Historic Curator for the Galactic Archive. Select a telemetry query below or ask any question regarding flight maneuvers, acronyms, or real-world mission outcomes.
+    
+    <div class="curator-body" id="curator-chat-log">
+      <div class="curator-msg bot">
+        <span class="bot-tag">[ARCHIE]:</span> Greetings, Commander. I am ARCHIE, Lead Historic Curator for the Galactic Archive. Select a telemetry query below or ask any question regarding flight maneuvers, acronyms, or real-world mission outcomes.
+      </div>
+    </div>
+
+    <!-- Quick FAQ Chips Container -->
+    <div class="curator-chips" id="curator-chips-container">
+      <!-- Dynamically populated based on active mission node -->
+    </div>
+
+    <!-- Freeform Input Area -->
+    <div class="curator-input-box">
+      <input type="text" id="curator-user-input" placeholder="Ask ARCHIE a question (e.g., What is DSKY?)..." onkeydown="handleCuratorKeydown(event)" />
+      <button onclick="sendCuratorMessage()">SEND</button>
     </div>
   </div>
 
-  <!-- Quick FAQ Chips Container -->
-  <div class="curator-chips" id="curator-chips-container">
-    <!-- Dynamically populated based on active mission node -->
-  </div>
-
-  <!-- Freeform Input Area (MUST BE INCLUDED AND CLOSED) -->
-  <div class="curator-input-box">
-    <input type="text" id="curator-user-input" placeholder="Ask ARCHIE a question (e.g., What is DSKY?)..." onkeydown="handleCuratorKeydown(event)" />
-    <button onclick="sendCuratorMessage()">SEND</button>
-  </div>
-</div>
-<!-- Scripts Loaded in Order -->
-<script src="storyData.js"></script>
-<script src="failureLogs.js"></script>
-<script src="achievements.js"></script>
-<script src="audio.js"></script>
-<script src="minigames/LunarLanderGame.js"></script>
-
-<script src="curator.js"></script>
-<script src="game.js"></script>
+  <!-- External & Game Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+  <script src="storyData.js"></script>
+  <script src="failureLogs.js"></script>
+  <script src="achievements.js"></script>
+  <script src="audio.js"></script>
+  <script src="minigames/LunarLanderGame.js"></script>
+  <script src="curator.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
