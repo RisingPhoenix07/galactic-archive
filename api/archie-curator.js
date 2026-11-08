@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openai/gpt-oss-20b", // Active self-serve model
+        model: "openai/gpt-oss-20b",
         messages: [
           { role: "system", content: ARCHIE_SYSTEM_INSTRUCTION },
           { role: "user", content: `Current Game Node: ${currentMissionContext || "intro"}\nUser Question: ${userQuery}` }
@@ -58,6 +58,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+    // OpenAI/Groq response format extraction
     const reply = data.choices?.[0]?.message?.content || null;
 
     return res.status(200).json({ reply });

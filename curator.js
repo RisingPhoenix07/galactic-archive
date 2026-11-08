@@ -65,13 +65,19 @@ function handleCuratorKeydown(e) {
 }
 
 // --- 3. UI MESSAGE DISPATCHER WITH GUARANTEED CLEANUP ---
+let isCuratorFetching = false;
+
 async function sendCuratorMessage() {
+  if (isCuratorFetching) return;
+
   const inputEl = document.getElementById("curator-user-input");
   const chatLog = document.getElementById("curator-chat-log");
   if (!inputEl || !chatLog) return;
 
   const query = inputEl.value.trim();
   if (!query) return;
+
+  isCuratorFetching = true;
 
   // 1. Render User Question
   appendChatMessage(query, "user");
@@ -84,7 +90,7 @@ async function sendCuratorMessage() {
   // 2. Render Loading Indicator
   const loadingElement = appendChatMessage("ARCHIE is searching historic NASA databases...", "bot loading");
 
-  // 3. Fetch Answer (Vercel Proxy or Local FAQ Fallback)
+  // 3. Fetch Answer
   let aiAnswer = "";
   try {
     const activeNode = typeof currentNodeId !== "undefined" ? currentNodeId : "intro_p1";
@@ -93,13 +99,13 @@ async function sendCuratorMessage() {
     console.warn("[ARCHIE UI] Response fetch error, switching to offline database:", err);
     aiAnswer = processArchieQueryOffline(query);
   } finally {
-    // 4. GUARANTEED: Remove Loading Indicator regardless of network status
+    isCuratorFetching = false;
     if (loadingElement && loadingElement.parentNode) {
       loadingElement.parentNode.removeChild(loadingElement);
     }
   }
 
-  // 5. Append ARCHIE Answer
+  // 4. Append ARCHIE Answer
   appendChatMessage(aiAnswer, "bot");
 }
 
@@ -126,9 +132,9 @@ const VERCEL_PROXY_URL = "https://galactic-archive-two.vercel.app/api/archie-cur
 
 async function fetchArchieAIResponse(userQuery, currentMissionContext) {
   try {
-    // curator.js
-const controller = new AbortController();
-const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const controller = new AbortController();
+    // Set 8-second abort limit to stay within Vercel execution limits
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     const response = await fetch(VERCEL_PROXY_URL, {
       method: "POST",
@@ -140,19 +146,19 @@ const timeoutId = setTimeout(() => controller.abort(), 8000);
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      console.warn(`[ARCHIE Proxy] Server returned HTTP ${response.status}`);
+      console.warn(`[ARCHIE Proxy] Server HTTP ${response.status}`);
       return processArchieQueryOffline(userQuery);
     }
 
     const data = await response.json();
-    if (data.reply) {
+    if (data && data.reply) {
       return data.reply;
     }
   } catch (error) {
-    console.warn("[ARCHIE Proxy] Fetch failed or timed out. Switching to offline database:", error);
+    console.warn("[ARCHIE Proxy] Request failed or aborted. Falling back to offline engine:", error);
   }
 
-  // Graceful rule-based FAQ fallback
+  // Primary offline FAQ engine fallback
   return processArchieQueryOffline(userQuery);
 }
 
@@ -170,10 +176,10 @@ function processArchieQueryOffline(query) {
   }
 
   // B. Glossary Matching (DSKY, HHMU, LOI, EVA, NRHO, etc.)
-  if (typeof GLOSSARY !== "undefined") {
+  if (typeof GLOSSARY !== "undefined" && GLOSSARY !== null && typeof GLOSSARY === "object") {
     for (const [term, def] of Object.entries(GLOSSARY)) {
       if (lowerQuery.includes(term.toLowerCase())) {
-        return `<strong>${term}</strong> stands for: ${def}.`;
+        return `<strong>${term}</strong>: ${def}`;
       }
     }
   }
