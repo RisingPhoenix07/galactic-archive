@@ -9,17 +9,17 @@ RULES:
 4. Always encourage them to test their ideas in the game!
 `;
 
-// Helper: Automatically retry transient server errors (503/500) before giving up
+// Helper: Exponential backoff handler for 503/500 upstream errors
 async function fetchWithRetry(url, options, retries = 3, backoff = 1000) {
   for (let i = 0; i < retries; i++) {
     const response = await fetch(url, options);
-    
-    // Return immediately if successful or if it's a non-retriable client error (e.g. 400, 401, 404)
+
+    // Return immediately on success or client-side errors (400-499)
     if (response.ok || (response.status >= 400 && response.status < 500)) {
       return response;
     }
 
-    // Retriable server error (503, 500, 504) — wait with exponential backoff before retrying
+    // Retriable server error (503, 500, 504) — wait before retrying
     if (i < retries - 1) {
       await new Promise((resolve) => setTimeout(resolve, backoff));
       backoff *= 2; // 1s -> 2s -> 4s
@@ -30,7 +30,7 @@ async function fetchWithRetry(url, options, retries = 3, backoff = 1000) {
 }
 
 export default async function handler(req, res) {
-  // 1. Set CORS headers on ALL responses (success or error)
+  // 1. CORS Headers
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Vercel environment." });
   }
 
+  // Updated model endpoint
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
   try {
@@ -76,7 +77,6 @@ export default async function handler(req, res) {
       }
     };
 
-    // Use fetchWithRetry instead of bare fetch
     const response = await fetchWithRetry(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
