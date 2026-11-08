@@ -92,12 +92,10 @@ galactic-archive/
 ├── fetch_nasa_data.py          # NASA API fetcher for telemetry images & audio clips
 ├── build_asset_pipeline.py     # Asset manifest generator & prompt compiler
 └── asset_manifest.json         # Panel-to-narrative state mapping
+```
+(Quick Test)
 
-
-
-### Deployed on Vercel
-[![Play on Vercel](https://img.shields.io/badge/Play%20Now-Vercel%20App-00f0ff?style=for-the-badge&logo=vercel)](https://galactic-archive-two.vercel.app/)
-(Local Setup)
+<p>Deployed on Vercel: <a href="https://galactic-archive-two.vercel.app/" target="_blank">https://galactic-archive-two.vercel.app/</a></p>
 
 ### 1. Clone the Repository
 ```bash
