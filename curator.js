@@ -122,7 +122,7 @@ function appendChatMessage(text, senderClass) {
 }
 
 // --- 4. VERCEL PROXY FETCH HANDLER ---
-const VERCEL_PROXY_URL = "https://your-project-name.vercel.app/api/archie-curator";
+const VERCEL_PROXY_URL = "https://galactic-archive-two.vercel.app/api/archie-curator";
 
 async function fetchArchieAIResponse(userQuery, currentMissionContext) {
   try {
