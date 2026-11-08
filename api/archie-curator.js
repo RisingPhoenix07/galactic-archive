@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "openai/gpt-oss-20b", // Active self-serve model
         messages: [
           { role: "system", content: ARCHIE_SYSTEM_INSTRUCTION },
           { role: "user", content: `Current Game Node: ${currentMissionContext || "intro"}\nUser Question: ${userQuery}` }
