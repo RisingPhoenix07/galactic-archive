@@ -19,7 +19,7 @@ An interactive retro-comic RPG and educational web game simulating historic and 
 ---
 
 ## 📸 Screenshots
-*(Add your 3 screenshots in `assets/screenshots/` or update the paths below)*
+
 ![Museum Hub](assets/screenshots/hub.png)
 ![Mission Comic Panel](assets/screenshots/panel.png)
 ![Phaser Telemetry Simulation](assets/screenshots/minigame.png)
