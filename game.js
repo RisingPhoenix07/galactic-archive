@@ -3,6 +3,8 @@
 // ==========================================
 
 let currentNodeId = "intro_p1";
+let decisionHistory = [];
+//const sessionMiniGameFailures = {};
 
 // 1. INITIALIZATION ON LOAD
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +21,6 @@ function startNewGame() {
 
 function goToMainMenu() {
   if (confirm("Return to the main menu? Progress in this session will be saved.")) {
-    // Stop speech synthesis if currently active
     stopReadAloud();
 
     const titleScreen = document.getElementById("title-screen");
@@ -93,7 +94,7 @@ function renderNode(nodeKey) {
   if (panelBox) {
     panelBox.classList.remove("shake", "alarm-flash", "success-glow");
     if (isFailureOrDanger) {
-      void panelBox.offsetWidth; // Force DOM reflow
+      void panelBox.offsetWidth;
       panelBox.classList.add("shake", "alarm-flash");
     } else if (isSuccessNode) {
       void panelBox.offsetWidth;
@@ -139,7 +140,6 @@ function renderNode(nodeKey) {
     }
   }
 
-  // Failure Log System & Educational Debrief Handler
   const debriefBox = document.getElementById("debrief-box");
   if (debriefBox) {
     if (node.debrief) {
@@ -151,12 +151,10 @@ function renderNode(nodeKey) {
     }
   }
 
-  // Trigger educational debrief logger if this is a registered failure node
   if (typeof handleFailureNode === "function") {
     handleFailureNode(nodeKey);
   }
 
-  // Secret Hover Overlay Toggles
   const rezZone = document.getElementById("secret-rez-zone");
   if (rezZone) {
     if (nodeKey === "museum_exit") rezZone.classList.remove("hidden");
@@ -200,12 +198,41 @@ function renderNode(nodeKey) {
     }
   }
 
-  // --- E. DECISION CHOICES & SHUFFLING ---
+  // --- E. DECISION CHOICES, REWIND & SHUFFLING ---
   const choicesContainer = document.getElementById("choices-container");
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
+
+    // Reset rewind stack on Intro or Mission Select
+    if (nodeKey === "intro_p1" || nodeKey === "intro_p2") {
+      decisionHistory = [];
+    }
+
+    const isMenuNode = nodeKey.startsWith("intro_") || nodeKey.includes("victory") || nodeKey === "museum_exit";
+
+    // Automatically inject Rewind button on any story failure node
+    if (isFailureOrDanger && decisionHistory.length > 0) {
+      const rewindBtn = document.createElement("button");
+      rewindBtn.className = "choice-btn";
+      rewindBtn.style.borderColor = "#00ff88";
+      rewindBtn.style.color = "#00ff88";
+      rewindBtn.textContent = "↶ Rewind to Last Decision";
+
+      rewindBtn.addEventListener("mouseenter", () => {
+        if (window.audioManager && typeof audioManager.play === "function") {
+          audioManager.play('ui_hover');
+        }
+      });
+
+      rewindBtn.onclick = () => {
+        const prevNode = decisionHistory.pop();
+        if (prevNode) renderNode(prevNode);
+      };
+
+      choicesContainer.appendChild(rewindBtn);
+    }
+
     if (node.choices && node.choices.length > 0) {
-      const isMenuNode = nodeKey.startsWith("intro_") || nodeKey.includes("victory") || nodeKey === "museum_exit";
       const displayChoices = (isMenuNode || typeof shuffleArray !== "function") ? node.choices : shuffleArray(node.choices);
 
       displayChoices.forEach((choice, index) => {
@@ -220,21 +247,77 @@ function renderNode(nodeKey) {
           }
         });
 
-        // ACTION VS NEXTNODE DISPATCHER
         btn.onclick = () => {
-          if (choice.action === "LAUNCH_LANDER_MINIGAME") {
+          // Record checkpoint before leaving non-failure, non-menu decision nodes
+          if (!isFailureOrDanger && !isMenuNode && nodeKey !== "intro_p2") {
+            if (decisionHistory[decisionHistory.length - 1] !== nodeKey) {
+              decisionHistory.push(nodeKey);
+            }
+          }
+
+          if (choice.action === "LAUNCH_MERCURY_REENTRY") {
+            if (typeof startMercuryReentryMiniGame === "function") {
+              launchMiniGame(startMercuryReentryMiniGame, "m1_p5_fireball", "m1_p4_jettison");
+            } else {
+              renderNode("m1_p5_fireball");
+            }
+
+          } else if (choice.action === "LAUNCH_GEMINI_EVA") {
+            if (typeof startGeminiEvaMiniGame === "function") {
+              launchMiniGame(startGeminiEvaMiniGame, "m2_p3_hatch", "m2_p5_tether_wrap");
+            } else {
+              renderNode("m2_p2_tether");
+            }
+
+          } else if (choice.action === "LAUNCH_APOLLO8_LOI") {
+            if (typeof startApollo8LoiMiniGame === "function") {
+              launchMiniGame(startApollo8LoiMiniGame, "m3_p3_comms", "m3_p6_flyby");
+            } else {
+              renderNode("m3_p3_comms");
+            }
+
+          } else if (choice.action === "LAUNCH_LANDER_MINIGAME") {
             if (typeof launchLanderMiniGame === "function") {
-              // Validated Lander callbacks: Route directly to valid victory / crash failure nodes
               launchLanderMiniGame(
                 () => renderNode("m4_success"),
                 () => renderNode("m4_crash")
               );
             } else {
-              console.warn("launchLanderMiniGame not defined! Falling back to m4_touchdown");
               renderNode("m4_touchdown");
             }
-          } else if (choice.nextNode) {
-            renderNode(choice.nextNode);
+
+          } else if (choice.action === "LAUNCH_ARTEMIS_SPE") {
+            if (typeof startArtemisSpeMiniGame === "function") {
+              launchMiniGame(startArtemisSpeMiniGame, "m5_p4_success", "m5_p6_thermal_breach");
+            } else {
+              renderNode("m5_p4_success");
+            }
+
+          } else if (choice.action === "LAUNCH_MARS_SKYCRANE") {
+            if (typeof startMarsSkyCraneMiniGame === "function") {
+              launchMiniGame(startMarsSkyCraneMiniGame, "m6_p3_dust_storm", "m6_p5_boulder_crash");
+            } else {
+              renderNode("m6_p3_dust_storm");
+            }
+
+          } else if (choice.action === "LAUNCH_EUROPA_CRYOBOT") {
+            if (typeof startEuropaCryobotMiniGame === "function") {
+              launchMiniGame(startEuropaCryobotMiniGame, "m7_p3_hazard", "m7_p5_ice_crush");
+            } else {
+              renderNode("m7_p3_hazard");
+            }
+
+          } else if (choice.action === "RETRY_MINIGAME") {
+            if (window.lastMiniGameContext) {
+              const { gameLauncherFn, winNode, lossNode, config } = window.lastMiniGameContext;
+              launchMiniGame(gameLauncherFn, winNode, lossNode, config);
+            }
+
+          } else if (choice.nextNode || choice.next) {
+            const rawTarget = choice.nextNode || choice.next;
+            const targetKey = rawTarget === "mission_select" ? "intro_p2" : rawTarget;
+            renderNode(targetKey);
+
           } else {
             console.error("Choice is missing both 'action' and 'nextNode':", choice);
           }
@@ -245,15 +328,11 @@ function renderNode(nodeKey) {
     }
   }
 
- 
-
   // --- F. AUTOMATIC ARCHIVE & ENDING LOG TRIGGER ---
   if (typeof recordArchiveLog === "function") {
-    // 1. Direct match for any registered node in ARCHIVE_LOGS
     if (typeof ARCHIVE_LOGS !== "undefined" && ARCHIVE_LOGS[nodeKey]) {
       recordArchiveLog(nodeKey);
     }
-    // 2. Mission Victory aliases fallback
     if (nodeKey === "m1_p9_victory" || nodeKey === "m1_p6_ending") {
       recordArchiveLog("m1_victory");
       if (typeof unlockAchievement === "function") unlockAchievement("m1_pioneer");
@@ -277,8 +356,7 @@ function renderNode(nodeKey) {
       if (typeof unlockAchievement === "function") unlockAchievement("m7_pioneer");
     }
   }
-  
-  // 3. Sync UI Counters & Badges immediately on node transition
+
   if (typeof updateLogsCounterUI === "function") updateLogsCounterUI();
   if (typeof renderAchievementBadges === "function") renderAchievementBadges();
 
@@ -391,7 +469,82 @@ function stopReadAloud() {
 }
 
 // ==========================================
-// ASSET PIPELINE: BACKGROUND IMAGE PRELOADER
+// MINI-GAME LAUNCHER & CHECKPOINT RETRY ENGINE
+// ==========================================
+function launchMiniGame(gameLauncherFn, winNode, lossNode, config = {}) {
+  if (typeof gameLauncherFn !== 'function' && window.lastMiniGameContext) {
+    ({ gameLauncherFn, winNode, lossNode, config } = window.lastMiniGameContext);
+  }
+
+  const panelBox = document.getElementById('panel-box');
+  const captionBox = document.getElementById('caption-box');
+  const hudOverlay = document.getElementById('hud-overlay');
+  const choicesContainer = document.getElementById('choices-container');
+  const canvasView = document.getElementById('canvas-view');
+  const phaserContainer = document.getElementById('phaser-game-container') || canvasView;
+
+  window.lastMiniGameContext = { gameLauncherFn, winNode, lossNode, config };
+
+  if (phaserContainer) phaserContainer.innerHTML = '';
+  if (panelBox) panelBox.classList.add('hidden');
+  if (captionBox) captionBox.classList.add('hidden');
+  if (hudOverlay) hudOverlay.classList.add('hidden');
+  if (choicesContainer) choicesContainer.classList.add('hidden');
+  if (canvasView) canvasView.classList.remove('hidden');
+
+  const restoreStoryUI = () => {
+    if (phaserContainer) phaserContainer.innerHTML = '';
+    if (canvasView) canvasView.classList.add('hidden');
+    if (panelBox) panelBox.classList.remove('hidden');
+    if (captionBox) captionBox.classList.remove('hidden');
+    if (choicesContainer) choicesContainer.classList.remove('hidden');
+  };
+
+  gameLauncherFn(
+    phaserContainer,
+    config,
+    () => {
+      restoreStoryUI();
+      renderNode(winNode);
+    },
+    (reason) => {
+      if (!phaserContainer) {
+        restoreStoryUI();
+        renderNode(lossNode);
+        return;
+      }
+
+      phaserContainer.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:420px; background:#070d19; border:2px solid #ff3b3b; border-radius:8px; padding:24px; text-align:center; font-family:monospace; color:#e2e8f0; box-sizing:border-box;">
+          <div style="color:#ff3b3b; font-size:20px; font-weight:bold; margin-bottom:10px;">⚠️ SIMULATION ANOMALY DETECTED</div>
+          <p style="max-width:460px; color:#94a3b8; margin-bottom:24px; line-height:1.5;">
+            ${reason ? reason : 'Telemetry indicates mission parameters were exceeded. Re-initialize the simulation immediately or proceed to the failure log.'}
+          </p>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
+            <button id="mg-retry-btn" style="background:#00ff88; color:#050811; border:none; padding:12px 20px; font-family:monospace; font-weight:bold; font-size:14px; cursor:pointer; border-radius:4px;">
+              ↻ RETRY SIMULATION
+            </button>
+            <button id="mg-abort-btn" style="background:transparent; color:#ff8888; border:1px solid #ff3b3b; padding:12px 20px; font-family:monospace; font-size:14px; cursor:pointer; border-radius:4px;">
+              VIEW FAILURE LOG →
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('mg-retry-btn').onclick = () => {
+        launchMiniGame(gameLauncherFn, winNode, lossNode, config);
+      };
+
+      document.getElementById('mg-abort-btn').onclick = () => {
+        restoreStoryUI();
+        renderNode(lossNode);
+      };
+    }
+  );
+}
+
+// ==========================================
+// ASSET PIPELINE: BACKGROUND IMAGE PRELOADER & UTILS
 // ==========================================
 const preloadedImages = new Map();
 
@@ -401,6 +554,7 @@ function preloadSingleImage(url) {
   img.src = url;
   preloadedImages.set(url, img);
 }
+
 function shuffleArray(array) {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -416,12 +570,46 @@ function preloadNextNodeAssets(currentNodeKey) {
   if (!currentNode || !currentNode.choices) return;
 
   currentNode.choices.forEach(choice => {
-    const nextKey = choice.nextNode;
+    const nextKey = choice.nextNode || choice.next;
     if (!nextKey) return;
-    const nextNode = storyTree[nextKey];
+    const resolvedKey = nextKey === "mission_select" ? "intro_p2" : nextKey;
+    const nextNode = storyTree[resolvedKey];
     if (nextNode) {
       if (nextNode.bgImage) preloadSingleImage(nextNode.bgImage);
       if (nextNode.hud && nextNode.hud.image) preloadSingleImage(nextNode.hud.image);
     }
   });
+}
+
+// ==========================================
+// SHARED MINI-GAME BRIEFING OVERLAY HELPER
+// ==========================================
+function createBriefingOverlay(scene, width, height, titleText, bodyText, onStart) {
+  const overlay = scene.add.container(width / 2, height / 2).setDepth(100);
+  const box = scene.add.rectangle(0, 0, Math.min(580, width - 36), 255, 0x070d19, 0.95).setStrokeStyle(2, 0x00f0ff);
+  const title = scene.add.text(0, -92, titleText, {
+    fontFamily: 'monospace',
+    fontSize: '15px',
+    fontStyle: 'bold',
+    fill: '#00f0ff'
+  }).setOrigin(0.5);
+  const body = scene.add.text(0, -10, bodyText, {
+    fontFamily: 'monospace',
+    fontSize: '13px',
+    fill: '#e2e8f0',
+    align: 'center',
+    lineSpacing: 5
+  }).setOrigin(0.5);
+  const btn = scene.add.text(0, 90, '▶ PRESS [SPACE] OR CLICK TO START MISSION', {
+    fontFamily: 'monospace',
+    fontSize: '13px',
+    fontStyle: 'bold',
+    fill: '#050811',
+    backgroundColor: '#00ff88',
+    padding: { x: 14, y: 8 }
+  }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+  btn.on('pointerdown', onStart);
+  overlay.add([box, title, body, btn]);
+  return overlay;
 }

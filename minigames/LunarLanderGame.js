@@ -329,6 +329,22 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     velXText.setText(`LAT SPEED: ${Math.abs(velX)} m/s (MAX 25)`);
     angleText.setText(`TILT ANGLE: ${angle}° (MAX ±20°)`);
 
+    // LANDING ZONE REGOLITH FRICTION (when footpads touch the pad)
+    const onLandingPad = landingPadObj.body.enable &&
+      (lander.body.touching.down || lander.body.blocked.down) &&
+      Math.abs(lander.x - landingPadObj.x) <= 95;
+
+    if (onLandingPad) {
+      // Strong surface friction damps lateral sliding quickly
+      lander.setDrag(0.05, 0.98);
+      if (Math.abs(lander.body.velocity.x) < 4) {
+        lander.setVelocityX(0);
+      }
+    } else {
+      // Normal vacuum drag while airborne
+      lander.setDrag(0.98, 0.98);
+    }
+
     // ZERO FUEL / PROPELLANT EXHAUSTION FAILURE
     if (fuel <= 0 && !lander.body.blocked.down) {
       fuel = 0;
@@ -423,6 +439,14 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const speedX = Math.abs(lander.body.velocity.x);
     const angle = Math.abs(Phaser.Math.Angle.WrapDegrees(lander.angle));
 
+    // If vertical speed and tilt are safe, let regolith friction brake moderate lateral drift (<= 45 m/s)
+    if (speedY <= 35 && angle <= 20 && speedX > 25 && speedX <= 45) {
+      lander.setVelocityX(lander.body.velocity.x * 0.45);
+      statusText.setText("FRICTION BRAKING: HOLDING LANDING GEAR STEADY...");
+      statusText.setStyle({ fill: '#fbbf24' });
+      return;
+    }
+
     if (speedY <= 35 && speedX <= 25 && angle <= 20) {
       gameEnded = true;
       stopParticles();
@@ -439,9 +463,9 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       }, 1500);
     } else {
       let failReason = "";
-      if (angle > 20) failReason = `TIP-OVER CRASH: Tilt angle (${angle}°) exceeded limit!`;
+      if (angle > 20) failReason = `TIP-OVER CRASH: Tilt angle (${Math.round(angle)}°) exceeded limit!`;
       else if (speedY > 35) failReason = `HARD IMPACT: Vertical speed (${Math.round(speedY)} m/s) too fast!`;
-      else if (speedX > 25) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) too fast!`;
+      else if (speedX > 45) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) too fast!`;
       handleCrash(failReason);
     }
   }

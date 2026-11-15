@@ -1136,3 +1136,47 @@ body {
     text-align: center;
   }
 }
+
+/* ==========================================
+   MISSION 7: SUBSURFACE CRYOBOT DIVING FX
+   ========================================== */
+#phaser-game-container.europa-diving-fx {
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 65px rgba(2, 132, 199, 0.55), 0 0 24px rgba(0, 240, 255, 0.25);
+  animation: europaHullPulse 3.6s ease-in-out infinite;
+}
+
+/* Abyssal pressure vignette & caustic light sweep */
+#phaser-game-container.europa-diving-fx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 25%, transparent 45%, rgba(3, 19, 36, 0.72) 100%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(56, 189, 248, 0.03) 0px,
+      rgba(56, 189, 248, 0.03) 2px,
+      transparent 2px,
+      transparent 8px
+    );
+  animation: europaStrataScroll 0.85s linear infinite;
+  z-index: 5;
+}
+
+/* Intensify pressure vignette near 15.0 km ocean breakthrough */
+#phaser-game-container.europa-diving-fx.deep-pressure {
+  box-shadow: inset 0 0 95px rgba(0, 240, 255, 0.65), 0 0 32px rgba(0, 255, 136, 0.35);
+}
+
+@keyframes europaStrataScroll {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 0 0, 0 -32px; }
+}
+
+@keyframes europaHullPulse {
+  0%, 100% { filter: brightness(1) contrast(1.03); }
+  50% { filter: brightness(1.06) contrast(1.08); }
+}

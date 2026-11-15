@@ -87,7 +87,7 @@ const storyTree = {
     },
     choices: [
       { text: "1. Follow Checklist: Jettison Retropack Package", nextNode: "m1_p4_jettison" },
-      { text: "2. Override Checklist: Keep Retropack Strapped On", nextNode: "m1_p5_fireball" }
+      { text: "2. Override Checklist: Keep Retropack Strapped On [LAUNCH RE-ENTRY MINI-GAME]", action: "LAUNCH_MERCURY_REENTRY" } 
     ]
   },
   m1_p4_jettison: {
@@ -128,7 +128,7 @@ const storyTree = {
     },
     choices: [
       { text: "1. Fire Long Continuous Gas Bursts to Navigate", nextNode: "m2_p5_tether_wrap" },
-      { text: "2. Use Short Metered Bursts & Pull Hand-Over-Hand Tether", nextNode: "m2_p2_tether" }
+      { text: "2. Use Short Metered Bursts [LAUNCH EVA MINI-GAME]", action: "LAUNCH_GEMINI_EVA" }
     ]
   },
   m2_p2_tether: {
@@ -167,7 +167,10 @@ const storyTree = {
     caption: "PATH FAILURE: HHMU Exhaustion & Tether Wrap! Gas depleted in 20 seconds; tether wrapped around pod.",
     debrief: "WHAT REALLY HAPPENED: In 1962, Ed White discovered the HHMU ran out of gas propellant in just 20 seconds, causing tether entanglement.",
     hud: null,
-    choices: [{ text: "Retry Mission 2 (Enter)", nextNode: "m2_p1_hhmu" }]
+    choices: [
+      { text: "↻ Retry Simulation Checkpoint", action: "RETRY_MINIGAME" },
+      { text: "Return to Mission Select", next: "mission_select" }
+    ]
   },
   m2_p6_jammed_retro: {
     bgImage: "assets/panels/m2_p6_jammed_retro.jpg",
@@ -220,7 +223,7 @@ const storyTree = {
       caption: "TELEMETRY NOTE: LOI Burn Locked | Comms Blackout: 45 Minutes | Trajectory: Lunar Orbit Capture"
     },
     choices: [
-      { text: "1. Maintain Programmed SPS Burn to Complete Orbit", nextNode: "m3_p3_comms" },
+      { text: "1. Maintain Programmed SPS Burn to Complete Orbit [LAUNCH LOI MINI-GAME]", action: "LAUNCH_APOLLO8_LOI" },
       { text: "2. Cut Engine Ignition Early Mid-Burn", nextNode: "m3_p6_flyby" }
     ]
   },
@@ -413,7 +416,7 @@ const storyTree = {
       caption: "[SIMULATED TELEMETRY] Class X9 Solar Storm | Shield Thermal Vector: UNORIENTED | Shield Health: 100%"
     },
     choices: [
-      { text: "1. Orient Heavy Heat Shield Vector Directly Toward Sun", nextNode: "m5_p4_success" },
+      { text: "1. Orient Heavy Heat Shield Vector Directly Toward Sun [LAUNCH SHIELD MINI-GAME]", action: "LAUNCH_ARTEMIS_SPE" },
       { text: "2. Re-orient Main Communications Dish to Deep Space", nextNode: "m5_p8_comms_blackout" },
       { text: "3. Attempt Emergency Re-entry with Unaligned Shield", nextNode: "m5_p6_thermal_breach" }
     ]
@@ -482,7 +485,7 @@ const storyTree = {
       caption: "[SIMULATED TELEMETRY] Altitude: 122m | Hazard Rate: 87% | Sky Crane Thrust Vectoring: READY"
     },
     choices: [
-      { text: "1. Execute Sky Crane Thrust Vectoring to Clear Boulders", nextNode: "m6_p3_dust_storm" },
+      { text: "1. Execute Sky Crane Thrust Vectoring to Clear Boulders [LAUNCH SKY CRANE MINI-GAME]", action: "LAUNCH_MARS_SKYCRANE" },
       { text: "2. Maintain Automated Descent Profile over Boulder Field", nextNode: "m6_p5_boulder_crash" }
     ]
   },
@@ -563,7 +566,7 @@ const storyTree = {
       caption: "[SIMULATED TELEMETRY] Depth: 1,208m | Pressure: 118 ATM | Hydrothermal Vent Signature: DETECTED"
     },
     choices: [
-      { text: "1. Navigate Toward Hydrothermal Plume Signature", nextNode: "m7_p3_hazard" },
+      { text: "1. Navigate Toward Hydrothermal Plume Signature [LAUNCH CRYOBOT MINI-GAME]", action: "LAUNCH_EUROPA_CRYOBOT" },
       { text: "2. Force Descent Through Narrow Tectonic Ice Rift", nextNode: "m7_p5_ice_crush" }
     ]
   },
