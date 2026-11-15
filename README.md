@@ -1,15 +1,34 @@
 # 🌌 Galactic Archive — Space Comic RPG
 
+**NASA Space Apps Challenge 2026 | Challenge 13: Space Mission Design Game | Team ASTRO CARE**
+
 An interactive retro-comic RPG and educational web game simulating historic and speculative spaceflight missions using real NASA telemetry data, authentic audio transmissions, dynamic CRT terminal effects, custom 2D arcade mini-games, and an interactive archive log system.
 
 [![Live App](https://img.shields.io/badge/Play%20Now-Vercel%20App-00f0ff?style=for-the-badge&logo=vercel)](https://galactic-archive-two.vercel.app/)
 [![Repository](https://img.shields.io/badge/GitHub-RisingPhoenix07%2Fgalactic--archive-64ffda?style=for-the-badge&logo=github)](https://github.com/RisingPhoenix07/galactic-archive.git)
+[![Demo Video](https://img.shields.io/badge/Watch%20Demo-YouTube-ff3b3b?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=qSntuklLzSo)
+
+---
+
+#### 🎯 How Galactic Archive Answers Challenge 13
+- **Design:** Players navigate branching mission architectures across 7 historical and future spaceflight scenarios, weighing engineering trade-offs that lead to authentic outcomes or alternate failure branches.
+- **Manage:** Real-time telemetry mini-games enforce consumable and thermal budgets—hydrazine propellant, EVA O₂ reserves, ablative heat-shield integrity, radiation shielding, and hull pressure—supported by Failure Log diagnostics and adaptive Flight Computer Assists.
+- **Simulate:** Seven custom **Phaser 3** physics simulations model hypersonic re-entry torque, zero-G HHMU inertia, lunar orbit insertion ΔV burns, powered lunar descent, solar flare deflection, Martian crosswind sky-crane landing, and subsurface cryobot ice-melt navigation.
+- **Next:** A pre-launch spacecraft configuration and mission budget planning phase.
+
+---
+
+## 📸 Screenshots
+*(Add your 3 screenshots in `assets/screenshots/` or update the paths below)*
+![Museum Hub](assets/screenshots/hub.png)
+![Mission Comic Panel](assets/screenshots/panel.png)
+![Phaser Telemetry Simulation](assets/screenshots/minigame.png)
 
 ---
 
 ## 🚀 Game Overview
 
-Set in **2036**, players control a young space enthusiast inside the **Galactic Archive Museum**. By interacting with retro-futuristic museum terminals, they navigate dynamic decision paths across 7 pivotal spaceflight missions.
+Set in **2060**, players control a young space enthusiast inside the **Galactic Archive Museum**. By interacting with retro-futuristic museum terminals, they navigate dynamic decision paths across 7 pivotal spaceflight missions.
 
 - **Visual Comic Storytelling:** Retro comic panel art with dynamic aspect-ratio letterboxing and CRT visual alert triggers (screen shakes, red alarm flashes, and victory glows).
 - **Interactive Mini-Game Modules:** Seamlessly transitions from narrative comic panels to custom 2D arcade simulations powered by Phaser 3 across all 7 missions.
@@ -108,6 +127,9 @@ galactic-archive/
 ├── fetch_nasa_data.py          # NASA API fetcher for telemetry images & audio clips
 ├── build_asset_pipeline.py     # Asset manifest generator & prompt compiler
 └── asset_manifest.json         # Panel-to-narrative state mapping
+
+```
+
 (Quick Test)
 
 <p>Deployed on Vercel: <a href="https://galactic-archive-two.vercel.app/" target="_blank">https://galactic-archive-two.vercel.app/</a></p>
@@ -128,7 +150,7 @@ source venv/bin/activate
 
 # Install required Python packages
 pip install requests pydub
-```[cite: 1]
+```
 
 #### Option B: Install via System Package Manager (`apt`)
 ```bash
@@ -152,16 +174,14 @@ Open `index.html` directly in any modern browser, or launch it using VS Code's *
 
 ## 💖 Acknowledgments
 
-
-Big thanks to these amazing individuals! They all helped with the storyline, images, sfx, overall testing and so on...
-team_AstroCare_
-[![progKitty](https://shields.io)](https://github.com/progKitty)
-[![zasheearameesa-dot](https://shields.io)](https://github.com/zasheearameesa-dot)
-[![f0rsakeNiSd3ad](https://shields.io)](https://github.com/f0rsakeNiSd3ad)
-[![MeherNaifa](https://shields.io)](https://github.com/MeherNaifa)
-[![Ananya Saha Orni](https://shields.io)](https://github.com/Hihumanbeings)
-
-
+Big thanks to these amazing individuals! They all helped with the storyline, images, sfx, overall testing and so on...  
+**Team ASTRO CARE:**
+- **Nowroz Ahmad** — [@f0rsakeNiSd3ad](https://github.com/f0rsakeNiSd3ad)
+- **Meherun Nesa** — [@MeherNaifa](https://github.com/MeherNaifa)
+- **Ananya Saha Orni** — [@Hihumanbeings](https://github.com/Hihumanbeings)
+- **Sukanto Saha** — [@progKitty](https://github.com/progKitty)
+- **Zasheea Nazah Rameesa** — [@zasheearameesa-dot](https://github.com/zasheearameesa-dot)
+- and **me** — [@RisingPhoenix07](https://github.com/RisingPhoenix07)
 ## 📊 NASA Telemetry & Asset Data Sources
 
 | Mission | Era / Year | Real vs. Simulated | NASA Image ID / Telemetry Reference |
@@ -171,5 +191,5 @@ team_AstroCare_
 | **Mission 3: Apollo 8 Earthrise** | 1968 (Historic) | Real NASA Data | `AS08-14-2383` (Apollo 8 Earthrise & LOI Burn GET 069:08) |
 | **Mission 4: Apollo 11 Landing** | 1969 (Historic) | Real NASA Data | `AS11-40-5874` (Tranquility Base & AGC 1202 Executive Overflow) |
 | **Mission 5: Artemis Gateway** | 2026 (Speculative) | Simulated NASA Projection | Artemis NRHO Trajectory Models & Solar Particle Events (SPE) |
-| **Mission 6: Mars Chryse** | 2042 (Speculative) | Simulated NASA Projection | HiRISE Terrain Reconnaissance (`PIA23726` Gale/Chryse Planitia) |
+| **Mission 6: Mars Chryse** | 2042 (Speculative) | Simulated NASA Projection | HiRISE Terrain Reconnaissance (`PIA23726` Chryse Planitia) |
 | **Mission 7: Europa Probe** | 2055 (Speculative) | Simulated NASA Projection | Galileo Thermal Sensing & Europa Clipper Subsurface Profiling |

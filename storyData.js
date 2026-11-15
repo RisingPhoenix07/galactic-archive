@@ -8,7 +8,7 @@ const storyTree = {
   // ------------------------------------------
   intro_p1: {
     bgImage: "assets/panels/intro_1.jpg",
-    caption: "The year is 2036. Inside the Galactic Archive Museum, where history isn't just stored... it's lived.\nSelect a historical mission log from the terminal directory below.",
+    caption: "The year is 2060. Inside the Galactic Archive Museum, where history isn't just stored... it's lived.\nSelect a historical mission log from the terminal directory below.",
     hud: null,
     choices: [
       { text: "📜 ACT I: Pioneer Era (1960s - 1970s)", nextNode: "intro_p2" },
@@ -20,7 +20,7 @@ const storyTree = {
     caption: "ACT I TERMINAL: Select an archive log from the Historic Pioneer Era.",
     hud: null,
     choices: [
-      { text: "1. Mission 1: Friendship 7 (1962)", nextNode: "m1_entry" },
+      { text: "1. Mission 1: Friendship 7 (1965)", nextNode: "m1_entry" },
       { text: "2. Mission 2: Gemini 4 EVA (1965)", nextNode: "m2_p1_hhmu" },
       { text: "3. Mission 3: Apollo 8 Earthrise (1968)", nextNode: "m3_p1_mcc" },
       { text: "4. Mission 4: Apollo 11 Landing (1969)", nextNode: "m4_entry" },
@@ -41,11 +41,11 @@ const storyTree = {
   },
 
   // ------------------------------------------
-  // MISSION 1: FRIENDSHIP 7 (MERCURY-ATLAS 6, 1962)
+  // MISSION 1: FRIENDSHIP 7 (MERCURY-ATLAS 6, 1965)
   // ------------------------------------------
   m1_entry: {
     bgImage: "assets/panels/m1_launch_pad.jpg",
-    caption: "MISSION 1 (1962): John Glenn aboard Friendship 7! Capsule enters orbit over the Atlantic. Yaw attitude thrusters behaving erratically.",
+    caption: "MISSION 1 (1965): John Glenn aboard Friendship 7! Capsule enters orbit over the Atlantic. Yaw attitude thrusters behaving erratically.",
     hud: {
       image: "assets/nasa_data/mercury_launch_telemetry.jpg",
       caption: "TELEMETRY ALERT: Yaw Rate: +1.5°/sec drift | ASCS Autopilot: ON | Fly-By-Wire Manual Mode: STANDBY"
@@ -60,7 +60,7 @@ const storyTree = {
   m1_p2_drift: {
     bgImage: "assets/panels/m1_p2_drift.jpg",
     caption: "PATH FAILURE: Uncontrolled Orbital Drift! Attitude decay caused angle deviation and cabin pressure drop.",
-    debrief: "WHAT REALLY HAPPENED: In 1962, Glenn suffered a clogged yaw thruster nozzle. Relying on passive coasting caused attitude tumbling and thermal deviation.",
+    debrief: "WHAT REALLY HAPPENED: In 1965, Glenn suffered a clogged yaw thruster nozzle. Relying on passive coasting caused attitude tumbling and thermal deviation.",
     hud: null,
     choices: [{ text: "Retry Mission 1 (Enter)", nextNode: "m1_entry" }]
   },
@@ -165,7 +165,7 @@ const storyTree = {
   m2_p5_tether_wrap: {
     bgImage: "assets/panels/m2_p5_tether_wrap.jpg",
     caption: "PATH FAILURE: HHMU Exhaustion & Tether Wrap! Gas depleted in 20 seconds; tether wrapped around pod.",
-    debrief: "WHAT REALLY HAPPENED: In 1962, Ed White discovered the HHMU ran out of gas propellant in just 20 seconds, causing tether entanglement.",
+    debrief: "WHAT REALLY HAPPENED: In 1965, Ed White discovered the HHMU ran out of gas propellant in just 20 seconds, causing tether entanglement.",
     hud: null,
     choices: [
       { text: "↻ Retry Simulation Checkpoint", action: "RETRY_MINIGAME" },
@@ -508,14 +508,14 @@ const storyTree = {
   },
   m6_p4_success: {
     bgImage: "assets/panels/m6_p4_true_ending.jpg",
-    caption: "HISTORICAL SUCCESS: Mars Chryse Touchdown Accomplished!",
+    caption: "SIMULATED SUCCESS: Mars Chryse Touchdown Accomplished!",
     hud: null,
     choices: [{ text: "Log Mars Chryse Commander Badge", nextNode: "m6_p9_victory" }]
   },
   m6_p5_boulder_crash: {
     bgImage: "assets/panels/m6_p5_boulder_crash.jpg",
     caption: "PATH FAILURE: Lander Boulder Crash!",
-    debrief: "WHAT REALLY HAPPENED: Thin Martian atmosphere provides minimal braking; landing over unmapped boulders sheared lander legs.",
+    debrief: "WHAT COULD HAPPEN: Thin Martian atmosphere provides minimal braking; landing over unmapped boulders sheared lander legs.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
@@ -529,14 +529,14 @@ const storyTree = {
   m6_p7_habitat_freeze: {
     bgImage: "assets/panels/m6_p7_habitat_freeze.jpg",
     caption: "PATH FAILURE: Electrical Dead-Short Freeze!",
-    debrief: "WHAT REALLY HAPPENED: Iron dust caused an electrical short when intake power was maxed, freezing environmental controls.",
+    debrief: "WHAT COULD HAPPEN: Iron dust caused an electrical short when intake power was maxed, freezing environmental controls.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
   m6_p8_comms_blackout: {
     bgImage: "assets/panels/m6_p8_comms_blackout.jpg",
     caption: "PATH FAILURE: Transmitter Plasma Arc Short!",
-    debrief: "WHAT REALLY HAPPENED: Overdriving high-frequency radios during dust storms caused ionospheric plasma arcs, frying comms.",
+    debrief: "WHAT COULD HAPPEN: Overdriving high-frequency radios during dust storms caused ionospheric plasma arcs, frying comms.",
     hud: null,
     choices: [{ text: "Retry Mission 6 (Enter)", nextNode: "m6_entry" }]
   },
@@ -591,35 +591,35 @@ const storyTree = {
   },
   m7_p4_success: {
     bgImage: "assets/panels/m7_p4_true_ending.jpg",
-    caption: "HISTORICAL SUCCESS: Alien Bio-Signatures Logged from Europa Ocean!",
+    caption: "SIMULATED SUCCESS: Alien Bio-Signatures Logged from Europa Ocean!",
     hud: null,
     choices: [{ text: "Log Mission 007 Europa Explorer Badge", nextNode: "m7_p9_victory" }]
   },
   m7_p5_ice_crush: {
     bgImage: "assets/panels/m7_p5_ice_crush.jpg",
     caption: "PATH FAILURE: Tectonic Ice Implosion!",
-    debrief: "WHAT REALLY HAPPENED: Europa's ice crust undergoes tidal flexing; forcing probes into rifts subjects them to 4,000 BAR crush pressure.",
+    debrief: "WHAT COULD HAPPEN: Europa's ice crust undergoes tidal flexing; forcing probes into rifts subjects them to 4,000 BAR crush pressure.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p6_cutter_overheat: {
     bgImage: "assets/panels/m7_p6_cutter_overheat.jpg",
     caption: "PATH FAILURE: Laser Melt Nose Overheat!",
-    debrief: "WHAT REALLY HAPPENED: Overdriving lasers without regulating coolant boils ambient meltwater, cracking the laser nose.",
+    debrief: "WHAT COULD HAPPEN: Overdriving lasers without regulating coolant boils ambient meltwater, cracking the laser nose.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p7_abyss_drift: {
     bgImage: "assets/panels/m7_p7_abyss_drift.jpg",
     caption: "PATH FAILURE: Abyssal Current Drift!",
-    debrief: "WHAT REALLY HAPPENED: Disabling active sonar leaves probes vulnerable to sub-ice thermal currents, causing abyss drift.",
+    debrief: "WHAT COULD HAPPEN: Disabling active sonar leaves probes vulnerable to sub-ice thermal currents, causing abyss drift.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
   m7_p8_radiation_loss: {
     bgImage: "assets/panels/m7_p8_radiation_loss.jpg",
     caption: "PATH FAILURE: Jovian Radiation Discharges!",
-    debrief: "WHAT REALLY HAPPENED: Increasing RF power during Jovian magnetospheric bursts causes static arc discharges across ice arrays.",
+    debrief: "WHAT COULD HAPPEN: Increasing RF power during Jovian magnetospheric bursts causes static arc discharges across ice arrays.",
     hud: null,
     choices: [{ text: "Retry Mission 7 (Enter)", nextNode: "m7_entry" }]
   },
