@@ -13,8 +13,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 2. MAIN MENU & UI NAVIGATION CONTROLLERS
+
+function saveCurrentSession(nodeKey) {
+  try {
+    localStorage.setItem("galactic_archive_saved_node", nodeKey);
+  } catch (e) {
+    console.warn("Unable to save session node:", e);
+  }
+}
+
+function getSavedSession() {
+  try {
+    return localStorage.getItem("galactic_archive_saved_node");
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearActiveMiniGameCanvas() {
+  const canvasView = document.getElementById("canvas-view");
+  const phaserContainer = document.getElementById("phaser-game-container");
+  if (phaserContainer) phaserContainer.innerHTML = "";
+  if (canvasView) canvasView.classList.add("hidden");
+}
+
 function startNewGame() {
-  const savedNode = typeof getSavedSession === "function" ? getSavedSession() : null;
+  const savedNode = getSavedSession();
   showGameInterface();
   renderNode(savedNode || "intro_p1");
 }
@@ -22,6 +46,7 @@ function startNewGame() {
 function goToMainMenu() {
   if (confirm("Return to the main menu? Progress in this session will be saved.")) {
     stopReadAloud();
+    clearActiveMiniGameCanvas();
 
     const titleScreen = document.getElementById("title-screen");
     const hudBar = document.getElementById("hud-bar");
@@ -43,14 +68,18 @@ function goToMainMenu() {
 }
 
 function showGameInterface() {
+  clearActiveMiniGameCanvas();
+
   const titleScreen = document.getElementById("title-screen");
   const hudBar = document.getElementById("hud-bar");
   const panelBox = document.getElementById("panel-box");
+  const captionBox = document.getElementById("caption-box");
   const choicesContainer = document.getElementById("choices-container");
 
   if (titleScreen) titleScreen.classList.add("hidden");
   if (hudBar) hudBar.classList.remove("hidden");
   if (panelBox) panelBox.classList.remove("hidden");
+  if (captionBox) captionBox.classList.remove("hidden");
   if (choicesContainer) choicesContainer.classList.remove("hidden");
 
   if (window.audioManager && typeof audioManager.play === "function") {
@@ -59,10 +88,11 @@ function showGameInterface() {
 }
 
 function openMissionSelect() {
+  decisionHistory = [];
   showGameInterface();
+  // Jump straight to Act I Terminal ("intro_p2") so players don't have to click through intro_p1 again
   renderNode("intro_p2");
 }
-
 // 3. CORE NODE RENDERER
 function renderNode(nodeKey) {
   stopReadAloud();

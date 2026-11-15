@@ -208,6 +208,26 @@ function renderLogsModalContent() {
   endingsContainer.innerHTML = endingsHTML;
 }
 
+function updateTitleMenuButtons() {
+  const startBtn = document.getElementById("start-new-btn");
+  const missionSelectBtn = document.getElementById("mission-select-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const savedNode = getSavedSession();
+
+  const isMidMission = savedNode && !["intro_p1", "intro_p2", "intro_p3"].includes(savedNode);
+
+  if (startBtn) {
+    startBtn.textContent = isMidMission ? "CONTINUE JOURNEY!" : "START YOUR JOURNEY!";
+  }
+  if (missionSelectBtn) {
+    missionSelectBtn.style.display = isMidMission ? "inline-block" : "none";
+  }
+  if (resetBtn) {
+    resetBtn.disabled = !savedNode;
+    resetBtn.textContent = savedNode ? "RESET SESSION..." : "NO SAVED SESSION";
+  }
+}
+
 function resetSession() {
   if (confirm("Reset all session progress, saved checkpoints, and discovered logs?")) {
     localStorage.removeItem("galactic_archive_logs");
