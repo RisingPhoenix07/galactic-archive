@@ -317,6 +317,10 @@ const storyTree = {
     m4_pitchover: {
       bgImage: "assets/panels/m4_p2_boulders.jpg",
       caption: "DP2: Pitchover Mode! Altitude 1,180 FT. Boulders detected inside West Crater landing footprint! Take manual controls to land safely.",
+      hud: {
+        image: "assets/nasa_data/west_crater_recon.jpg",
+        caption: "TELEMETRY WARNING: Pitchover Mode | Altitude: 1,180 FT | Radar Surface Hazard: HIGH | Fuel: 12%"
+      },
       choices: [
         { 
           text: "🎮 TAKE MANUAL P66 CONTROL (LAUNCH MINI-GAME)", 
@@ -412,7 +416,7 @@ const storyTree = {
     bgImage: "assets/panels/m5_p3_solar_flare.jpg",
     caption: "DECISION POINT 3: Class X9 Solar Flare Inbound! Heavy particle radiation stream reaching capsule in 30 seconds.",
     hud: {
-      image: "assets/nasa_data/tranquility_coordinates.jpg",
+      image: "assets/nasa_data/solar_flare_sdo.jpg",
       caption: "[SIMULATED TELEMETRY] Class X9 Solar Storm | Shield Thermal Vector: UNORIENTED | Shield Health: 100%"
     },
     choices: [
@@ -481,7 +485,7 @@ const storyTree = {
     bgImage: "assets/panels/m6_p2_guidance.jpg",
     caption: "DECISION POINT 2: Chryse Planitia Terrain Alert! Landing radar locked onto 87% boulder density hazard.",
     hud: {
-      image: "assets/nasa_data/west_crater_recon.jpg",
+      image: "assets/nasa_data/mars_chryse_terrain.jpg",
       caption: "[SIMULATED TELEMETRY] Altitude: 122m | Hazard Rate: 87% | Sky Crane Thrust Vectoring: READY"
     },
     choices: [
@@ -550,7 +554,7 @@ const storyTree = {
     bgImage: "assets/panels/m7_p1_entry.jpg",
     caption: "MISSION 7 (2055): Subsurface Probe into Europa's 15km Ice Shell! Cryo-cutters melting through water ice.",
     hud: {
-      image: "assets/nasa_data/hirise_gale_crater.jpg",
+      image: "assets/nasa_data/europa_ice_shell.jpg",
       caption: "[SIMULATED TELEMETRY] Depth: 8.5 KM | Laser Temp: 3,200°C | Coolant Flow: NOMINAL"
     },
     choices: [
@@ -558,11 +562,12 @@ const storyTree = {
       { text: "2. Deploy Sonar Array & Regulate Meltwater Recirculation", nextNode: "m7_p2_guidance" }
     ]
   },
+
   m7_p2_guidance: {
     bgImage: "assets/panels/m7_p2_guidance.jpg",
     caption: "DECISION POINT 2: Ice Shell Rift Hazard! Active 310°C hydrothermal plume detected ahead.",
     hud: {
-      image: "assets/nasa_data/west_crater_recon.jpg",
+      image: "assets/nasa_data/europa_ice_shell.jpg",
       caption: "[SIMULATED TELEMETRY] Depth: 1,208m | Pressure: 118 ATM | Hydrothermal Vent Signature: DETECTED"
     },
     choices: [
@@ -570,11 +575,12 @@ const storyTree = {
       { text: "2. Force Descent Through Narrow Tectonic Ice Rift", nextNode: "m7_p5_ice_crush" }
     ]
   },
+
   m7_p3_hazard: {
     bgImage: "assets/panels/m7_p3_hazard.jpg",
     caption: "DECISION POINT 3: Bio-Organic Signal! Organic compound signatures detected near vent chimney.",
     hud: {
-      image: "assets/nasa_data/tranquility_coordinates.jpg",
+      image: "assets/nasa_data/europa_ice_shell.jpg",
       caption: "[SIMULATED TELEMETRY] Depth: 3.2 KM | Bio-Organic Scan: POSITIVE | Surface Optical Tether: ACTIVE"
     },
     choices: [

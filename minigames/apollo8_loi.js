@@ -23,7 +23,7 @@ function startApollo8LoiMiniGame(container, config, onWin, onLoss) {
       this.add.image(width / 2, height / 2, 'm3_bg').setDisplaySize(width, height).setAlpha(0.75);
     }
 
-    ship = this.add.container(width / 2, height * 0.44);
+    ship = this.add.container(width / 2, height * 0.44).setDepth(10);
     flame = this.add.triangle(-62, 0, 14, -10, 14, 10, -28, 0, 0xf97316).setVisible(false);
     if (this.textures.exists('apollo_sprite') && this.textures.get('apollo_sprite').key !== '__MISSING') {
       ship.add([flame, this.add.image(0, 0, 'apollo_sprite').setDisplaySize(115, 56)]);
@@ -42,8 +42,15 @@ function startApollo8LoiMiniGame(container, config, onWin, onLoss) {
     cursors = this.input.keyboard.createCursorKeys();
     wasd = this.input.keyboard.addKeys('A,D');
 
-    hudText = this.add.text(16, 14, '', { fontFamily: 'monospace', fontSize: '14px', fill: '#00f0ff', backgroundColor: 'rgba(5,8,17,0.78)', padding: { x: 8, y: 6 } });
-    statusBanner = this.add.text(width / 2, height - 26, '', { fontFamily: 'monospace', fontSize: '14px', fontStyle: 'bold', fill: '#00ff88', backgroundColor: 'rgba(5,8,17,0.85)', padding: { x: 10, y: 4 } }).setOrigin(0.5);
+    hudText = this.add.text(16, 14, '', {
+      fontFamily: 'monospace', fontSize: '14px', fill: '#00f0ff',
+      backgroundColor: 'rgba(5,8,17,0.78)', padding: { x: 8, y: 6 }
+    }).setDepth(20);
+
+    statusBanner = this.add.text(width / 2, height - 26, '', {
+      fontFamily: 'monospace', fontSize: '14px', fontStyle: 'bold', fill: '#00ff88',
+      backgroundColor: 'rgba(5,8,17,0.85)', padding: { x: 10, y: 4 }
+    }).setOrigin(0.5).setDepth(20);
 
     briefingOverlay = createBriefingOverlay(this, width, height,
       '🌑 MISSION 3: APOLLO 8 FARSIDE LOI BURN',
@@ -68,14 +75,14 @@ function startApollo8LoiMiniGame(container, config, onWin, onLoss) {
       if (Math.abs(pitchOffset) > 12) pitchDriftDir *= -1;
     } else {
       flame.setVisible(false);
-      if (burnStarted) { evaluateBurn(); return; }
+      if (burnStarted) { evaluateBurn.call(this); return; }
     }
 
     if (cursors.left.isDown || wasd.A.isDown) pitchOffset -= 38 * dt;
     if (cursors.right.isDown || wasd.D.isDown) pitchOffset += 38 * dt;
     ship.setAngle(pitchOffset);
 
-    if (deltaV >= 1100) { evaluateBurn(); return; }
+    if (deltaV >= 1100) { evaluateBurn.call(this); return; }
     barFill.width = Math.min(440, (deltaV / 1100) * 440);
 
     const inWindow = deltaV >= targetMin && deltaV <= targetMax;
@@ -90,8 +97,102 @@ function startApollo8LoiMiniGame(container, config, onWin, onLoss) {
   function evaluateBurn() {
     isGameOver = true;
     flame.setVisible(false);
+    barFill.width = Math.min(440, (deltaV / 1100) * 440);
+
     const success = deltaV >= targetMin && deltaV <= targetMax && Math.abs(pitchOffset) <= 15;
     statusBanner.setText(success ? '🏆 LUNAR ORBIT CAPTURE CONFIRMED!' : '💥 BURN OFF-TARGET — ORBIT INSERTION FAILED!').setFill(success ? '#00ff88' : '#ff3b3b');
-    setTimeout(() => { game.destroy(true); success ? onWin() : onLoss(); }, 1100);
+
+    if (!success) {
+      this.cameras.main.shake(500, 0.015);
+      setTimeout(() => { game.destroy(true); onLoss(); }, 1100);
+      return;
+    }
+
+    // --- VICTORY COMPLETION ANIMATION ---
+    // 1. Fire cyan RCS thruster puffs to level gimbal pitch to 0°
+    const rcsTop = this.add.circle(ship.x + 12, ship.y - 18, 6, 0x00f0ff, 0.9).setDepth(11);
+    const rcsBot = this.add.circle(ship.x + 12, ship.y + 18, 6, 0x00f0ff, 0.9).setDepth(11);
+    this.tweens.add({
+      targets: [rcsTop, rcsBot],
+      scale: 2.2,
+      alpha: 0,
+      duration: 550,
+      ease: 'Quad.easeOut'
+    });
+
+    // 2. Draw glowing green elliptical lunar capture orbit ring
+    const orbitCx = width * 0.62;
+    const orbitCy = height * 0.46;
+    const orbitRing = this.add.ellipse(orbitCx, orbitCy, 250, 145)
+      .setStrokeStyle(2.5, 0x00ff88, 0.9)
+      .setDepth(6)
+      .setScale(1.35)
+      .setAlpha(0);
+
+    this.tweens.add({
+      targets: orbitRing,
+      scaleX: 1,
+      scaleY: 1,
+      alpha: 1,
+      duration: 950,
+      ease: 'Cubic.easeOut'
+    });
+
+    // 3. Glide Apollo 8 CSM smoothly into locked lunar capture trajectory
+    this.tweens.add({
+      targets: ship,
+      x: orbitCx - 85,
+      y: orbitCy - 35,
+      angle: -16,
+      duration: 1300,
+      ease: 'Sine.easeInOut'
+    });
+
+    // 4. Subtle blue Earthrise beacon emerging on upper right horizon
+    const earthHorizon = this.add.circle(orbitCx + 75, orbitCy - 45, 18, 0x38bdf8, 0).setDepth(5);
+    this.tweens.add({
+      targets: earthHorizon,
+      alpha: 0.9,
+      y: orbitCy - 62,
+      duration: 1200,
+      delay: 450,
+      ease: 'Sine.easeOut'
+    });
+
+    // 5. Victory Telemetry Readout Banner
+    const winCard = this.add.rectangle(width / 2, height * 0.22, Math.min(500, width - 40), 78, 0x050d1a, 0.92)
+      .setStrokeStyle(2, 0x00ff88)
+      .setDepth(40)
+      .setAlpha(0);
+
+    const winTitle = this.add.text(width / 2, height * 0.22 - 14, '✅ SPS CUTOFF NOMINAL — LUNAR ORBIT LOCKED', {
+      fontFamily: 'monospace',
+      fontSize: '14px',
+      fontStyle: 'bold',
+      fill: '#00ff88'
+    }).setOrigin(0.5).setDepth(41).setAlpha(0);
+
+    const winSub = this.add.text(width / 2, height * 0.22 + 14, `Applied ΔV: ${deltaV.toFixed(1)} m/s | Entering Farside Comms Blackout...`, {
+      fontFamily: 'monospace',
+      fontSize: '12px',
+      fill: '#e2e8f0'
+    }).setOrigin(0.5).setDepth(41).setAlpha(0);
+
+    this.tweens.add({
+      targets: [winCard, winTitle, winSub],
+      alpha: 1,
+      duration: 450,
+      delay: 400
+    });
+
+    if (window.audioManager && typeof audioManager.play === 'function') {
+      audioManager.play('choice_confirm');
+    }
+
+    // 6. Clean up Phaser instance and advance story to m3_p3_comms
+    this.time.delayedCall(2600, () => {
+      game.destroy(true);
+      onWin();
+    });
   }
 }

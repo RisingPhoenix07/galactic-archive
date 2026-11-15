@@ -65,6 +65,18 @@ ASSET_MANIFEST = [
     {
         "filename": "hirise_gale_crater.jpg",
         "url": "https://images-assets.nasa.gov/image/PIA16098/PIA16098~orig.jpg"
+    },
+    {
+    "filename": "solar_flare_sdo.jpg",
+    "url": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001435/GSFC_20171208_Archive_e001435~orig.jpg"
+    },
+    {
+    "filename": "mars_chryse_terrain.jpg",
+    "url": "https://images-assets.nasa.gov/image/PIA23378/PIA23378~orig.jpg"
+    },
+    {
+    "filename": "europa_ice_shell.jpg",
+    "url": "https://images-assets.nasa.gov/image/PIA19048/PIA19048~orig.jpg"
     }
 ]
 

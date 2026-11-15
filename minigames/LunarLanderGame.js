@@ -37,7 +37,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 25 },
+        gravity: { y: 20 }, // Slightly gentler lunar gravity for finer hover control
         debug: false
       }
     },
@@ -50,6 +50,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
 
   let lander;
   let cursors;
+  let wasd;
   let landingPad;
   let landingPadObj;
   let landingText;
@@ -70,8 +71,8 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
   let touchUp = false;
   let touchLeft = false;
   let touchRight = false;
-  let gyroTiltX = 0; // Gamma: Left/Right tilt
-  let gyroTiltY = 0; // Beta: Forward/Back tilt
+  let gyroTiltX = 0;
+  let gyroTiltY = 0;
   let gyroActive = false;
 
   function handleOrientation(event) {
@@ -91,12 +92,12 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     g.generateTexture('particleDot', 8, 8);
     g.clear();
 
-    // White Landing Zone
-    g.fillStyle(0xffffff, 0.35);
-    g.fillRect(0, 0, 180, 40);
-    g.lineStyle(3, 0xffffff, 1);
-    g.strokeRect(0, 0, 180, 40);
-    g.generateTexture('whiteLandingPad', 180, 40);
+    // White Landing Zone (Wider 210px target pad for fairer landings)
+    g.fillStyle(0x00ff88, 0.25);
+    g.fillRect(0, 0, 210, 40);
+    g.lineStyle(3, 0x00ff88, 1);
+    g.strokeRect(0, 0, 210, 40);
+    g.generateTexture('whiteLandingPad', 210, 40);
     g.clear();
 
     // Green Checkpoint (Safe Waypoint)
@@ -137,17 +138,17 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       bg.setDisplaySize(800, 450);
     }
 
-    // --- 2. WHITE LANDING ZONE (HIDDEN UNTIL CP-2 TOUCHED) ---
+    // --- 2. LANDING ZONE (HIDDEN UNTIL CP-2 TOUCHED) ---
     landingPad = this.physics.add.staticGroup();
-    landingPadObj = landingPad.create(680, 260, 'whiteLandingPad');
-    landingPadObj.setDisplaySize(180, 40);
+    landingPadObj = landingPad.create(670, 265, 'whiteLandingPad');
+    landingPadObj.setDisplaySize(210, 40);
     landingPadObj.refreshBody();
-    landingPadObj.setVisible(false); // Initially Hidden
-    landingPadObj.body.enable = false; // Initially Disabled Collision
+    landingPadObj.setVisible(false);
+    landingPadObj.body.enable = false;
 
-    landingText = this.add.text(680, 260, '▶ LANDING ZONE ◀', {
+    landingText = this.add.text(670, 265, '▶ TRANQUILITY PAD ◀', {
       fontSize: '11px',
-      fill: '#ffffff',
+      fill: '#00ff88',
       fontFamily: 'Courier New',
       fontWeight: 'bold'
     }).setOrigin(0.5).setVisible(false);
@@ -155,9 +156,9 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     // --- 3. CHECKPOINTS & DANGER HAZARD ZONES ---
     const cpCoords = [
       { x: 375, y: 105, label: 'CP-1', isFarLeft: false, isHazard: false },
-      { x: 60,  y: 110, label: 'CP-2 (FAR LEFT)', isFarLeft: true, isHazard: false },
-      { x: 250, y: 290, label: '⚠️ DANGER: BOULDERS', isFarLeft: false, isHazard: true },
-      { x: 470, y: 375, label: '⚠️ DANGER: CRATER', isFarLeft: false, isHazard: true }
+      { x: 65,  y: 110, label: 'CP-2 (FAR LEFT)', isFarLeft: true, isHazard: false },
+      { x: 250, y: 300, label: '⚠️ DANGER: BOULDERS', isFarLeft: false, isHazard: true },
+      { x: 465, y: 380, label: '⚠️ DANGER: CRATER', isFarLeft: false, isHazard: true }
     ];
 
     cpCoords.forEach((data, index) => {
@@ -165,12 +166,20 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       const ring = this.physics.add.sprite(data.x, data.y, textureKey);
       ring.body.setAllowGravity(false);
       ring.body.setImmovable(true);
+
+      // Circular hitboxes: generous pickup radius for green checkpoints, fair inner radius for red hazards
+      if (data.isHazard) {
+        ring.body.setCircle(12, 6, 6);
+      } else {
+        ring.body.setCircle(22, -4, -4);
+      }
+
       ring.cpIndex = index;
       ring.isFarLeft = data.isFarLeft;
       ring.isHazard = data.isHazard;
 
       const labelColor = data.isHazard ? '#ef4444' : '#00ff88';
-      const label = this.add.text(data.x, data.y - 22, data.label, {
+      const label = this.add.text(data.x, data.y - 24, data.label, {
         fontSize: '9px',
         fill: labelColor,
         fontFamily: 'Courier New',
@@ -181,20 +190,20 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       checkpoints.push(ring);
     });
 
-    // --- 4. ROVER/LANDER STARTING POSITION (RED BOX TOP RIGHT) ---
+    // --- 4. ROVER/LANDER STARTING POSITION ---
     lander = this.physics.add.sprite(720, 60, 'apolloLM');
     lander.setOrigin(0.5, 0.5);
     lander.setDisplaySize(48, 48);
-    lander.body.setSize(38, 38);
+    lander.body.setSize(34, 34);
     lander.setCollideWorldBounds(true);
-    lander.setBounce(0.1);
+    lander.setBounce(0.05);
     lander.setDamping(true);
-    lander.setDrag(0.98);
-    lander.setAngularDrag(150);
+    lander.setDrag(0.86, 0.94); // Subtle flight-computer velocity damping so lateral drift settles smoothly
+    lander.setMaxVelocity(180, 180);
 
-    // Visual Spawn Indicator (Red Box Outline)
+    // Visual Spawn Indicator
     const startBox = this.add.graphics();
-    startBox.lineStyle(2, 0xff0000, 0.8);
+    startBox.lineStyle(2, 0x64ffda, 0.6);
     startBox.strokeRect(690, 30, 60, 60);
 
     // Particle FX
@@ -232,19 +241,20 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     rcsRightParticles.startFollow(lander, -18, -4);
 
     cursors = this.input.keyboard.createCursorKeys();
+    wasd = this.input.keyboard.addKeys('W,A,S,D');
 
     // --- 5. TELEMETRY HUD ---
     const hudFrame = this.add.graphics();
     hudFrame.fillStyle(0x030712, 0.88);
     hudFrame.lineStyle(1, 0x64ffda, 0.9);
-    hudFrame.fillRect(10, 10, 420, 84);
-    hudFrame.strokeRect(10, 10, 420, 84);
+    hudFrame.fillRect(10, 10, 445, 84);
+    hudFrame.strokeRect(10, 10, 445, 84);
 
     fuelText = this.add.text(20, 16, 'PROPELLANT: 100%', { fontSize: '11px', fill: '#64ffda', fontFamily: 'Courier New', fontWeight: 'bold' });
-    velYText = this.add.text(20, 30, 'VERT SPEED: 0 m/s', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
-    velXText = this.add.text(20, 44, 'LAT SPEED: 0 m/s', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
-    angleText = this.add.text(20, 58, 'TILT ANGLE: 0°', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
-    statusText = this.add.text(20, 72, 'MISSION: FLY TO FAR-LEFT CHECKPOINT TO UNLOCK LANDING ZONE', { fontSize: '9px', fill: '#fbbf24', fontFamily: 'Courier New', fontWeight: 'bold' });
+    velYText = this.add.text(20, 30, 'VERT SPEED: 0 m/s (MAX 55)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    velXText = this.add.text(20, 44, 'LAT SPEED: 0 m/s (MAX 45)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    angleText = this.add.text(20, 58, 'TILT ANGLE: 0° (MAX ±28°)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    statusText = this.add.text(20, 72, 'MISSION: FLY TO CP-2 (FAR LEFT) TO UNLOCK LANDING PAD', { fontSize: '9px', fill: '#fbbf24', fontFamily: 'Courier New', fontWeight: 'bold' });
 
     // Collisions & Overlaps
     checkpoints.forEach(ring => {
@@ -255,51 +265,32 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
 
     // --- 6. MOBILE TOUCH CONTROLS & GYRO INITIALIZATION ---
     if (this.sys.game.device.input.touch) {
-      // Left RCS Button
       const leftBtn = this.add.text(60, 390, '◀ RCS', {
-        fontSize: '16px',
-        fill: '#64ffda',
-        backgroundColor: '#030712d0',
-        padding: { x: 14, y: 10 }
+        fontSize: '16px', fill: '#64ffda', backgroundColor: '#030712d0', padding: { x: 14, y: 10 }
       }).setOrigin(0.5).setInteractive();
-
       leftBtn.on('pointerdown', () => { touchLeft = true; });
       leftBtn.on('pointerup', () => { touchLeft = false; });
       leftBtn.on('pointerout', () => { touchLeft = false; });
 
-      // Right RCS Button
       const rightBtn = this.add.text(160, 390, 'RCS ▶', {
-        fontSize: '16px',
-        fill: '#64ffda',
-        backgroundColor: '#030712d0',
-        padding: { x: 14, y: 10 }
+        fontSize: '16px', fill: '#64ffda', backgroundColor: '#030712d0', padding: { x: 14, y: 10 }
       }).setOrigin(0.5).setInteractive();
-
       rightBtn.on('pointerdown', () => { touchRight = true; });
       rightBtn.on('pointerup', () => { touchRight = false; });
       rightBtn.on('pointerout', () => { touchRight = false; });
 
-      // Main Thruster Button
       const thrustBtn = this.add.text(710, 390, '🔥 THRUST', {
-        fontSize: '18px',
-        fill: '#00ff88',
-        backgroundColor: '#030712d0',
-        padding: { x: 18, y: 12 }
+        fontSize: '18px', fill: '#00ff88', backgroundColor: '#030712d0', padding: { x: 18, y: 12 }
       }).setOrigin(0.5).setInteractive();
-
       thrustBtn.on('pointerdown', () => { touchUp = true; });
       thrustBtn.on('pointerup', () => { touchUp = false; });
       thrustBtn.on('pointerout', () => { touchUp = false; });
     }
 
-    // Request Gyroscope Permission / Bind Listeners
     if (window.DeviceOrientationEvent) {
       if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         const gyroBtn = this.add.text(400, 390, '📱 GYRO CONTROLS', {
-          fontSize: '13px',
-          fill: '#64ffda',
-          backgroundColor: '#030712d0',
-          padding: { x: 12, y: 8 }
+          fontSize: '13px', fill: '#64ffda', backgroundColor: '#030712d0', padding: { x: 12, y: 8 }
         }).setOrigin(0.5).setInteractive();
 
         gyroBtn.on('pointerdown', () => {
@@ -325,91 +316,105 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const velX = Math.round(lander.body.velocity.x);
     let angle = Math.round(Phaser.Math.Angle.WrapDegrees(lander.angle));
 
-    velYText.setText(`VERT SPEED: ${velY} m/s (MAX 35)`);
-    velXText.setText(`LAT SPEED: ${Math.abs(velX)} m/s (MAX 25)`);
-    angleText.setText(`TILT ANGLE: ${angle}° (MAX ±20°)`);
+    // Color-code telemetry readouts green when within safe landing limits, red when too fast/tilted
+    velYText.setText(`VERT SPEED: ${velY} m/s (MAX 55)`).setStyle({ fill: velY <= 55 ? '#00ff88' : '#ef4444' });
+    velXText.setText(`LAT SPEED: ${Math.abs(velX)} m/s (MAX 45)`).setStyle({ fill: Math.abs(velX) <= 45 ? '#00ff88' : '#ef4444' });
+    angleText.setText(`TILT ANGLE: ${angle}° (MAX ±28°)`).setStyle({ fill: Math.abs(angle) <= 28 ? '#00ff88' : '#ef4444' });
 
-    // LANDING ZONE REGOLITH FRICTION (when footpads touch the pad)
+    // LANDING ZONE REGOLITH FRICTION
     const onLandingPad = landingPadObj.body.enable &&
       (lander.body.touching.down || lander.body.blocked.down) &&
-      Math.abs(lander.x - landingPadObj.x) <= 95;
+      Math.abs(lander.x - landingPadObj.x) <= 110;
 
     if (onLandingPad) {
-      // Strong surface friction damps lateral sliding quickly
-      lander.setDrag(0.05, 0.98);
-      if (Math.abs(lander.body.velocity.x) < 4) {
+      lander.setDrag(0.02, 0.95);
+      if (Math.abs(lander.body.velocity.x) < 10) {
         lander.setVelocityX(0);
       }
     } else {
-      // Normal vacuum drag while airborne
-      lander.setDrag(0.98, 0.98);
+      // Smooth attitude-hold damping so lateral drift slows down naturally when thrusters are off
+      lander.setDrag(0.86, 0.94);
     }
 
-    // ZERO FUEL / PROPELLANT EXHAUSTION FAILURE
+    // ZERO FUEL CHECK
     if (fuel <= 0 && !lander.body.blocked.down) {
       fuel = 0;
       fuelText.setText('PROPELLANT: 0% (DEPLETED!)');
       fuelText.setStyle({ fill: '#ef4444' });
-
-      handleCrash("PROPELLANT DEPLETED: Lander lost main thruster authority!");
+      handleCrash.call(this, "PROPELLANT DEPLETED: Lander lost main thruster authority!");
       return;
     }
 
-    // GYRO INPUT EVALUATION
+    // INPUT EVALUATION (Supports Arrow Keys + WASD + Touch + Gyro)
     const isGyroThrusting = gyroActive && gyroTiltY < 25;
     const isGyroLeft = gyroActive && gyroTiltX < -10;
     const isGyroRight = gyroActive && gyroTiltX > 10;
 
-    // MAIN ENGINE THRUST (Keyboard, Touch Button, or Gyro Tilt)
-    if ((cursors.up.isDown || touchUp || isGyroThrusting) && fuel > 0) {
+    const thrustPressed = cursors.up.isDown || wasd.W.isDown || touchUp || isGyroThrusting;
+    const leftPressed = cursors.left.isDown || wasd.A.isDown || touchLeft || isGyroLeft;
+    const rightPressed = cursors.right.isDown || wasd.D.isDown || touchRight || isGyroRight;
+
+    // MAIN ENGINE THRUST (Increased to 175 for crisp vertical braking + lower fuel burn)
+    if (thrustPressed && fuel > 0) {
       const angleRad = Phaser.Math.DegToRad(lander.angle - 90);
-      const thrustPower = 135;
+      const thrustPower = 175;
       lander.setAccelerationX(Math.cos(angleRad) * thrustPower);
       lander.setAccelerationY(Math.sin(angleRad) * thrustPower);
-      fuel -= 0.10;
+      fuel -= 0.055;
 
       fuelText.setText(`PROPELLANT: ${Math.max(0, Math.round(fuel))}%`);
       engineParticles.emitting = true;
-
-      if (window.audioManager && typeof audioManager.play === "function") {
-        audioManager.play('ui_hover');
-      }
     } else {
       lander.setAcceleration(0, 0);
       engineParticles.emitting = false;
     }
 
-    // RCS ROTATION CONTROLS (Keyboard, Touch Buttons, or Gyro Tilt)
-    if ((cursors.left.isDown || touchLeft || isGyroLeft) && fuel > 0) {
-      lander.setAngularVelocity(-65);
-      fuel -= 0.02;
+    // RCS ROTATION + P66 AUTO-STABILIZER ASSIST
+    if (leftPressed && fuel > 0) {
+      lander.setAngularVelocity(-110);
+      fuel -= 0.01;
       rcsLeftParticles.emitting = true;
-    } else if ((cursors.right.isDown || touchRight || isGyroRight) && fuel > 0) {
-      lander.setAngularVelocity(65);
-      fuel -= 0.02;
+      rcsRightParticles.emitting = false;
+    } else if (rightPressed && fuel > 0) {
+      lander.setAngularVelocity(110);
+      fuel -= 0.01;
       rcsRightParticles.emitting = true;
+      rcsLeftParticles.emitting = false;
     } else {
-      lander.setAngularVelocity(0);
       rcsLeftParticles.emitting = false;
       rcsRightParticles.emitting = false;
+      // Gentle P66 Attitude-Hold Assist: smoothly levels the lander toward 0° when pilot releases rotation
+      const currentDeg = Phaser.Math.Angle.WrapDegrees(lander.angle);
+      if (Math.abs(currentDeg) > 1.5) {
+        lander.setAngularVelocity(-currentDeg * 2.2);
+      } else {
+        lander.setAngularVelocity(0);
+        lander.setAngle(0);
+      }
     }
   }
 
-  function reachCheckpoint(lander, checkpoint) {
+  function reachCheckpoint(landerObj, checkpoint) {
     if (gameEnded) return;
 
-    // Trigger instant crash on Red Hazard Checkpoints (CP-3 & CP-4)
     if (checkpoint.isHazard) {
-      handleCrash(`COLLISION FAULT: Struck hazard site (${checkpoint.labelText.text})!`);
+      handleCrash.call(this, `COLLISION FAULT: Struck hazard site (${checkpoint.labelText.text})!`);
       return;
     }
 
-    // Safe Checkpoint Logic (CP-1 & CP-2)
     if (!checkpoint.cleared) {
       checkpoint.cleared = true;
       checkpoint.setTexture('checkpointCleared');
       checkpoint.labelText.setStyle({ fill: '#38bdf8' });
       checkpoint.labelText.setText(`${checkpoint.labelText.text} ✓`);
+
+      // Subtle pulse ring effect on checkpoint capture
+      this.tweens.add({
+        targets: checkpoint,
+        scale: 1.25,
+        duration: 180,
+        yoyo: true
+      });
 
       if (checkpoint.isFarLeft) {
         farLeftReached = true;
@@ -417,7 +422,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
         landingPadObj.body.enable = true;
         landingText.setVisible(true);
 
-        statusText.setText('TARGET UNLOCKED! AVOID HAZARDS AND LAND ON THE WHITE ZONE');
+        statusText.setText('PAD UNLOCKED! FLY RIGHT & LAND GENTLY ON THE GREEN PAD');
         statusText.setStyle({ fill: '#00ff88' });
       }
 
@@ -431,7 +436,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     if (gameEnded) return;
 
     if (!farLeftReached) {
-      handleCrash("ABORT: You must reach the far-left checkpoint before landing!");
+      handleCrash.call(this, "ABORT: Reach CP-2 (Far Left) first to unlock Tranquility Pad!");
       return;
     }
 
@@ -439,34 +444,53 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const speedX = Math.abs(lander.body.velocity.x);
     const angle = Math.abs(Phaser.Math.Angle.WrapDegrees(lander.angle));
 
-    // If vertical speed and tilt are safe, let regolith friction brake moderate lateral drift (<= 45 m/s)
-    if (speedY <= 35 && angle <= 20 && speedX > 25 && speedX <= 45) {
-      lander.setVelocityX(lander.body.velocity.x * 0.45);
-      statusText.setText("FRICTION BRAKING: HOLDING LANDING GEAR STEADY...");
-      statusText.setStyle({ fill: '#fbbf24' });
-      return;
-    }
-
-    if (speedY <= 35 && speedX <= 25 && angle <= 20) {
+    // Forgiving safe touchdown window: Vert <= 55 m/s, Lat <= 45 m/s, Tilt <= 28°
+    if (speedY <= 55 && speedX <= 45 && angle <= 28) {
       gameEnded = true;
       stopParticles();
       lander.setVelocity(0, 0);
       lander.setAcceleration(0, 0);
       lander.setAngularVelocity(0);
+      lander.body.setAllowGravity(false);
 
-      statusText.setText("TOUCHDOWN SUCCESSFUL! LANDING SITE SECURED!");
+      // Snap lander cleanly upright onto the pad
+      this.tweens.add({
+        targets: lander,
+        angle: 0,
+        y: landingPadObj.y - 36,
+        duration: 350,
+        ease: 'Back.easeOut'
+      });
+
+      // Regolith lunar dust kick-up burst on contact
+      const dustBurst = this.add.particles(lander.x, landingPadObj.y - 18, 'particleDot', {
+        speed: { min: 30, max: 110 },
+        angle: { min: 190, max: 350 },
+        scale: { start: 1.4, end: 0 },
+        tint: [0xcbd5e1, 0x94a3b8],
+        lifespan: 700,
+        quantity: 22,
+        emitting: false
+      });
+      dustBurst.explode(22);
+
+      statusText.setText("🏆 CONTACT LIGHT! THE EAGLE HAS LANDED!");
       statusText.setStyle({ fill: '#00ff88' });
+
+      if (window.audioManager && typeof audioManager.play === "function") {
+        audioManager.play('choice_confirm');
+      }
 
       setTimeout(() => {
         closeMiniGame();
         if (typeof onSuccessCallback === "function") onSuccessCallback();
-      }, 1500);
+      }, 1800);
     } else {
       let failReason = "";
-      if (angle > 20) failReason = `TIP-OVER CRASH: Tilt angle (${Math.round(angle)}°) exceeded limit!`;
-      else if (speedY > 35) failReason = `HARD IMPACT: Vertical speed (${Math.round(speedY)} m/s) too fast!`;
-      else if (speedX > 45) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) too fast!`;
-      handleCrash(failReason);
+      if (angle > 28) failReason = `TIP-OVER CRASH: Tilt angle (${Math.round(angle)}°) exceeded ±28°!`;
+      else if (speedY > 55) failReason = `HARD IMPACT: Vertical speed (${Math.round(speedY)} m/s) exceeded 55 m/s!`;
+      else if (speedX > 45) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) exceeded 45 m/s!`;
+      handleCrash.call(this, failReason);
     }
   }
 
@@ -474,6 +498,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     if (gameEnded) return;
     gameEnded = true;
     stopParticles();
+    this.cameras.main.shake(450, 0.015);
     statusText.setText(`CRITICAL FAILURE: ${reason}`);
     statusText.setStyle({ fill: '#ef4444' });
 
