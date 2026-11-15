@@ -350,7 +350,7 @@ body {
   padding: 14px 18px;
   font-family: 'Courier New', monospace;
   font-size: 1.05rem !important;
-  font-weight: 700 !important; /* FIXED TYPO HERE */
+  font-weight: 700 !important; 
   letter-spacing: 0.5px;
   line-height: 1.55;
   box-shadow: 0 0 15px rgba(100, 255, 218, 0.3), 
