@@ -173,15 +173,14 @@ Open `index.html` directly in any modern browser, or launch it using VS Code's *
 
 
 ## 💖 Acknowledgments
-
-Big thanks to these amazing individuals! They all helped with the storyline, images, sfx, overall testing and so on...  
-**Team ASTRO CARE:**
+**Team ASTRO CARE members:**
 - **Nowroz Ahmad** — [@f0rsakeNiSd3ad](https://github.com/f0rsakeNiSd3ad)
 - **Meherun Nesa** — [@MeherNaifa](https://github.com/MeherNaifa)
 - **Ananya Saha Orni** — [@Hihumanbeings](https://github.com/Hihumanbeings)
-- **Sukanto Saha** — [@progKitty](https://github.com/progKitty)
 - **Zasheea Nazah Rameesa** — [@zasheearameesa-dot](https://github.com/zasheearameesa-dot)
-- and **me** — [@RisingPhoenix07](https://github.com/RisingPhoenix07)
+- **Sukanto Saha** — [@progKitty](https://github.com/progKitty)
+-  **Rezuanul Hoque Siddike** — [@RisingPhoenix07](https://github.com/RisingPhoenix07)
+  
 ## 📊 NASA Telemetry & Asset Data Sources
 
 | Mission | Era / Year | Real vs. Simulated | NASA Image ID / Telemetry Reference |
