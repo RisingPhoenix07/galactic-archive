@@ -228,19 +228,51 @@ function updateTitleMenuButtons() {
   }
 }
 
+/**
+ * Reset saved session progress, failure logs, and adaptive assist counters
+ */
 function resetSession() {
   if (confirm("Reset all session progress, saved checkpoints, and discovered logs?")) {
     localStorage.removeItem("galactic_archive_logs");
     localStorage.removeItem("galactic_archive_saved_node");
-    updateLogsCounterUI();
+    localStorage.removeItem("galactic_archive_failures");
 
+    if (typeof discoveredFailures !== "undefined") {
+      discoveredFailures = [];
+    }
+    if (window.assistManager && typeof assistManager.resetAll === "function") {
+      assistManager.resetAll();
+    }
+    if (typeof decisionHistory !== "undefined") {
+      decisionHistory = [];
+    }
+
+    updateLogsCounterUI();
+    if (typeof updateFailureCounterUI === "function") {
+      updateFailureCounterUI();
+    }
     if (typeof updateTitleMenuButtons === "function") {
       updateTitleMenuButtons();
     }
-    if (typeof goToMainMenu === "function") {
-      goToMainMenu();
+
+    // Return directly to Title Screen without triggering a second confirm dialog
+    if (typeof stopReadAloud === "function") stopReadAloud();
+    if (typeof clearActiveMiniGameCanvas === "function") clearActiveMiniGameCanvas();
+
+    const titleScreen = document.getElementById("title-screen");
+    const hudBar = document.getElementById("hud-bar");
+    const panelBox = document.getElementById("panel-box");
+    const choicesContainer = document.getElementById("choices-container");
+
+    if (window.audioManager && typeof audioManager.stopAll === "function") {
+      audioManager.stopAll();
+      audioManager.play("theme_song", true);
     }
+
+    if (titleScreen) titleScreen.classList.remove("hidden");
+    if (hudBar) hudBar.classList.add("hidden");
+    if (panelBox) panelBox.classList.add("hidden");
+    if (choicesContainer) choicesContainer.classList.add("hidden");
   }
 }
-
 document.addEventListener("DOMContentLoaded", updateLogsCounterUI);

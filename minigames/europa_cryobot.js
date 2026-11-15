@@ -2,6 +2,11 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
   const width = container.clientWidth > 100 ? container.clientWidth : 800;
   const height = container.clientHeight > 100 ? container.clientHeight : 450;
 
+  const scale = (config && config.difficultyScale) || 1.0;
+  const boost = (config && config.toleranceBoost) || 1.0;
+  const hudTag = (config && config.hudTag) || "";
+  const hullDamagePerHit = Math.max(20, Math.round(35 * scale));
+
   container.classList.add('europa-diving-fx');
   container.classList.remove('deep-pressure');
 
@@ -10,7 +15,7 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
   let obstacles = [], wakeBubbles = [], bgBlooms = [], bgCrystals = [];
   let depthDarkness, probe, probeAura, thrusterPlume, thrusterCore;
   let leftWall, rightWall, wallStrataGraphics, oceanLayer, sonarGraphics;
-  let hudText, statusBanner, briefingOverlay, cursors, wasd, spaceKey;
+  let hudText, statusBanner, briefingOverlay, cursors, wasd, spaceKey, touch = {};
 
   const game = new Phaser.Game({
     type: Phaser.AUTO, parent: container, width: width, height: height, backgroundColor: '#072f4e',
@@ -21,7 +26,6 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
     this.load.image('cryobot_sprite', 'assets/minigames/europa_cryobot.png');
   }
 
-  // Strip green chroma-key background AND auto-crop empty transparent margins
   function makeGreenTransparent(scene, sourceKey, cleanKey) {
     const srcImg = scene.textures.get(sourceKey).getSourceImage();
     const rawCanvas = document.createElement('canvas');
@@ -61,7 +65,6 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
   }
 
   function create() {
-    // 1. Native Phaser vector shapes for true glacial blue water & parallax ice crystals
     for (let i = 0; i < 9; i++) {
       const bx = Phaser.Math.Between(90, width - 90);
       const by = Phaser.Math.Between(0, height);
@@ -79,14 +82,10 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
       bgCrystals.push(crystal);
     }
 
-    // Subtle deep-ocean blue tint overlay
     depthDarkness = this.add.rectangle(width / 2, height / 2, width, height, 0x031d38, 0.08).setDepth(2);
-
-    // Subsurface ocean glow overlay on breakthrough
     oceanLayer = this.add.rectangle(width / 2, height / 2, width, height, 0x0ea5e9, 0).setDepth(5);
     sonarGraphics = this.add.graphics().setDepth(15);
 
-    // Frosted glacial ice borehole walls
     leftWall = this.add.rectangle(36, height / 2, 72, height, 0x0369a1, 0.82).setStrokeStyle(2, 0x7dd3fc, 0.75).setDepth(6);
     rightWall = this.add.rectangle(width - 36, height / 2, 72, height, 0x0369a1, 0.82).setStrokeStyle(2, 0x7dd3fc, 0.75).setDepth(6);
     wallStrataGraphics = this.add.graphics().setDepth(7);
@@ -96,14 +95,11 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
 
     probeAura = this.add.ellipse(probeX, probeY, 66, 108, 0x38bdf8, 0.18).setStrokeStyle(1.5, 0xbae6fd, 0.55).setDepth(10);
 
-    // Top-mounted hydro-jet thruster plumes at the tail of the downward-diving probe
     const thrusterTopY = probeY - probeH * 0.48;
     thrusterPlume = this.add.triangle(probeX, thrusterTopY, 0, 26, 24, 26, 12, 0, 0x38bdf8, 0.92)
-      .setOrigin(0.5, 1)
-      .setDepth(11);
+      .setOrigin(0.5, 1).setDepth(11);
     thrusterCore = this.add.triangle(probeX, thrusterTopY, 0, 14, 12, 14, 6, 0, 0xffffff, 0.95)
-      .setOrigin(0.5, 1)
-      .setDepth(11);
+      .setOrigin(0.5, 1).setDepth(11);
 
     if (this.textures.exists('cryobot_sprite') && this.textures.get('cryobot_sprite').key !== '__MISSING') {
       makeGreenTransparent(this, 'cryobot_sprite', 'cryobot_clean');
@@ -115,27 +111,28 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
     cursors = this.input.keyboard.createCursorKeys();
     wasd = this.input.keyboard.addKeys('A,D');
     spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    touch = typeof createMobileTouchControls === 'function'
+      ? createMobileTouchControls(this, width, height, [
+          { key: 'left', label: '◀ STEER LEFT' },
+          { key: 'right', label: 'STEER RIGHT ▶' }
+        ])
+      : {};
+
+    const isMobile = Object.keys(touch).length > 0;
 
     hudText = this.add.text(86, 14, '', {
-      fontFamily: 'monospace',
-      fontSize: '14px',
-      fill: '#7dd3fc',
-      backgroundColor: 'rgba(6, 28, 48, 0.84)',
-      padding: { x: 8, y: 6 }
+      fontFamily: 'monospace', fontSize: '14px', fill: '#7dd3fc',
+      backgroundColor: 'rgba(6, 28, 48, 0.84)', padding: { x: 8, y: 6 }
     }).setDepth(20);
 
-    statusBanner = this.add.text(width / 2, height - 26, 'DODGE RED CRYO-PRESSURE POCKETS TO REACH 15.0 KM', {
-      fontFamily: 'monospace',
-      fontSize: '14px',
-      fontStyle: 'bold',
-      fill: '#00ff88',
-      backgroundColor: 'rgba(6, 28, 48, 0.88)',
-      padding: { x: 10, y: 4 }
+    statusBanner = this.add.text(width / 2, isMobile ? height - 76 : height - 26, 'DODGE RED CRYO-PRESSURE POCKETS TO REACH 15.0 KM', {
+      fontFamily: 'monospace', fontSize: '14px', fontStyle: 'bold', fill: '#00ff88',
+      backgroundColor: 'rgba(6, 28, 48, 0.88)', padding: { x: 10, y: 4 }
     }).setOrigin(0.5).setDepth(20);
 
     briefingOverlay = createBriefingOverlay(this, width, height,
       '🧊 MISSION 7: EUROPA SUBSURFACE CRYOBOT',
-      'OBJECTIVE:\nMelt down to 15.0 km depth through Europa\'s ice crust.\nDodge RED tectonic cryo-pockets—pressure and bubble speed surge near the ocean!\n\nCONTROLS:\n[ A / LEFT ] Steer Left   |   [ D / RIGHT ] Steer Right',
+      'OBJECTIVE:\nMelt down to 15.0 km depth through Europa\'s ice crust.\nDodge RED tectonic cryo-pockets—pressure and bubble speed surge near the ocean!\n\nCONTROLS:\n[ STEER LEFT / A ] Steer Left   |   [ STEER RIGHT / D ] Steer Right',
       () => { isStarted = true; briefingOverlay.setVisible(false); }
     );
   }
@@ -194,7 +191,7 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
       }
 
       hudText.setText(
-        `[EUROPA SUBSURFACE OCEAN — BREAKTHROUGH]\n` +
+        `[EUROPA SUBSURFACE OCEAN — BREAKTHROUGH]${hudTag}\n` +
         `ICE DEPTH      : 15.0 / 15.0 km (OCEAN ENTRY)\n` +
         `SONAR TELEMETRY: BIO-THERMAL VENT DETECTED`
       );
@@ -207,9 +204,8 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
 
     depthKm += 0.85 * dt;
     const progress = Phaser.Math.Clamp(depthKm / 15.0, 0, 1);
-    const diveSpeed = 215 + Math.pow(progress, 1.35) * 145;
+    const diveSpeed = (215 + Math.pow(progress, 1.35) * 145) * scale;
 
-    // Scroll vector blooms and ice crystals upward
     bgBlooms.forEach(b => {
       b.y -= diveSpeed * b.speedFactor * dt;
       if (b.y < -120) {
@@ -267,8 +263,8 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
     }
 
     let moveDir = 0;
-    if (cursors.left.isDown || wasd.A.isDown) { probeX -= 255 * dt; moveDir = -1; }
-    if (cursors.right.isDown || wasd.D.isDown) { probeX += 255 * dt; moveDir = 1; }
+    if (cursors.left.isDown || wasd.A.isDown || touch.left) { probeX -= 255 * dt; moveDir = -1; }
+    if (cursors.right.isDown || wasd.D.isDown || touch.right) { probeX += 255 * dt; moveDir = 1; }
     probeX = Phaser.Math.Clamp(probeX, 95, width - 95);
 
     const bobY = 110 + Math.sin(time / 240) * 3;
@@ -287,15 +283,15 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
     thrusterCore.setAngle(probe.angle);
     thrusterCore.setScale(Phaser.Math.FloatBetween(0.8, 1.1) * thrustBoost, Phaser.Math.FloatBetween(0.85, 1.2) * thrustBoost);
 
-    const currentSpawnInterval = 0.46 - progress * 0.19;
+    const currentSpawnInterval = (0.46 - progress * 0.19) / Math.max(0.65, scale);
     spawnTimer += dt;
     if (spawnTimer >= currentSpawnInterval) {
       spawnTimer = 0;
       const ox = Phaser.Math.Between(102, width - 102);
-      const radius = Phaser.Math.Between(18, 30);
+      const radius = Math.max(12, Math.round(Phaser.Math.Between(18, 30) / boost));
       const rock = this.add.circle(ox, height + 24, radius, 0xef4444, 0.55).setStrokeStyle(2, 0xff3b3b).setDepth(9);
       rock.swayPhase = Phaser.Math.FloatBetween(0, Math.PI * 2);
-      rock.swayAmp = progress > 0.65 ? Phaser.Math.Between(18, 38) : 0;
+      rock.swayAmp = progress > 0.65 ? Phaser.Math.Between(18, 38) * scale : 0;
       obstacles.push(rock);
     }
 
@@ -307,7 +303,7 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
       }
 
       if (Phaser.Math.Distance.Between(probe.x, probe.y, obs.x, obs.y) < obs.radius + 16) {
-        hullIntegrity = Math.max(0, hullIntegrity - 35);
+        hullIntegrity = Math.max(0, hullIntegrity - hullDamagePerHit);
         this.cameras.main.shake(95, 0.007);
         obs.destroy();
         obstacles.splice(i, 1);
@@ -323,21 +319,27 @@ function startEuropaCryobotMiniGame(container, config, onWin, onLoss) {
     }
 
     hudText.setText(
-      `[EUROPA SUBSURFACE CRYOBOT — ICE MELT]\n` +
+      `[EUROPA SUBSURFACE CRYOBOT — ICE MELT]${hudTag}\n` +
       `ICE DEPTH      : ${depthKm.toFixed(1)} / 15.0 km\n` +
       `HULL INTEGRITY : ${hullIntegrity}%`
     );
 
-    if (hullIntegrity <= 0) endGame(false, 'TECTONIC ICE CRUSH — HULL BREACHED!');
+    if (hullIntegrity <= 0) {
+      endGame(
+        false,
+        'TECTONIC ICE CRUSH — HULL BREACHED!',
+        `Repeated impacts with subsurface cryo-pressure pockets at ${depthKm.toFixed(1)} km ruptured the titanium pressure hull.`
+      );
+    }
   }
 
-  function endGame(success, msg) {
+  function endGame(success, msg, reason = '') {
     isGameOver = true;
     statusBanner.setText(success ? `🏆 ${msg}` : `💥 ${msg}`).setFill(success ? '#00ff88' : '#ff3b3b');
     setTimeout(() => {
       container.classList.remove('europa-diving-fx', 'deep-pressure');
       game.destroy(true);
-      success ? onWin() : onLoss();
+      success ? onWin() : onLoss(reason);
     }, 1100);
   }
 }

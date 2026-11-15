@@ -2,6 +2,15 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
   const width = container.clientWidth > 100 ? container.clientWidth : 800;
   const height = container.clientHeight > 100 ? container.clientHeight : 450;
 
+  // Adaptive Flight Computer Assist scaling
+  const scale = (config && config.difficultyScale) || 1.0;
+  const boost = (config && config.toleranceBoost) || 1.0;
+  const hudTag = (config && config.hudTag) || "";
+
+  const arcHalfAngle = Math.min(1.85, 0.95 * boost);
+  const spawnInterval = 0.48 / Math.max(0.65, scale);
+  const dosePerHit = Math.max(8, Math.round(14 * scale));
+
   let shieldAngle = Math.PI, radiationDose = 0, timeLeft = 20.0;
   let isStarted = false, isGameOver = false, isFullShield = false;
   let spawnTimer = 0, finaleTimer = 0;
@@ -131,7 +140,7 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
       }
 
       hudText.setText(
-        `[ARTEMIS GATEWAY — FULL SHIELD ONLINE]\n` +
+        `[ARTEMIS GATEWAY — FULL SHIELD ONLINE]${hudTag}\n` +
         `CREW RAD DOSE  : ${Math.round(radiationDose)}% (STABILIZED)\n` +
         `SHIELD FIELD   : 360° FULL ENVELOPE ACTIVE`
       );
@@ -151,16 +160,16 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
     if (cursors.left.isDown || wasd.A.isDown) shieldAngle -= 4.6 * dt;
     if (cursors.right.isDown || wasd.D.isDown) shieldAngle += 4.6 * dt;
 
-    // Directional deflector arc (radius 64px, 0.95 rad half-angle)
+    // Directional deflector arc scaled by assist boost
     shieldArc.clear();
     shieldArc.lineStyle(7, 0x00ff88, 0.95);
     shieldArc.beginPath();
-    shieldArc.arc(width / 2, height / 2, 64, shieldAngle - 0.95, shieldAngle + 0.95);
+    shieldArc.arc(width / 2, height / 2, 64, shieldAngle - arcHalfAngle, shieldAngle + arcHalfAngle);
     shieldArc.strokePath();
 
-    // Wider flanking angles (±2.1 rad) and storm cadence (0.48s)
+    // Wider flanking angles (±2.1 rad) and scaled storm cadence
     spawnTimer += dt;
-    if (spawnTimer >= 0.48) {
+    if (spawnTimer >= spawnInterval) {
       spawnTimer = 0;
       lastSpawnAngle = Phaser.Math.Angle.Wrap(lastSpawnAngle + Phaser.Math.FloatBetween(-2.1, 2.1));
       const dist = Math.max(width, height) * 0.56;
@@ -170,7 +179,11 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
         6,
         0xfacc15
       ).setStrokeStyle(1, 0xff4500);
-      particles.push({ obj: dot, angle: lastSpawnAngle + Math.PI, speed: Phaser.Math.Between(145, 195) });
+      particles.push({
+        obj: dot,
+        angle: lastSpawnAngle + Math.PI,
+        speed: Phaser.Math.Between(145, 195) * scale
+      });
     }
 
     for (let i = particles.length - 1; i >= 0; i--) {
@@ -181,7 +194,7 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
       const d = Phaser.Math.Distance.Between(p.obj.x, p.obj.y, width / 2, height / 2);
       if (d <= 72 && d >= 52) {
         const incomingDir = Math.atan2(p.obj.y - height / 2, p.obj.x - width / 2);
-        if (Math.abs(Phaser.Math.Angle.Wrap(incomingDir - shieldAngle)) <= 1.0) {
+        if (Math.abs(Phaser.Math.Angle.Wrap(incomingDir - shieldAngle)) <= arcHalfAngle + 0.05) {
           p.obj.destroy();
           particles.splice(i, 1);
           continue;
@@ -189,7 +202,7 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
       }
 
       if (d < 34) {
-        radiationDose = Math.min(100, radiationDose + 14);
+        radiationDose = Math.min(100, radiationDose + dosePerHit);
         this.cameras.main.shake(80, 0.005);
         p.obj.destroy();
         particles.splice(i, 1);
@@ -197,17 +210,23 @@ function startArtemisSpeMiniGame(container, config, onWin, onLoss) {
     }
 
     hudText.setText(
-      `[ARTEMIS GATEWAY — SOLAR PARTICLE STORM]\n` +
+      `[ARTEMIS GATEWAY — SOLAR PARTICLE STORM]${hudTag}\n` +
       `CREW RAD DOSE  : ${Math.round(radiationDose)}% (CRITICAL AT 100%)\n` +
       `STORM DURATION : ${timeLeft.toFixed(1)}s remaining`
     );
 
-    if (radiationDose >= 100) endGame(false, 'CRITICAL RADIATION EXPOSURE!');
+    if (radiationDose >= 100) {
+      endGame(
+        false,
+        'CRITICAL RADIATION EXPOSURE!',
+        'Unblocked Class X9 solar protons penetrated Lunar Gateway hull, exceeding 100% crew radiation dose limits.'
+      );
+    }
   }
 
-  function endGame(success, msg) {
+  function endGame(success, msg, reason = '') {
     isGameOver = true;
     statusBanner.setText(success ? `🏆 ${msg}` : `💥 ${msg}`).setFill(success ? '#00ff88' : '#ff3b3b');
-    setTimeout(() => { game.destroy(true); success ? onWin() : onLoss(); }, 1100);
+    setTimeout(() => { game.destroy(true); success ? onWin() : onLoss(reason); }, 1100);
   }
 }

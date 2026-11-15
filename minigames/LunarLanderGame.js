@@ -3,12 +3,28 @@
 // ==========================================
 let activePhaserGame = null;
 
-function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
+function launchLanderMiniGame(onSuccessCallback, onFailureCallback, assistCfg = null) {
   const panelBox = document.getElementById("panel-box");
   const captionBox = document.getElementById("caption-box");
   const hudOverlay = document.getElementById("hud-overlay");
   const choicesContainer = document.getElementById("choices-container");
   const canvasView = document.getElementById("canvas-view");
+
+  // Adaptive Flight Computer Assist scaling
+  const resolvedAssist = assistCfg ||
+    ((window.assistManager && typeof assistManager.getAssistConfig === "function")
+      ? assistManager.getAssistConfig("LAUNCH_LANDER_MINIGAME")
+      : { difficultyScale: 1.0, toleranceBoost: 1.0, hudTag: "" });
+
+  const scale = resolvedAssist.difficultyScale || 1.0;
+  const boost = resolvedAssist.toleranceBoost || 1.0;
+  const hudTag = resolvedAssist.hudTag || "";
+
+  const maxVertSpeed = Math.round(55 * boost);
+  const maxLatSpeed = Math.round(45 * boost);
+  const maxTiltAngle = Math.round(28 * boost);
+  const lunarGravity = Math.round(20 * scale);
+  const fuelBurnRate = 0.055 * scale;
 
   // Prevent canvas duplication / memory leaks
   const container = document.getElementById("phaser-game-container");
@@ -37,7 +53,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 20 }, // Slightly gentler lunar gravity for finer hover control
+        gravity: { y: lunarGravity },
         debug: false
       }
     },
@@ -169,7 +185,8 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
 
       // Circular hitboxes: generous pickup radius for green checkpoints, fair inner radius for red hazards
       if (data.isHazard) {
-        ring.body.setCircle(12, 6, 6);
+        const hazardRadius = Math.max(8, Math.round(12 / boost));
+        ring.body.setCircle(hazardRadius, 18 - hazardRadius, 18 - hazardRadius);
       } else {
         ring.body.setCircle(22, -4, -4);
       }
@@ -198,7 +215,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     lander.setCollideWorldBounds(true);
     lander.setBounce(0.05);
     lander.setDamping(true);
-    lander.setDrag(0.86, 0.94); // Subtle flight-computer velocity damping so lateral drift settles smoothly
+    lander.setDrag(0.86, 0.94);
     lander.setMaxVelocity(180, 180);
 
     // Visual Spawn Indicator
@@ -247,13 +264,13 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const hudFrame = this.add.graphics();
     hudFrame.fillStyle(0x030712, 0.88);
     hudFrame.lineStyle(1, 0x64ffda, 0.9);
-    hudFrame.fillRect(10, 10, 445, 84);
-    hudFrame.strokeRect(10, 10, 445, 84);
+    hudFrame.fillRect(10, 10, 465, 84);
+    hudFrame.strokeRect(10, 10, 465, 84);
 
-    fuelText = this.add.text(20, 16, 'PROPELLANT: 100%', { fontSize: '11px', fill: '#64ffda', fontFamily: 'Courier New', fontWeight: 'bold' });
-    velYText = this.add.text(20, 30, 'VERT SPEED: 0 m/s (MAX 55)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
-    velXText = this.add.text(20, 44, 'LAT SPEED: 0 m/s (MAX 45)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
-    angleText = this.add.text(20, 58, 'TILT ANGLE: 0° (MAX ±28°)', { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    fuelText = this.add.text(20, 16, `PROPELLANT: 100%${hudTag}`, { fontSize: '11px', fill: '#64ffda', fontFamily: 'Courier New', fontWeight: 'bold' });
+    velYText = this.add.text(20, 30, `VERT SPEED: 0 m/s (MAX ${maxVertSpeed})`, { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    velXText = this.add.text(20, 44, `LAT SPEED: 0 m/s (MAX ${maxLatSpeed})`, { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
+    angleText = this.add.text(20, 58, `TILT ANGLE: 0° (MAX ±${maxTiltAngle}°)`, { fontSize: '11px', fill: '#ffffff', fontFamily: 'Courier New' });
     statusText = this.add.text(20, 72, 'MISSION: FLY TO CP-2 (FAR LEFT) TO UNLOCK LANDING PAD', { fontSize: '9px', fill: '#fbbf24', fontFamily: 'Courier New', fontWeight: 'bold' });
 
     // Collisions & Overlaps
@@ -316,10 +333,9 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const velX = Math.round(lander.body.velocity.x);
     let angle = Math.round(Phaser.Math.Angle.WrapDegrees(lander.angle));
 
-    // Color-code telemetry readouts green when within safe landing limits, red when too fast/tilted
-    velYText.setText(`VERT SPEED: ${velY} m/s (MAX 55)`).setStyle({ fill: velY <= 55 ? '#00ff88' : '#ef4444' });
-    velXText.setText(`LAT SPEED: ${Math.abs(velX)} m/s (MAX 45)`).setStyle({ fill: Math.abs(velX) <= 45 ? '#00ff88' : '#ef4444' });
-    angleText.setText(`TILT ANGLE: ${angle}° (MAX ±28°)`).setStyle({ fill: Math.abs(angle) <= 28 ? '#00ff88' : '#ef4444' });
+    velYText.setText(`VERT SPEED: ${velY} m/s (MAX ${maxVertSpeed})`).setStyle({ fill: velY <= maxVertSpeed ? '#00ff88' : '#ef4444' });
+    velXText.setText(`LAT SPEED: ${Math.abs(velX)} m/s (MAX ${maxLatSpeed})`).setStyle({ fill: Math.abs(velX) <= maxLatSpeed ? '#00ff88' : '#ef4444' });
+    angleText.setText(`TILT ANGLE: ${angle}° (MAX ±${maxTiltAngle}°)`).setStyle({ fill: Math.abs(angle) <= maxTiltAngle ? '#00ff88' : '#ef4444' });
 
     // LANDING ZONE REGOLITH FRICTION
     const onLandingPad = landingPadObj.body.enable &&
@@ -332,14 +348,13 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
         lander.setVelocityX(0);
       }
     } else {
-      // Smooth attitude-hold damping so lateral drift slows down naturally when thrusters are off
       lander.setDrag(0.86, 0.94);
     }
 
     // ZERO FUEL CHECK
     if (fuel <= 0 && !lander.body.blocked.down) {
       fuel = 0;
-      fuelText.setText('PROPELLANT: 0% (DEPLETED!)');
+      fuelText.setText(`PROPELLANT: 0% (DEPLETED!)${hudTag}`);
       fuelText.setStyle({ fill: '#ef4444' });
       handleCrash.call(this, "PROPELLANT DEPLETED: Lander lost main thruster authority!");
       return;
@@ -354,15 +369,15 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const leftPressed = cursors.left.isDown || wasd.A.isDown || touchLeft || isGyroLeft;
     const rightPressed = cursors.right.isDown || wasd.D.isDown || touchRight || isGyroRight;
 
-    // MAIN ENGINE THRUST (Increased to 175 for crisp vertical braking + lower fuel burn)
+    // MAIN ENGINE THRUST
     if (thrustPressed && fuel > 0) {
       const angleRad = Phaser.Math.DegToRad(lander.angle - 90);
       const thrustPower = 175;
       lander.setAccelerationX(Math.cos(angleRad) * thrustPower);
       lander.setAccelerationY(Math.sin(angleRad) * thrustPower);
-      fuel -= 0.055;
+      fuel -= fuelBurnRate;
 
-      fuelText.setText(`PROPELLANT: ${Math.max(0, Math.round(fuel))}%`);
+      fuelText.setText(`PROPELLANT: ${Math.max(0, Math.round(fuel))}%${hudTag}`);
       engineParticles.emitting = true;
     } else {
       lander.setAcceleration(0, 0);
@@ -372,18 +387,17 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     // RCS ROTATION + P66 AUTO-STABILIZER ASSIST
     if (leftPressed && fuel > 0) {
       lander.setAngularVelocity(-110);
-      fuel -= 0.01;
+      fuel -= 0.01 * scale;
       rcsLeftParticles.emitting = true;
       rcsRightParticles.emitting = false;
     } else if (rightPressed && fuel > 0) {
       lander.setAngularVelocity(110);
-      fuel -= 0.01;
+      fuel -= 0.01 * scale;
       rcsRightParticles.emitting = true;
       rcsLeftParticles.emitting = false;
     } else {
       rcsLeftParticles.emitting = false;
       rcsRightParticles.emitting = false;
-      // Gentle P66 Attitude-Hold Assist: smoothly levels the lander toward 0° when pilot releases rotation
       const currentDeg = Phaser.Math.Angle.WrapDegrees(lander.angle);
       if (Math.abs(currentDeg) > 1.5) {
         lander.setAngularVelocity(-currentDeg * 2.2);
@@ -408,7 +422,6 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       checkpoint.labelText.setStyle({ fill: '#38bdf8' });
       checkpoint.labelText.setText(`${checkpoint.labelText.text} ✓`);
 
-      // Subtle pulse ring effect on checkpoint capture
       this.tweens.add({
         targets: checkpoint,
         scale: 1.25,
@@ -444,8 +457,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
     const speedX = Math.abs(lander.body.velocity.x);
     const angle = Math.abs(Phaser.Math.Angle.WrapDegrees(lander.angle));
 
-    // Forgiving safe touchdown window: Vert <= 55 m/s, Lat <= 45 m/s, Tilt <= 28°
-    if (speedY <= 55 && speedX <= 45 && angle <= 28) {
+    if (speedY <= maxVertSpeed && speedX <= maxLatSpeed && angle <= maxTiltAngle) {
       gameEnded = true;
       stopParticles();
       lander.setVelocity(0, 0);
@@ -453,7 +465,6 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       lander.setAngularVelocity(0);
       lander.body.setAllowGravity(false);
 
-      // Snap lander cleanly upright onto the pad
       this.tweens.add({
         targets: lander,
         angle: 0,
@@ -462,7 +473,6 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
         ease: 'Back.easeOut'
       });
 
-      // Regolith lunar dust kick-up burst on contact
       const dustBurst = this.add.particles(lander.x, landingPadObj.y - 18, 'particleDot', {
         speed: { min: 30, max: 110 },
         angle: { min: 190, max: 350 },
@@ -487,9 +497,9 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       }, 1800);
     } else {
       let failReason = "";
-      if (angle > 28) failReason = `TIP-OVER CRASH: Tilt angle (${Math.round(angle)}°) exceeded ±28°!`;
-      else if (speedY > 55) failReason = `HARD IMPACT: Vertical speed (${Math.round(speedY)} m/s) exceeded 55 m/s!`;
-      else if (speedX > 45) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) exceeded 45 m/s!`;
+      if (angle > maxTiltAngle) failReason = `TIP-OVER CRASH: Tilt angle (${Math.round(angle)}°) exceeded ±${maxTiltAngle}°!`;
+      else if (speedY > maxVertSpeed) failReason = `HARD IMPACT: Vertical speed (${Math.round(speedY)} m/s) exceeded ${maxVertSpeed} m/s!`;
+      else if (speedX > maxLatSpeed) failReason = `SHEAR CRASH: Lateral speed (${Math.round(speedX)} m/s) exceeded ${maxLatSpeed} m/s!`;
       handleCrash.call(this, failReason);
     }
   }
@@ -504,7 +514,7 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
 
     setTimeout(() => {
       closeMiniGame();
-      if (typeof onFailureCallback === "function") onFailureCallback();
+      if (typeof onFailureCallback === "function") onFailureCallback(reason);
     }, 1800);
   }
 
@@ -520,9 +530,6 @@ function launchLanderMiniGame(onSuccessCallback, onFailureCallback) {
       activePhaserGame.destroy(true);
       activePhaserGame = null;
     }
-    if (canvasView) canvasView.classList.add("hidden");
-    if (panelBox) panelBox.classList.remove("hidden");
-    if (choicesContainer) choicesContainer.classList.remove("hidden");
   }
 
   activePhaserGame = new Phaser.Game(config);

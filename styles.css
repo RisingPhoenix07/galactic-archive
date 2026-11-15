@@ -1076,9 +1076,110 @@ body {
 }
 
 /* ==========================================
+   MOBILE PORTRAIT OPTIMIZATIONS (<768px)
+   ========================================== */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 0;
+  }
+
+  .game-container {
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    flex-direction: column;
+  }
+
+  .hud-bar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    background: rgba(5, 11, 20, 0.95);
+    border-bottom: 1px solid #64ffda;
+  }
+
+  .hud-left-controls {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .hud-btn,
+  .hud-mute-btn {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  #canvas-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2500 !important;
+  }
+
+  .title-mute-pos {
+    top: 16px !important;
+    left: 16px !important;
+    transform: none !important;
+  }
+
+  .title-info-pos {
+    top: 16px !important;
+    right: 16px !important;
+    transform: none !important;
+  }
+
+  .hud-overlay {
+    position: relative !important;
+    width: 95% !important;
+    margin: 10px auto !important;
+    max-height: 160px;
+    overflow-y: auto;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .debrief-box {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 10px auto !important;
+    z-index: 30;
+  }
+
+  .panel-box {
+    width: 100% !important;
+    min-height: 260px !important;
+  }
+
+  .caption-box {
+    font-size: 0.9rem !important;
+    padding: 10px 12px;
+  }
+
+  .choice-btn {
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 12px 14px;
+    width: 100%;
+  }
+
+  .curator-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+/* ==========================================
    MOBILE LANDSCAPE ORIENTATION OPTIMIZATIONS
    ========================================== */
-
 @media screen and (max-width: 900px) and (orientation: landscape) {
   body {
     padding: 0;
@@ -1102,11 +1203,6 @@ body {
     min-height: auto;
   }
 
-  #panel-img {
-    object-fit: contain;
-    max-height: 100%;
-  }
-
   #choices-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1124,16 +1220,20 @@ body {
     top: 6px;
     left: 8px;
     right: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
-}
 
-/* Rotate Prompt Hint */
-@media screen and (max-width: 600px) and (orientation: portrait) {
-  .portrait-hint {
-    display: block;
-    font-size: 0.75rem;
-    color: #64ffda;
-    text-align: center;
+  .hud-btn,
+  .hud-mute-btn {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+
+  #canvas-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2500 !important;
   }
 }
 

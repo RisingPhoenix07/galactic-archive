@@ -4,7 +4,6 @@
 
 let currentNodeId = "intro_p1";
 let decisionHistory = [];
-//const sessionMiniGameFailures = {};
 
 // 1. INITIALIZATION ON LOAD
 document.addEventListener("DOMContentLoaded", () => {
@@ -90,9 +89,9 @@ function showGameInterface() {
 function openMissionSelect() {
   decisionHistory = [];
   showGameInterface();
-  // Jump straight to Act I Terminal ("intro_p2") so players don't have to click through intro_p1 again
   renderNode("intro_p2");
 }
+
 // 3. CORE NODE RENDERER
 function renderNode(nodeKey) {
   stopReadAloud();
@@ -233,14 +232,12 @@ function renderNode(nodeKey) {
   if (choicesContainer) {
     choicesContainer.innerHTML = "";
 
-    // Reset rewind stack on Intro or Mission Select
     if (nodeKey === "intro_p1" || nodeKey === "intro_p2") {
       decisionHistory = [];
     }
 
     const isMenuNode = nodeKey.startsWith("intro_") || nodeKey.includes("victory") || nodeKey === "museum_exit";
 
-    // Automatically inject Rewind button on any story failure node
     if (isFailureOrDanger && decisionHistory.length > 0) {
       const rewindBtn = document.createElement("button");
       rewindBtn.className = "choice-btn";
@@ -278,7 +275,6 @@ function renderNode(nodeKey) {
         });
 
         btn.onclick = () => {
-          // Record checkpoint before leaving non-failure, non-menu decision nodes
           if (!isFailureOrDanger && !isMenuNode && nodeKey !== "intro_p2") {
             if (decisionHistory[decisionHistory.length - 1] !== nodeKey) {
               decisionHistory.push(nodeKey);
@@ -287,52 +283,53 @@ function renderNode(nodeKey) {
 
           if (choice.action === "LAUNCH_MERCURY_REENTRY") {
             if (typeof startMercuryReentryMiniGame === "function") {
-              launchMiniGame(startMercuryReentryMiniGame, "m1_p5_fireball", "m1_p4_jettison");
+              launchMiniGame(startMercuryReentryMiniGame, "m1_p5_fireball", "m1_p4_jettison", { actionKey: choice.action });
             } else {
               renderNode("m1_p5_fireball");
             }
 
           } else if (choice.action === "LAUNCH_GEMINI_EVA") {
             if (typeof startGeminiEvaMiniGame === "function") {
-              launchMiniGame(startGeminiEvaMiniGame, "m2_p3_hatch", "m2_p5_tether_wrap");
+              launchMiniGame(startGeminiEvaMiniGame, "m2_p3_hatch", "m2_p5_tether_wrap", { actionKey: choice.action });
             } else {
               renderNode("m2_p2_tether");
             }
 
           } else if (choice.action === "LAUNCH_APOLLO8_LOI") {
             if (typeof startApollo8LoiMiniGame === "function") {
-              launchMiniGame(startApollo8LoiMiniGame, "m3_p3_comms", "m3_p6_flyby");
+              launchMiniGame(startApollo8LoiMiniGame, "m3_p3_comms", "m3_p6_flyby", { actionKey: choice.action });
             } else {
               renderNode("m3_p3_comms");
             }
 
           } else if (choice.action === "LAUNCH_LANDER_MINIGAME") {
             if (typeof launchLanderMiniGame === "function") {
-              launchLanderMiniGame(
-                () => renderNode("m4_success"),
-                () => renderNode("m4_crash")
-              );
+              // Wrap standalone Lander mini-game with adaptive assist tracking
+              const landerAdapter = (container, cfg, onWin, onLoss) => {
+                launchLanderMiniGame(onWin, onLoss);
+              };
+              launchMiniGame(landerAdapter, "m4_success", "m4_crash", { actionKey: choice.action });
             } else {
               renderNode("m4_touchdown");
             }
 
           } else if (choice.action === "LAUNCH_ARTEMIS_SPE") {
             if (typeof startArtemisSpeMiniGame === "function") {
-              launchMiniGame(startArtemisSpeMiniGame, "m5_p4_success", "m5_p6_thermal_breach");
+              launchMiniGame(startArtemisSpeMiniGame, "m5_p4_success", "m5_p6_thermal_breach", { actionKey: choice.action });
             } else {
               renderNode("m5_p4_success");
             }
 
           } else if (choice.action === "LAUNCH_MARS_SKYCRANE") {
             if (typeof startMarsSkyCraneMiniGame === "function") {
-              launchMiniGame(startMarsSkyCraneMiniGame, "m6_p3_dust_storm", "m6_p5_boulder_crash");
+              launchMiniGame(startMarsSkyCraneMiniGame, "m6_p3_dust_storm", "m6_p5_boulder_crash", { actionKey: choice.action });
             } else {
               renderNode("m6_p3_dust_storm");
             }
 
           } else if (choice.action === "LAUNCH_EUROPA_CRYOBOT") {
             if (typeof startEuropaCryobotMiniGame === "function") {
-              launchMiniGame(startEuropaCryobotMiniGame, "m7_p3_hazard", "m7_p5_ice_crush");
+              launchMiniGame(startEuropaCryobotMiniGame, "m7_p3_hazard", "m7_p5_ice_crush", { actionKey: choice.action });
             } else {
               renderNode("m7_p3_hazard");
             }
@@ -499,12 +496,19 @@ function stopReadAloud() {
 }
 
 // ==========================================
-// MINI-GAME LAUNCHER & CHECKPOINT RETRY ENGINE
+// MINI-GAME LAUNCHER & ADAPTIVE ASSIST ENGINE
 // ==========================================
 function launchMiniGame(gameLauncherFn, winNode, lossNode, config = {}) {
   if (typeof gameLauncherFn !== 'function' && window.lastMiniGameContext) {
     ({ gameLauncherFn, winNode, lossNode, config } = window.lastMiniGameContext);
   }
+
+  const actionKey = config.actionKey || winNode;
+  const assistData = (window.assistManager && typeof assistManager.getAssistConfig === "function")
+    ? assistManager.getAssistConfig(actionKey)
+    : { difficultyScale: 1.0, toleranceBoost: 1.0, assistActive: false, failCount: 0, hudTag: "" };
+
+  const mergedConfig = { ...config, ...assistData, actionKey };
 
   const panelBox = document.getElementById('panel-box');
   const captionBox = document.getElementById('caption-box');
@@ -513,7 +517,7 @@ function launchMiniGame(gameLauncherFn, winNode, lossNode, config = {}) {
   const canvasView = document.getElementById('canvas-view');
   const phaserContainer = document.getElementById('phaser-game-container') || canvasView;
 
-  window.lastMiniGameContext = { gameLauncherFn, winNode, lossNode, config };
+  window.lastMiniGameContext = { gameLauncherFn, winNode, lossNode, config: mergedConfig };
 
   if (phaserContainer) phaserContainer.innerHTML = '';
   if (panelBox) panelBox.classList.add('hidden');
@@ -532,24 +536,42 @@ function launchMiniGame(gameLauncherFn, winNode, lossNode, config = {}) {
 
   gameLauncherFn(
     phaserContainer,
-    config,
+    mergedConfig,
     () => {
+      if (window.assistManager && typeof assistManager.recordResult === "function") {
+        assistManager.recordResult(actionKey, true);
+      }
       restoreStoryUI();
       renderNode(winNode);
     },
     (reason) => {
+      if (window.assistManager && typeof assistManager.recordResult === "function") {
+        assistManager.recordResult(actionKey, false);
+      }
+
+      const nextAssist = (window.assistManager && typeof assistManager.getAssistConfig === "function")
+        ? assistManager.getAssistConfig(actionKey)
+        : { assistActive: false };
+
       if (!phaserContainer) {
         restoreStoryUI();
         renderNode(lossNode);
         return;
       }
 
+      const assistNotice = nextAssist.assistActive
+        ? `<div style="color:#00ff88; font-size:12px; margin-bottom:16px; border:1px solid #00ff88; padding:6px 12px; border-radius:4px;">
+             🛰️ FLIGHT COMPUTER STABILIZER CALIBRATED FOR NEXT ATTEMPT
+           </div>`
+        : "";
+
       phaserContainer.innerHTML = `
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:420px; background:#070d19; border:2px solid #ff3b3b; border-radius:8px; padding:24px; text-align:center; font-family:monospace; color:#e2e8f0; box-sizing:border-box;">
           <div style="color:#ff3b3b; font-size:20px; font-weight:bold; margin-bottom:10px;">⚠️ SIMULATION ANOMALY DETECTED</div>
-          <p style="max-width:460px; color:#94a3b8; margin-bottom:24px; line-height:1.5;">
+          <p style="max-width:460px; color:#94a3b8; margin-bottom:16px; line-height:1.5;">
             ${reason ? reason : 'Telemetry indicates mission parameters were exceeded. Re-initialize the simulation immediately or proceed to the failure log.'}
           </p>
+          ${assistNotice}
           <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
             <button id="mg-retry-btn" style="background:#00ff88; color:#050811; border:none; padding:12px 20px; font-family:monospace; font-weight:bold; font-size:14px; cursor:pointer; border-radius:4px;">
               ↻ RETRY SIMULATION
@@ -562,7 +584,7 @@ function launchMiniGame(gameLauncherFn, winNode, lossNode, config = {}) {
       `;
 
       document.getElementById('mg-retry-btn').onclick = () => {
-        launchMiniGame(gameLauncherFn, winNode, lossNode, config);
+        launchMiniGame(gameLauncherFn, winNode, lossNode, { actionKey });
       };
 
       document.getElementById('mg-abort-btn').onclick = () => {
@@ -642,4 +664,36 @@ function createBriefingOverlay(scene, width, height, titleText, bodyText, onStar
   btn.on('pointerdown', onStart);
   overlay.add([box, title, body, btn]);
   return overlay;
+}
+
+// ==========================================
+// SHARED MOBILE TOUCH CONTROLS HELPER
+// ==========================================
+function createMobileTouchControls(scene, width, height, buttons) {
+  if (!scene.sys.game.device.input.touch && window.innerWidth > 900) return {};
+
+  const state = {};
+  const spacing = width / (buttons.length + 1);
+
+  buttons.forEach((btnCfg, i) => {
+    state[btnCfg.key] = false;
+    const btn = scene.add.text(spacing * (i + 1), height - 38, btnCfg.label, {
+      fontFamily: 'monospace',
+      fontSize: '14px',
+      fontStyle: 'bold',
+      fill: '#050811',
+      backgroundColor: btnCfg.color || '#00f0ff',
+      padding: { x: 14, y: 10 }
+    })
+      .setOrigin(0.5)
+      .setDepth(90)
+      .setAlpha(0.88)
+      .setInteractive({ useHandCursor: true });
+
+    btn.on('pointerdown', () => { state[btnCfg.key] = true; btn.setAlpha(1); });
+    btn.on('pointerup', () => { state[btnCfg.key] = false; btn.setAlpha(0.88); });
+    btn.on('pointerout', () => { state[btnCfg.key] = false; btn.setAlpha(0.88); });
+  });
+
+  return state;
 }

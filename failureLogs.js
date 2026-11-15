@@ -143,3 +143,6 @@ function updateFailureCounterUI() {
   failureBadge.innerHTML = `📁 Logs: ${discoveredFailures.length}/${totalFailures}`;
   failureBadge.title = `${discoveredFailures.length} of ${totalFailures} failure anomaly branches logged`;
 }
+
+// Initialize badge count on page load
+document.addEventListener("DOMContentLoaded", updateFailureCounterUI);
