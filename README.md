@@ -134,6 +134,8 @@ galactic-archive/
 
 <p>Deployed on Vercel: <a href="https://galactic-archive-two.vercel.app/" target="_blank">https://galactic-archive-two.vercel.app/</a></p>
 
+(desktop site mode is recommended if you want to play from mobile browser) 
+
 ### 1. Clone the Repository
 ```bash
 git clone [https://github.com/RisingPhoenix07/galactic-archive.git](https://github.com/RisingPhoenix07/galactic-archive.git)
